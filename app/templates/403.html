@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Acceso Denegado{% endblock %}
+
+{% block content %}
+<div class="min-h-[calc(100vh-400px)] flex items-center justify-center">
+    <div class="text-center">
+        <h1 class="text-8xl font-bold text-red-500 mb-4">403</h1>
+        <h2 class="text-4xl font-bold text-gray-800 mb-3">Acceso Denegado</h2>
+        <p class="text-gray-600 text-lg mb-8">No tienes permisos para acceder a esta página.</p>
+        <a href="{{ url_for('index') }}" class="inline-block gradient-bg text-white px-8 py-3 rounded-lg hover:opacity-90 transition font-semibold">
+            <i class="fas fa-home"></i> Volver al Inicio
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Página No Encontrada{% endblock %}
+
+{% block content %}
+<div class="min-h-[calc(100vh-400px)] flex items-center justify-center">
+    <div class="text-center">
+        <h1 class="text-8xl font-bold gradient-bg bg-clip-text text-transparent mb-4">404</h1>
+        <h2 class="text-4xl font-bold text-gray-800 mb-3">Página No Encontrada</h2>
+        <p class="text-gray-600 text-lg mb-8">La página que buscas no existe o ha sido movida.</p>
+        <a href="{{ url_for('index') }}" class="inline-block gradient-bg text-white px-8 py-3 rounded-lg hover:opacity-90 transition font-semibold">
+            <i class="fas fa-home"></i> Volver al Inicio
+        </a>
+    </div>
+</div>
+{% endblock %}

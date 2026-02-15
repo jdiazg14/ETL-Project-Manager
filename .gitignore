@@ -1,0 +1,25 @@
+# --- Python y Entornos Virtuales ---
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+ENV/
+
+# --- Base de Datos (Seguridad) ---
+*.sqlite3
+*.db
+# Variables de entorno para contraseñas
+.env
+.flaskenv
+
+# --- Archivos de Sistema ---
+.DS_Store
+Thumbs.db
+
+# --- Archivos del proceso ETL (Evita subir datos sensibles) ---
+/uploads/
+/data/temp/
+*.csv
+*.xlsx

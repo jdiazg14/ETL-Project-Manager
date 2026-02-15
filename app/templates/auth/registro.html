@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Registro - ETL Manager{% endblock %}
+
+{% block content %}
+<div class="min-h-[calc(100vh-400px)] flex items-center justify-center">
+    <div class="w-full max-w-md">
+        <!-- Card de Registro -->
+        <div class="bg-white rounded-lg card-shadow overflow-hidden">
+            <!-- Header -->
+            <div class="gradient-bg text-white p-6 text-center">
+                <i class="fas fa-user-plus text-4xl mb-3 block"></i>
+                <h1 class="text-2xl font-bold">Crear Cuenta</h1>
+                <p class="text-gray-200 mt-2">Únase a ETL Manager hoy</p>
+            </div>
+
+            <!-- Formulario -->
+            <form method="POST" class="p-6 space-y-4">
+                {{ form.hidden_tag() }}
+
+                <!-- Usuario -->
+                <div>
+                    {{ form.username.label(class="block text-gray-700 font-semibold mb-2") }}
+                    {{ form.username(class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition") }}
+                    {% if form.username.errors %}
+                        <ul class="mt-2 text-red-500 text-sm">
+                            {% for error in form.username.errors %}
+                                <li><i class="fas fa-exclamation-circle"></i> {{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <!-- Nombre -->
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        {{ form.first_name.label(class="block text-gray-700 font-semibold mb-2 text-sm") }}
+                        {{ form.first_name(class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition") }}
+                    </div>
+                    <div>
+                        {{ form.last_name.label(class="block text-gray-700 font-semibold mb-2 text-sm") }}
+                        {{ form.last_name(class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition") }}
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div>
+                    {{ form.email.label(class="block text-gray-700 font-semibold mb-2") }}
+                    {{ form.email(class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition") }}
+                    {% if form.email.errors %}
+                        <ul class="mt-2 text-red-500 text-sm">
+                            {% for error in form.email.errors %}
+                                <li><i class="fas fa-exclamation-circle"></i> {{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <!-- Contraseña -->
+                <div>
+                    {{ form.password.label(class="block text-gray-700 font-semibold mb-2") }}
+                    {{ form.password(class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition") }}
+                    {% if form.password.errors %}
+                        <ul class="mt-2 text-red-500 text-sm">
+                            {% for error in form.password.errors %}
+                                <li><i class="fas fa-exclamation-circle"></i> {{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <!-- Confirmar Contraseña -->
+                <div>
+                    {{ form.confirm_password.label(class="block text-gray-700 font-semibold mb-2") }}
+                    {{ form.confirm_password(class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition") }}
+                    {% if form.confirm_password.errors %}
+                        <ul class="mt-2 text-red-500 text-sm">
+                            {% for error in form.confirm_password.errors %}
+                                <li><i class="fas fa-exclamation-circle"></i> {{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <!-- Botón Submit -->
+                <div class="pt-4">
+                    {{ form.submit(class="w-full gradient-bg text-white font-bold py-2 rounded-lg hover:opacity-90 transition cursor-pointer") }}
+                </div>
+            </form>
+
+            <!-- Footer -->
+            <div class="bg-gray-50 px-6 py-4 text-center text-gray-600 text-sm border-t">
+                <p>¿Ya tiene cuenta? <a href="{{ url_for('auth.login') }}" class="text-purple-600 font-semibold hover:underline">Inicie sesión aquí</a></p>
+            </div>
+        </div>
+
+        <!-- Términos -->
+        <div class="mt-4 text-xs text-gray-600 text-center">
+            <p>Al registrarse, acepta nuestros Términos de Servicio y Política de Privacidad</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

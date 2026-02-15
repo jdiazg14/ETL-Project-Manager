@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Historial de Cargas - ETL Manager{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8 flex items-center justify-between">
+        <div>
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">
+                <i class="fas fa-history"></i> Historial de Cargas
+            </h1>
+            <p class="text-gray-600">Registro de todos los archivos procesados</p>
+        </div>
+        <a href="{{ url_for('etl.upload') }}" class="gradient-bg text-white px-6 py-3 rounded-lg hover:opacity-90 transition">
+            <i class="fas fa-plus"></i> Nueva Carga
+        </a>
+    </div>
+
+    {% if uploads %}
+    <!-- Tabla de Uploads -->
+    <div class="bg-white rounded-lg card-shadow overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="gradient-bg text-white">
+                    <tr>
+                        <th class="px-6 py-4 text-left font-semibold">Archivo</th>
+                        <th class="px-6 py-4 text-left font-semibold">Usuario</th>
+                        <th class="px-6 py-4 text-center font-semibold">Filas</th>
+                        <th class="px-6 py-4 text-center font-semibold">Columnas</th>
+                        <th class="px-6 py-4 text-center font-semibold">Estado</th>
+                        <th class="px-6 py-4 text-left font-semibold">Fecha</th>
+                        <th class="px-6 py-4 text-left font-semibold">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y">
+                    {% for upload in uploads %}
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                {% if upload.file_type == 'csv' %}
+                                    <i class="fas fa-file-csv text-orange-500 text-lg"></i>
+                                {% else %}
+                                    <i class="fas fa-file-excel text-green-500 text-lg"></i>
+                                {% endif %}
+                                <div>
+                                    <p class="font-semibold text-gray-800">{{ upload.original_filename }}</p>
+                                    <p class="text-xs text-gray-500">{{ upload.file_size | filesizeformat }}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-gray-700">{{ upload.user.username }}</td>
+                        <td class="px-6 py-4 text-center text-gray-700 font-semibold">{{ upload.total_rows }}</td>
+                        <td class="px-6 py-4 text-center text-gray-700 font-semibold">{{ upload.total_columns }}</td>
+                        <td class="px-6 py-4 text-center">
+                            {% if upload.status == 'processed' %}
+                                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">
+                                    <i class="fas fa-check-circle"></i> Procesado
+                                </span>
+                            {% elif upload.status == 'pending' %}
+                                <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-semibold">
+                                    <i class="fas fa-hourglass-half"></i> Pendiente
+                                </span>
+                            {% else %}
+                                <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-semibold">
+                                    <i class="fas fa-exclamation-circle"></i> Error
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600">
+                            {{ upload.uploaded_at.strftime('%Y-%m-%d %H:%M') }}
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex gap-2">
+                                <a href="{{ url_for('etl.ver_upload', upload_id=upload.id) }}" 
+                                   class="bg-blue-500 text-white px-3 py-2 rounded-lg hover:bg-blue-600 transition text-sm">
+                                    <i class="fas fa-eye"></i> Ver
+                                </a>
+                                {% if upload.user_id == current_user.id or current_user.is_admin() %}
+                                <a href="#" onclick="alert('Descarga no disponible aún')" 
+                                   class="bg-gray-400 text-white px-3 py-2 rounded-lg hover:bg-gray-500 transition text-sm">
+                                    <i class="fas fa-download"></i> Descargar
+                                </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Información de paginación/resumen -->
+    <div class="mt-6 p-4 bg-gray-50 rounded-lg text-center">
+        <p class="text-gray-700">
+            <strong>Total de cargas:</strong> {{ uploads | length }}
+        </p>
+    </div>
+
+    {% else %}
+    <!-- Sin cargas -->
+    <div class="bg-white rounded-lg card-shadow p-12 text-center">
+        <div class="mb-6">
+            <i class="fas fa-inbox text-6xl text-gray-300"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">No hay cargas aún</h2>
+        <p class="text-gray-600 mb-6">Comience cargando su primer archivo CSV o Excel</p>
+        <a href="{{ url_for('etl.upload') }}" class="inline-block gradient-bg text-white px-6 py-3 rounded-lg hover:opacity-90 transition">
+            <i class="fas fa-cloud-upload-alt"></i> Cargar Archivo
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

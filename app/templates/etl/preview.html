@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}Vista Previa de Datos - ETL Manager{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 mb-2">
+            <i class="fas fa-eye"></i> Vista Previa de Datos
+        </h1>
+        <p class="text-gray-600">Revise los datos antes de guardar en la base de datos</p>
+    </div>
+
+    <!-- Información del archivo -->
+    <div class="bg-white rounded-lg card-shadow p-6 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+                <h3 class="text-sm font-semibold text-gray-600 mb-1">Archivo</h3>
+                <p class="text-lg font-bold text-gray-800">{{ filename }}</p>
+            </div>
+            <div>
+                <h3 class="text-sm font-semibold text-gray-600 mb-1">Total de Filas</h3>
+                <p class="text-lg font-bold text-purple-600">{{ preview.total_rows }}</p>
+            </div>
+            <div>
+                <h3 class="text-sm font-semibold text-gray-600 mb-1">Total de Columnas</h3>
+                <p class="text-lg font-bold text-purple-600">{{ preview.total_columns }}</p>
+            </div>
+            <div>
+                <h3 class="text-sm font-semibold text-gray-600 mb-1">Memoria</h3>
+                <p class="text-lg font-bold text-gray-800">{{ "%.2f"|format(statistics.memory_usage) }} MB</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advertencias y Errores -->
+    {% if warnings %}
+    <div class="bg-yellow-50 border-l-4 border-yellow-500 rounded-lg p-4 mb-6">
+        <h3 class="font-semibold text-yellow-900 mb-2">
+            <i class="fas fa-exclamation-triangle"></i> Advertencias
+        </h3>
+        <ul class="text-yellow-800 space-y-1 text-sm">
+            {% for warning in warnings %}
+                <li><i class="fas fa-info-circle"></i> {{ warning }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Validaciones -->
+    {% if validations %}
+    <div class="bg-green-50 border-l-4 border-green-500 rounded-lg p-4 mb-6">
+        <h3 class="font-semibold text-green-900 mb-2">
+            <i class="fas fa-check-circle"></i> Validaciones Exitosas
+        </h3>
+        <ul class="text-green-800 space-y-1 text-sm">
+            {% for validation in validations %}
+                <li>{{ validation }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if validation_errors %}
+    <div class="bg-red-50 border-l-4 border-red-500 rounded-lg p-4 mb-6">
+        <h3 class="font-semibold text-red-900 mb-2">
+            <i class="fas fa-times-circle"></i> Errores de Validación
+        </h3>
+        <ul class="text-red-800 space-y-1 text-sm">
+            {% for error in validation_errors %}
+                <li><i class="fas fa-exclamation-circle"></i> {{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Información de Columnas -->
+    <div class="bg-white rounded-lg card-shadow p-6 mb-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">
+            <i class="fas fa-columns"></i> Columnas Detectadas
+        </h2>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="gradient-bg text-white">
+                    <tr>
+                        <th class="px-4 py-3 text-left">Nombre de Columna</th>
+                        <th class="px-4 py-3 text-left">Tipo de Dato</th>
+                        <th class="px-4 py-3 text-right">No Nulos</th>
+                        <th class="px-4 py-3 text-right">Nulos</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y">
+                    {% for col in preview.columns %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3 font-semibold text-gray-800">{{ col.name }}</td>
+                        <td class="px-4 py-3">
+                            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-semibold">
+                                {{ col.type }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 text-right text-green-600 font-semibold">{{ col.non_null }}</td>
+                        <td class="px-4 py-3 text-right text-red-600 font-semibold">{{ col.null }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Muestra de Datos -->
+    <div class="bg-white rounded-lg card-shadow p-6 mb-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">
+            <i class="fas fa-table"></i> Muestra de Datos (Primeras 10 Filas)
+        </h2>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="gradient-bg text-white">
+                    <tr>
+                        <th class="px-4 py-3 text-left">#</th>
+                        {% for col in preview.columns %}
+                        <th class="px-4 py-3 text-left">{{ col.name }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody class="divide-y">
+                    {% for row in preview.sample_data %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3 bg-gray-50 font-semibold text-gray-600">{{ loop.index }}</td>
+                        {% for col in preview.columns %}
+                        <td class="px-4 py-3 text-gray-700">
+                            {% if row[col.name] == 'NULL' %}
+                                <span class="text-gray-400 italic">null</span>
+                            {% else %}
+                                {{ row[col.name] }}
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Botones de Acción -->
+    <div class="flex gap-4 mb-8">
+        <form method="POST" action="{{ url_for('etl.confirm_upload') }}" class="flex-1">
+            <button type="submit" class="w-full gradient-bg text-white font-bold py-3 rounded-lg hover:opacity-90 transition cursor-pointer">
+                <i class="fas fa-save"></i> Guardar Datos en Base de Datos
+            </button>
+        </form>
+        <a href="{{ url_for('etl.upload') }}" class="flex-1 bg-gray-300 text-gray-800 font-bold py-3 rounded-lg hover:bg-gray-400 transition text-center">
+            <i class="fas fa-redo-alt"></i> Cargar Otro Archivo
+        </a>
+    </div>
+
+    <!-- Información adicional -->
+    <div class="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-4">
+        <h3 class="font-semibold text-blue-900 mb-2">
+            <i class="fas fa-info-circle"></i> Próximos Pasos
+        </h3>
+        <p class="text-blue-800 text-sm">
+            Al confirmar, los datos se guardarán en la base de datos. Puede acceder al historial para ver los archivos cargados anteriormente.
+        </p>
+    </div>
+</div>
+{% endblock %}

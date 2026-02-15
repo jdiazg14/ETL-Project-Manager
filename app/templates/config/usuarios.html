@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Usuarios - ETL Manager{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8 flex items-center justify-between">
+        <div>
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">
+                <i class="fas fa-users"></i> Gestión de Usuarios
+            </h1>
+            <p class="text-gray-600">Administre usuarios del sistema</p>
+        </div>
+        <button onclick="alert('Crear usuario - Función en desarrollo')" class="gradient-bg text-white px-6 py-3 rounded-lg hover:opacity-90 transition">
+            <i class="fas fa-plus"></i> Nuevo Usuario
+        </button>
+    </div>
+
+    {% if usuarios %}
+    <!-- Tabla de Usuarios -->
+    <div class="bg-white rounded-lg card-shadow overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="gradient-bg text-white">
+                    <tr>
+                        <th class="px-6 py-4 text-left font-semibold">Usuario</th>
+                        <th class="px-6 py-4 text-left font-semibold">Correo</th>
+                        <th class="px-6 py-4 text-left font-semibold">Nombre Completo</th>
+                        <th class="px-6 py-4 text-center font-semibold">Rol</th>
+                        <th class="px-6 py-4 text-center font-semibold">Estado</th>
+                        <th class="px-6 py-4 text-left font-semibold">Último Acceso</th>
+                        <th class="px-6 py-4 text-center font-semibold">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y">
+                    {% for usuario in usuarios %}
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full gradient-bg flex items-center justify-center text-white font-bold">
+                                    {{ usuario.username[0].upper() }}
+                                </div>
+                                <span class="font-semibold text-gray-800">{{ usuario.username }}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-gray-700">{{ usuario.email }}</td>
+                        <td class="px-6 py-4 text-gray-700">
+                            {{ usuario.first_name or '-' }} {{ usuario.last_name or '-' }}
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            {% if usuario.role == 'admin' %}
+                                <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-semibold">
+                                    <i class="fas fa-crown"></i> Admin
+                                </span>
+                            {% else %}
+                                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold">
+                                    <i class="fas fa-user"></i> Operador
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            {% if usuario.is_active %}
+                                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">
+                                    <i class="fas fa-check-circle"></i> Activo
+                                </span>
+                            {% else %}
+                                <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-xs font-semibold">
+                                    <i class="fas fa-times-circle"></i> Inactivo
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600">
+                            {% if usuario.last_login %}
+                                {{ usuario.last_login.strftime('%Y-%m-%d %H:%M') }}
+                            {% else %}
+                                Nunca
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <button onclick="alert('Editar usuario - Función en desarrollo')" class="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition text-sm">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="alert('Eliminar usuario - Función en desarrollo')" class="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition text-sm ml-2">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Información -->
+    <div class="mt-6 p-4 bg-gray-50 rounded-lg text-center">
+        <p class="text-gray-700 font-semibold">
+            Total de usuarios: {{ usuarios | length }}
+        </p>
+    </div>
+
+    {% else %}
+    <!-- Sin usuarios -->
+    <div class="bg-white rounded-lg card-shadow p-12 text-center">
+        <div class="mb-6">
+            <i class="fas fa-inbox text-6xl text-gray-300"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">No hay usuarios</h2>
+        <p class="text-gray-600 mb-6">El sistema no tiene usuarios registrados</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
