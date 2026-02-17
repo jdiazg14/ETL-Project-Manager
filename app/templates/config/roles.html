@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Perfiles (Roles) - ETL Manager{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto mt-10">
+    <h1 class="text-3xl font-bold mb-6">Gestión de Perfiles (Roles)</h1>
+    <a href="{{ url_for('config.crear_role') }}" class="bg-green-500 text-white px-4 py-2 rounded-lg mb-4 inline-block hover:bg-green-600 transition">
+        <i class="fas fa-plus"></i> Nuevo Perfil
+    </a>
+    <div class="bg-white rounded-lg card-shadow overflow-hidden">
+        <table class="w-full">
+            <thead class="gradient-bg text-white">
+                <tr>
+                    <th class="px-6 py-4 text-left font-semibold">Nombre</th>
+                    <th class="px-6 py-4 text-left font-semibold">Descripción</th>
+                    <th class="px-6 py-4 text-center font-semibold">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y">
+                {% for role in roles %}
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="px-6 py-4">{{ role.name }}</td>
+                    <td class="px-6 py-4">{{ role.description or '-' }}</td>
+                    <td class="px-6 py-4 text-center">
+                        <a href="{{ url_for('config.editar_role', role_id=role.id) }}" class="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition text-sm">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <form method="POST" action="{{ url_for('config.eliminar_role', role_id=role.id) }}" style="display:inline;">
+                            <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition text-sm ml-2">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
