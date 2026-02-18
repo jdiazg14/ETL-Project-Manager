@@ -79,7 +79,7 @@ def crear_usuario():
             role_id=form.role_id.data,
             is_active=form.is_active.data
         )
-        user.set_password('temporal123')
+        user.set_password(form.password.data)
         db.session.add(user)
         try:
             db.session.commit()

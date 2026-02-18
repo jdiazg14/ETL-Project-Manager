@@ -5,41 +5,47 @@
 {% block content %}
 <div class="max-w-xl mx-auto mt-10">
     <h1 class="text-3xl font-bold mb-6">{{ 'Crear' if crear else 'Editar' }} Usuario</h1>
-    <form method="POST">
+    <form method="POST" autocomplete="off">
         {{ form.hidden_tag() }}
         <div class="mb-4">
             {{ form.username.label(class="block text-gray-700 font-bold mb-2") }}
-            {{ form.username(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all") }}
+            {{ form.username(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all", autocomplete="off") }}
             {% for error in form.username.errors %}
                 <span class="text-red-500 text-xs">{{ error }}</span>
             {% endfor %}
         </div>
         <div class="mb-4">
             {{ form.email.label(class="block text-gray-700 font-bold mb-2") }}
-            {{ form.email(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all") }}
+            {{ form.email(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all", autocomplete="off") }}
             {% for error in form.email.errors %}
                 <span class="text-red-500 text-xs">{{ error }}</span>
             {% endfor %}
         </div>
         <div class="mb-4">
-            {{ form.first_name.label(class="block text-gray-700 font-bold mb-2") }}
-            {{ form.first_name(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all") }}
+            {{ form.password.label(class="block text-gray-700 font-bold mb-2") }}
+            {{ form.password(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all", type="password", autocomplete="new-password") }}
+            {% for error in form.password.errors %}
+                <span class="text-red-500 text-xs">{{ error }}</span>
+            {% endfor %}
         </div>
         <div class="mb-4">
-            {{ form.last_name.label(class="block text-gray-700 font-bold mb-2") }}
-            {{ form.last_name(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all") }}
+            {{ form.confirm_password.label(class="block text-gray-700 font-bold mb-2") }}
+            {{ form.confirm_password(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all", type="password", autocomplete="new-password") }}
+            {% for error in form.confirm_password.errors %}
+                <span class="text-red-500 text-xs">{{ error }}</span>
+            {% endfor %}
         </div>
         <div class="mb-4">
             {{ form.role_id.label(class="block text-gray-700 font-bold mb-2") }}
-            {{ form.role_id(class="form-select w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all") }}
+            {{ form.role_id(class="form-select w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all", autocomplete="off") }}
         </div>
         <div class="mb-4 flex items-center">
-            {{ form.is_active() }}
+            {{ form.is_active(class="form-checkbox bg-gray-50 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all") }}
             {{ form.is_active.label(class="ml-2 text-gray-700") }}
         </div>
-        <div class="flex justify-between">
-            <a href="{{ url_for('config.lista_usuarios') }}" class="btn btn-secondary">Cancelar</a>
-            <button type="submit" class="gradient-bg text-white px-6 py-2 rounded-lg font-semibold shadow hover:opacity-90 transition">Guardar</button>
+        <div class="flex gap-4 mt-6">
+            <a href="{{ url_for('config.lista_usuarios') }}" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition duration-200 text-center flex-1">Cancelar</a>
+            <button type="submit" class="gradient-bg text-white px-6 py-2 rounded-lg font-semibold shadow hover:opacity-90 transition flex-1">Guardar</button>
         </div>
     </form>
 </div>

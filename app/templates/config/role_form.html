@@ -5,22 +5,22 @@
 {% block content %}
 <div class="max-w-xl mx-auto mt-10">
     <h1 class="text-3xl font-bold mb-6">{{ 'Crear' if crear else 'Editar' }} Perfil (Rol)</h1>
-    <form method="POST">
+    <form method="POST" autocomplete="off">
         {{ form.hidden_tag() }}
         <div class="mb-4">
             {{ form.name.label(class="block text-gray-700 font-bold mb-2") }}
-            {{ form.name(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all") }}
+            {{ form.name(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all", autocomplete="off") }}
             {% for error in form.name.errors %}
                 <span class="text-red-500 text-xs">{{ error }}</span>
             {% endfor %}
         </div>
         <div class="mb-4">
             {{ form.description.label(class="block text-gray-700 font-bold mb-2") }}
-            {{ form.description(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all") }}
+            {{ form.description(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all", autocomplete="off") }}
         </div>
-        <div class="flex justify-between">
-            <a href="{{ url_for('config.lista_roles') }}" class="btn btn-secondary">Cancelar</a>
-            <button type="submit" class="gradient-bg text-white px-6 py-2 rounded-lg font-semibold shadow hover:opacity-90 transition">Guardar</button>
+        <div class="flex gap-4 mt-6">
+            <a href="{{ url_for('config.lista_roles') }}" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition duration-200 text-center flex-1">Cancelar</a>
+            <button type="submit" class="gradient-bg text-white px-6 py-2 rounded-lg font-semibold shadow hover:opacity-90 transition flex-1">Guardar</button>
         </div>
     </form>
 </div>
