@@ -3,26 +3,26 @@
 {% block title %}Dashboard Administrativo - ETL Manager{% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto">
+<div class="max-w-6xl mx-auto">
     <!-- Header -->
     <div class="mb-8">
-        <h1 class="text-4xl font-bold text-gray-800 mb-2">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">
             <i class="fas fa-chart-line"></i> Dashboard Administrativo
         </h1>
         <p class="text-gray-600">Estadísticas y estado del sistema ETL</p>
 
     </div>
 
-    <!-- Estadísticas Principales -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <!-- Panel de Estadísticas (Superior) -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-5">
         <!-- Total de Usuarios -->
-        <div class="bg-white rounded-lg card-shadow p-6 border-t-4 border-blue-500">
+        <div class="bg-white rounded-lg card-shadow p-4 border-t-4 border-blue-500">
             <div class="flex items-center justify-between">
                 <div>
                     <h3 class="text-gray-600 text-sm font-semibold mb-2">Usuarios Totales</h3>
-                    <p class="text-3xl font-bold text-blue-600">{{ total_usuarios }}</p>
+                    <p class="text-2xl font-bold text-blue-600">{{ total_usuarios }}</p>
                 </div>
-                <i class="fas fa-users text-4xl text-blue-200"></i>
+                <i class="fas fa-users text-3xl text-blue-200"></i>
             </div>
             <p class="text-xs text-gray-500 mt-3">
                 <i class="fas fa-arrow-up text-green-500"></i> Admin: {{ total_admins }} | Operadores: {{ total_operadores }}
@@ -30,13 +30,13 @@
         </div>
 
         <!-- Cargas Totales -->
-        <div class="bg-white rounded-lg card-shadow p-6 border-t-4 border-green-500">
+        <div class="bg-white rounded-lg card-shadow p-4 border-t-4 border-green-500">
             <div class="flex items-center justify-between">
                 <div>
                     <h3 class="text-gray-600 text-sm font-semibold mb-2">Cargas Totales</h3>
-                    <p class="text-3xl font-bold text-green-600">{{ total_uploads }}</p>
+                    <p class="text-2xl font-bold text-green-600">{{ total_uploads }}</p>
                 </div>
-                <i class="fas fa-cloud-upload-alt text-4xl text-green-200"></i>
+                <i class="fas fa-cloud-upload-alt text-3xl text-green-200"></i>
             </div>
             <p class="text-xs text-gray-500 mt-3">
                 <i class="fas fa-check-circle text-green-500"></i> Procesadas: {{ uploads_procesados }}
@@ -44,30 +44,30 @@
         </div>
 
         <!-- Cargas Pendientes -->
-        <div class="bg-white rounded-lg card-shadow p-6 border-t-4 border-yellow-500">
+        <div class="bg-white rounded-lg card-shadow p-4 border-t-4 border-yellow-500">
             <div class="flex items-center justify-between">
                 <div>
                     <h3 class="text-gray-600 text-sm font-semibold mb-2">Pendientes</h3>
-                    <p class="text-3xl font-bold text-yellow-600">{{ uploads_pendientes }}</p>
+                    <p class="text-2xl font-bold text-yellow-600">{{ uploads_pendientes }}</p>
                 </div>
-                <i class="fas fa-hourglass-half text-4xl text-yellow-200"></i>
+                <i class="fas fa-hourglass-half text-3xl text-yellow-200"></i>
             </div>
             <p class="text-xs text-gray-500 mt-3">
                 Requieren procesamiento
             </p>
         </div>
 
-        <!-- Estado Base de Datos -->
-        <div class="bg-white rounded-lg card-shadow p-6 border-t-4 {% if db_connected %}border-green-500{% else %}border-red-500{% endif %}">
+        <!-- Estado de Conexión DB -->
+        <div class="bg-white rounded-lg card-shadow p-4 border-t-4 {% if db_connected %}border-green-500{% else %}border-red-500{% endif %}">
             <div class="flex items-center justify-between">
                 <div>
-                    <h3 class="text-gray-600 text-sm font-semibold mb-2">Estado DB</h3>
-                    <p class="{% if db_connected %}text-green-600{% else %}text-red-600{% endif %} font-bold">{{ db_status }}</p>
+                    <h3 class="text-gray-600 text-sm font-semibold mb-2">Estado de Conexión DB</h3>
+                    <p class="{% if db_connected %}text-green-600{% else %}text-red-600{% endif %} font-bold text-2xl">{{ db_status }}</p>
                 </div>
                 {% if db_connected %}
-                    <i class="fas fa-database text-4xl text-green-200"></i>
+                    <i class="fas fa-database text-3xl text-green-200"></i>
                 {% else %}
-                    <i class="fas fa-exclamation-triangle text-4xl text-red-200"></i>
+                    <i class="fas fa-exclamation-triangle text-3xl text-red-200"></i>
                 {% endif %}
             </div>
             <p class="text-xs text-gray-500 mt-3">
@@ -76,31 +76,66 @@
         </div>
     </div>
 
-    <!-- Sección de dos columnas -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+    <!-- Panel Central (Gestión de Datos Maestros) -->
+    <div class="grid grid-cols-1 gap-6 mb-5">
+        <div class="bg-white rounded-lg card-shadow p-5">
+            <h2 class="text-lg font-bold text-gray-800 mb-5">
+                <i class="fas fa-cog"></i> Gestión de Datos Maestros
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <a href="{{ url_for('config.lista_usuarios') }}" class="flex flex-col items-center justify-center bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition font-semibold py-6">
+                    <i class="fas fa-users text-2xl mb-3"></i>
+                    <span class="text-base">Gestionar Usuarios</span>
+                </a>
+                <a href="{{ url_for('config.lista_roles') }}" class="flex flex-col items-center justify-center bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition font-semibold py-6">
+                    <i class="fas fa-user-tag text-2xl mb-3"></i>
+                    <span class="text-base">Gestionar Perfiles</span>
+                </a>
+                <a href="{{ url_for('config.lista_departamentos') }}" class="flex flex-col items-center justify-center bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition font-semibold py-6">
+                    <i class="fas fa-map text-2xl mb-3"></i>
+                    <span class="text-base">Gestionar Departamentos</span>
+                </a>
+                <a href="{{ url_for('config.lista_municipios') }}" class="flex flex-col items-center justify-center bg-yellow-600 text-white rounded-lg shadow hover:bg-yellow-700 transition font-semibold py-6">
+                    <i class="fas fa-city text-2xl mb-3"></i>
+                    <span class="text-base">Gestionar Municipios</span>
+                </a>
+                <a href="{{ url_for('config.lista_distribuidores') }}" class="flex flex-col items-center justify-center bg-gray-600 text-white rounded-lg shadow hover:bg-gray-700 transition font-semibold py-6">
+                    <i class="fas fa-store text-2xl mb-3"></i>
+                    <span class="text-base">Gestionar Distribuidores</span>
+                </a>
+                <button class="flex flex-col items-center justify-center w-full bg-gray-500 text-white rounded-lg shadow font-semibold py-6 cursor-pointer" onclick="alert('Función en desarrollo')">
+                    <i class="fas fa-download text-2xl mb-3"></i>
+                    <span class="text-base">Descargar Reportes</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel Inferior (Historial) -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Últimas Cargas -->
-        <div class="lg:col-span-2 bg-white rounded-lg card-shadow p-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">
+        <div class="bg-white rounded-lg card-shadow p-3">
+            <h2 class="text-base font-bold text-gray-800 mb-1">
                 <i class="fas fa-history"></i> Últimas Cargas
             </h2>
             {% if latest_uploads %}
             <div class="overflow-x-auto">
-                <table class="w-full text-sm">
+                <table class="w-full text-[11px]">
                     <thead class="bg-gray-100 border-b-2">
                         <tr>
-                            <th class="px-4 py-3 text-left">Archivo</th>
-                            <th class="px-4 py-3 text-left">Usuario</th>
-                            <th class="px-4 py-3 text-center">Filas</th>
-                            <th class="px-4 py-3 text-center">Estado</th>
+                            <th class="px-2 py-1 text-left">Archivo</th>
+                            <th class="px-2 py-1 text-left">Usuario</th>
+                            <th class="px-2 py-1 text-center">Filas</th>
+                            <th class="px-2 py-1 text-center">Estado</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y">
-                        {% for upload in latest_uploads[:5] %}
+                        {% for upload in latest_uploads[:3] %}
                         <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-3 font-semibold text-gray-800">{{ upload.original_filename[:30] }}</td>
-                            <td class="px-4 py-3 text-gray-700">{{ upload.user.username }}</td>
-                            <td class="px-4 py-3 text-center text-gray-700">{{ upload.total_rows }}</td>
-                            <td class="px-4 py-3 text-center">
+                            <td class="px-2 py-1 font-semibold text-gray-800">{{ upload.original_filename[:30] }}</td>
+                            <td class="px-2 py-1 text-gray-700">{{ upload.user.username }}</td>
+                            <td class="px-2 py-1 text-center text-gray-700">{{ upload.total_rows }}</td>
+                            <td class="px-2 py-1 text-center">
                                 {% if upload.status == 'processed' %}
                                     <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-semibold">✓ Procesado</span>
                                 {% elif upload.status == 'pending' %}
@@ -115,20 +150,20 @@
                 </table>
             </div>
             {% else %}
-            <p class="text-gray-500 text-center py-8">No hay cargas aún</p>
+            <p class="text-gray-500 text-center py-1">No hay cargas aún</p>
             {% endif %}
         </div>
 
         <!-- Resumen de Errores -->
-        <div class="bg-white rounded-lg card-shadow p-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">
+        <div class="bg-white rounded-lg card-shadow p-3">
+            <h2 class="text-base font-bold text-gray-800 mb-1">
                 <i class="fas fa-exclamation-circle"></i> Resumen de Errores
             </h2>
-            <div class="text-center py-8">
-                <p class="text-4xl font-bold text-red-600 mb-2">{{ uploads_error }}</p>
+            <div class="text-center">
+                <p class="text-2xl font-bold text-red-600 mb-1">{{ uploads_error }}</p>
                 <p class="text-gray-600">Cargas con errores</p>
                 {% if uploads_error > 0 %}
-                <a href="" class="text-red-600 text-sm mt-4 inline-block hover:underline">
+                <a href="" class="text-red-600 text-sm mt-2 inline-block hover:underline">
                     <i class="fas fa-arrow-right"></i> Ver detalles
                 </a>
                 {% endif %}
@@ -136,52 +171,6 @@
         </div>
     </div>
 
-    <!-- Información de Conexión a DB -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Detalles de Conexión -->
-        <div class="bg-white rounded-lg card-shadow p-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">
-                <i class="fas fa-network-wired"></i> Conexión a Base de Datos
-            </h2>
-            <div class="space-y-3">
-                <div class="border-b pb-3">
-                    <p class="text-gray-600 text-sm">Estado</p>
-                    <p class="font-semibold {% if db_connected %}text-green-600{% else %}text-red-600{% endif %}">
-                        {% if db_connected %}<i class="fas fa-check-circle"></i> Conectado{% else %}<i class="fas fa-times-circle"></i> Desconectado{% endif %}
-                    </p>
-                </div>
-                {% if db_connected %}
-                <p class="text-sm text-green-700 bg-green-50 p-3 rounded">
-                    <i class="fas fa-check-circle"></i> La base de datos está operativa y lista para procesar datos.
-                </p>
-                {% else %}
-                <p class="text-sm text-red-700 bg-red-50 p-3 rounded">
-                    <i class="fas fa-exclamation-circle"></i> Verifique la configuración de conexión.
-                </p>
-                {% endif %}
-            </div>
-        </div>
 
-        <!-- Acciones Rápidas -->
-        <div class="bg-white rounded-lg card-shadow p-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">
-                <i class="fas fa-cog"></i> Acciones de Administración
-            </h2>
-            <div class="space-y-3">
-                <a href="{{ url_for('config.lista_usuarios') }}" class="block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition text-center font-semibold">
-                    <i class="fas fa-users"></i> Gestionar Usuarios
-                </a>
-                <a href="{{ url_for('config.lista_roles') }}" class="block bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition text-center font-semibold">
-                    <i class="fas fa-user-tag"></i> Gestionar Perfiles
-                </a>
-                <button class="w-full bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition font-semibold" onclick="alert('Función en desarrollo')">
-                    <i class="fas fa-refresh"></i> Sincronizar Datos
-                </button>
-                <button class="w-full bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition font-semibold" onclick="alert('Función en desarrollo')">
-                    <i class="fas fa-download"></i> Descargar Reportes
-                </button>
-            </div>
-        </div>
-    </div>
 </div>
 {% endblock %}

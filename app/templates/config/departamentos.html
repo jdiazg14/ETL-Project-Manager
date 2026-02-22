@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Gestión de Departamentos - ETL Manager{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto mt-10">
+    <h1 class="text-3xl font-bold mb-6"><i class="fas fa-map"></i> Departamentos</h1>
+    <a href="{{ url_for('config.crear_departamento') }}" class="gradient-bg text-white px-6 py-3 rounded-lg hover:opacity-90 transition mb-6 inline-block">
+        <i class="fas fa-plus"></i> Nuevo Departamento
+    </a>
+    {% if departamentos %}
+    <div class="bg-white rounded-lg card-shadow overflow-hidden">
+        <table class="w-full">
+            <thead class="gradient-bg text-white">
+                <tr>
+                    <th class="px-6 py-4 text-left font-semibold">Código</th>
+                    <th class="px-6 py-4 text-left font-semibold">Nombre</th>
+                    <th class="px-6 py-4 text-center font-semibold">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y">
+                {% for depto in departamentos %}
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="px-6 py-4">{{ depto.id_departamento }}</td>
+                    <td class="px-6 py-4">{{ depto.nombre_depto }}</td>
+                    <td class="px-6 py-4 text-center">
+                        <a href="{{ url_for('config.editar_departamento', id_departamento=depto.id_departamento) }}" class="text-blue-600 hover:underline mr-2"><i class="fas fa-edit"></i> Editar</a>
+                        <form action="{{ url_for('config.eliminar_departamento', id_departamento=depto.id_departamento) }}" method="post" style="display:inline;">
+                            <button type="submit" class="text-red-600 hover:underline"><i class="fas fa-trash"></i> Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-gray-500 text-center py-8">No hay departamentos registrados.</p>
+    {% endif %}
+</div>
+{% endblock %}

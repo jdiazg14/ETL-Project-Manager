@@ -10,7 +10,7 @@ from flask import redirect, url_for, render_template
 load_dotenv()
 
 from app import create_app
-from app.models import db, User, Role
+from app.models import db, Users, Role
 
 # Crear aplicación
 app = create_app()
@@ -30,7 +30,7 @@ def make_shell_context():
     """Crear contexto para Flask shell."""
     return {
         'db': db,
-        'User': User,
+        'Users': Users,
     }
 
 
@@ -42,7 +42,7 @@ def create_admin():
     email = input('Ingrese correo electrónico: ')
     password = input('Ingrese contraseña: ')
 
-    if User.query.filter_by(username=username).first():
+    if Users.query.filter_by(username=username).first():
         print(f'El usuario "{username}" ya existe.')
         return
 
@@ -51,7 +51,7 @@ def create_admin():
         print('No existe el rol "admin" en la tabla role. Inserte el rol primero.')
         return
 
-    admin = User(
+    admin = Users(
         username=username,
         email=email,
         role_id=admin_role.id,

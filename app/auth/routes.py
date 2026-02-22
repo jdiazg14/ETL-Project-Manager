@@ -3,7 +3,7 @@ from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 from datetime import datetime
 from app.auth.forms import RegistroForm, LoginForm
-from app.models import db, User
+from app.models import db, Users
 from . import auth_bp
 
 
@@ -19,7 +19,7 @@ def registro():
         # Crear nuevo usuario
         from app.models import Role
         operador_role = Role.query.filter_by(name='operador').first()
-        user = User(
+        user = Users(
             username=form.username.data,
             email=form.email.data,
             role_id=operador_role.id if operador_role else None
@@ -44,7 +44,7 @@ def login():
     form = LoginForm()
     
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+        user = Users.query.filter_by(username=form.username.data).first()
         
         if user is None or not user.check_password(form.password.data):
             flash('Usuario o contraseña incorrectos.', 'danger')

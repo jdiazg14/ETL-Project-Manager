@@ -5,7 +5,7 @@ Configura extensiones, modelos, blueprints y login_manager.
 from flask import Flask, redirect, url_for, render_template
 from flask_login import LoginManager, current_user
 from config import config
-from app.models import db, User
+from app.models import db, Users
 import os
 
 
@@ -44,7 +44,7 @@ def create_app(config_class=None):
     
     @login_manager.user_loader
     def load_user(user_id):
-        return User.query.get(int(user_id))
+        return Users.query.get(int(user_id))
     
     # Registrar blueprints
     from app.auth.routes import auth_bp

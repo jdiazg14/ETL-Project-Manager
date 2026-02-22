@@ -2,7 +2,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SelectField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
-from app.models import User
+from app.models import Users
 
 
 class RegistroForm(FlaskForm):
@@ -47,12 +47,12 @@ class RegistroForm(FlaskForm):
     
     def validate_username(self, field):
         """Validar que el username no exista."""
-        if User.query.filter_by(username=field.data).first():
+        if Users.query.filter_by(username=field.data).first():
             raise ValidationError('El usuario ya existe.')
     
     def validate_email(self, field):
         """Validar que el email no exista."""
-        if User.query.filter_by(email=field.data).first():
+        if Users.query.filter_by(email=field.data).first():
             raise ValidationError('El correo ya está registrado.')
 
 

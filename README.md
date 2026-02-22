@@ -8,6 +8,10 @@ Este proyecto es un gestor ETL minimalista para cargas de archivos y registro de
 - **Backend:** Flask + SQLAlchemy
 - **Autenticación:** Flask-Login
 - **Gestión de variables:** `.env` (requiere `DATABASE_URL` y `SECRET_KEY`)
+Ejemplo de DATABASE_URL para MySQL:
+```
+DATABASE_URL=mysql+pymysql://usuario:password@localhost/nombre_db
+```
 - **Modelos:**
 	- `role`: roles de usuario (admin, analista, etc.)
 	- `user`: usuarios autenticados, vinculados a un rol

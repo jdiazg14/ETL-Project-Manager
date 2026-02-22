@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Crear' if crear else 'Editar' }} Municipio - ETL Manager{% endblock %}
+{% block content %}
+<div class="max-w-xl mx-auto mt-10">
+    <h1 class="text-3xl font-bold mb-6">{{ 'Crear' if crear else 'Editar' }} Municipio</h1>
+    <form method="POST" autocomplete="off">
+        {{ form.hidden_tag() }}
+        <div class="mb-4">
+            {{ form.id_municipio.label(class="block text-gray-700 font-bold mb-2") }}
+            {{ form.id_municipio(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all", autocomplete="off") }}
+            {% for error in form.id_municipio.errors %}
+                <span class="text-red-500 text-xs">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <div class="mb-4">
+            {{ form.id_departamento.label(class="block text-gray-700 font-bold mb-2") }}
+            {{ form.id_departamento(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all") }}
+            {% for error in form.id_departamento.errors %}
+                <span class="text-red-500 text-xs">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <div class="mb-4">
+            {{ form.nombre_municipio.label(class="block text-gray-700 font-bold mb-2") }}
+            {{ form.nombre_municipio(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all", autocomplete="off") }}
+            {% for error in form.nombre_municipio.errors %}
+                <span class="text-red-500 text-xs">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <div class="flex gap-4 mt-6">
+            <a href="{{ url_for('config.lista_municipios') }}" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition duration-200 text-center flex-1">Cancelar</a>
+            {{ form.submit(class="gradient-bg text-white px-6 py-2 rounded-lg font-semibold shadow hover:opacity-90 transition flex-1") }}
+        </div>
+    </form>
+</div>
+{% endblock %}

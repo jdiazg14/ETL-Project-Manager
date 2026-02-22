@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Gestión de Municipios - ETL Manager{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto mt-10">
+    <h1 class="text-3xl font-bold mb-6"><i class="fas fa-city"></i> Municipios</h1>
+    <a href="{{ url_for('config.crear_municipio') }}" class="gradient-bg text-white px-6 py-3 rounded-lg hover:opacity-90 transition mb-6 inline-block">
+        <i class="fas fa-plus"></i> Nuevo Municipio
+    </a>
+    {% if municipios %}
+    <div class="bg-white rounded-lg card-shadow overflow-hidden">
+        <table class="w-full">
+            <thead class="gradient-bg text-white">
+                <tr>
+                    <th class="px-6 py-4 text-left font-semibold">Código</th>
+                    <th class="px-6 py-4 text-left font-semibold">Nombre</th>
+                    <th class="px-6 py-4 text-left font-semibold">Departamento</th>
+                    <th class="px-6 py-4 text-center font-semibold">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y">
+                {% for muni in municipios %}
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="px-6 py-4">{{ muni.id_municipio }}</td>
+                    <td class="px-6 py-4">{{ muni.nombre_municipio }}</td>
+                    <td class="px-6 py-4">{{ muni.departamento.nombre_depto }}</td>
+                    <td class="px-6 py-4 text-center">
+                        <a href="{{ url_for('config.editar_municipio', id_municipio=muni.id_municipio) }}" class="text-blue-600 hover:underline mr-2"><i class="fas fa-edit"></i> Editar</a>
+                        <form action="{{ url_for('config.eliminar_municipio', id_municipio=muni.id_municipio) }}" method="post" style="display:inline;">
+                            <button type="submit" class="text-red-600 hover:underline"><i class="fas fa-trash"></i> Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-gray-500 text-center py-8">No hay municipios registrados.</p>
+    {% endif %}
+</div>
+{% endblock %}
