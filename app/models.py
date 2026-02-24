@@ -24,7 +24,7 @@ class Users(UserMixin, db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    logs = db.relationship('ETLProjectLog', backref='user', lazy=True)
+    logs = db.relationship('ETLProjectLog', backref='users', lazy=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)

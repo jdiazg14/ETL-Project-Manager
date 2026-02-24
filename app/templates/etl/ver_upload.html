@@ -83,38 +83,8 @@
             <i class="fas fa-table"></i> Vista Previa de Datos
         </h2>
         <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-                <thead class="gradient-bg text-white">
-                    <tr>
-                        <th class="px-4 py-3 text-left">#</th>
-                        {% for col in preview.columns %}
-                        <th class="px-4 py-3 text-left">{{ col.name }}</th>
-                        {% endfor %}
-                    </tr>
-                </thead>
-                <tbody class="divide-y">
-                    {% for row in preview.sample_data %}
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-3 bg-gray-50 font-semibold text-gray-600">{{ loop.index }}</td>
-                        {% for col in preview.columns %}
-                        <td class="px-4 py-3 text-gray-700">
-                            {% if row[col.name] == 'NULL' %}
-                                <span class="text-gray-400 italic">null</span>
-                            {% else %}
-                                {{ row[col.name] }}
-                            {% endif %}
-                        </td>
-                        {% endfor %}
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            {{ tabla|safe }}
         </div>
-        {% if preview.sample_data | length >= 10 %}
-        <p class="text-sm text-gray-500 mt-4 text-center">
-            Se muestran las primeras 10 filas de {{ preview.total_rows }} registros totales
-        </p>
-        {% endif %}
     </div>
 </div>
 {% endblock %}

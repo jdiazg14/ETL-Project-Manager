@@ -20,21 +20,41 @@ class DataProcessor:
         return '.' in filename and filename.rsplit('.', 1)[1].lower() in DataProcessor.ALLOWED_EXTENSIONS
     
     @staticmethod
-    def read_file(file_path):
+    def read_file(file_source, filename=None):
         """
-        Leer archivo (CSV o Excel).
+        Leer archivo (CSV o Excel) desde ruta o archivo en memoria.
         Retorna un DataFrame de Pandas.
+        file_source: puede ser ruta (str) o archivo en memoria (BytesIO)
+        filename: nombre del archivo (para obtener extensión si file_source es BytesIO)
         """
         try:
-            file_extension = os.path.splitext(file_path)[1].lower().strip('.')
-            
+            # Determinar extensión
+            if isinstance(file_source, str):
+                file_extension = os.path.splitext(file_source)[1].lower().strip('.')
+            elif filename:
+                file_extension = os.path.splitext(filename)[1].lower().strip('.')
+            else:
+                raise ValueError('No se puede determinar la extensión del archivo')
+
             if file_extension == 'csv':
-                df = pd.read_csv(file_path, encoding='utf-8')
-            elif file_extension in ['xlsx', 'xls']:
-                df = pd.read_excel(file_path)
+                df = pd.read_csv(file_source, encoding='utf-8')
+            elif file_extension == 'xls':
+                try:
+                    df = pd.read_excel(file_source, engine='xlrd')
+                except Exception as e_xls:
+                    # Intentar leer como HTML si falla xlrd
+                    try:
+                        df = pd.read_html(file_source)[0]
+                    except Exception as e_html:
+                        return None, f'Error al leer archivo .xls: {str(e_xls)} | Error HTML: {str(e_html)}'
+            elif file_extension == 'xlsx':
+                try:
+                    df = pd.read_excel(file_source, engine='openpyxl')
+                except Exception as e_xlsx:
+                    return None, f'Error al leer archivo .xlsx: {str(e_xlsx)}. Asegúrese de que el archivo sea un Excel válido.'
             else:
                 raise ValueError(f'Formato de archivo no soportado: {file_extension}')
-            
+
             return df, None
         except Exception as e:
             return None, f'Error al leer el archivo: {str(e)}'

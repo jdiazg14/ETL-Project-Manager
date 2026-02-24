@@ -36,73 +36,17 @@ def upload():
         return redirect(url_for('etl.upload'))
     
     try:
-        # Crear directorio de uploads si no existe
-        upload_folder = 'uploads'
-        if not os.path.exists(upload_folder):
-            os.makedirs(upload_folder)
-        
-        # Guardar archivo
-        filename = secure_filename(file.filename)
-        # Agregar timestamp para evitar conflictos
-        import time
-        timestamp = int(time.time())
-        filename = f"{timestamp}_{filename}"
-        file_path = os.path.join(upload_folder, filename)
-        file.save(file_path)
-        
-        # Leer y procesar datos
-        df, error = DataProcessor.read_file(file_path)
-        
+        from io import BytesIO
+        file_bytes = file.read()
+        file_stream = BytesIO(file_bytes)
+        df, error = DataProcessor.read_file(file_stream, filename=file.filename)
         if error:
             flash(f'Error al leer el archivo: {error}', 'danger')
-            os.remove(file_path)
             return redirect(url_for('etl.upload'))
-        
-        # Limpiar datos
-        df_cleaned, warnings, errors = DataProcessor.clean_data(df)
-        
-        if errors:
-            for error_msg in errors:
-                flash(error_msg, 'danger')
-            os.remove(file_path)
-            return redirect(url_for('etl.upload'))
-        
-        # Obtener vista previa
-        preview_info, preview_error = DataProcessor.get_data_preview(df_cleaned)
-        
-        if preview_error:
-            flash(f'Error al generar vista previa: {preview_error}', 'danger')
-            os.remove(file_path)
-            return redirect(url_for('etl.upload'))
-        
-        # Obtener validaciones
-        validations, validation_errors = DataProcessor.validate_data(df_cleaned)
-        statistics = DataProcessor.get_statistics(df_cleaned)
-        
-        # Guardar log de carga en la base de datos
-        log = ETLProjectLog(
-            filename=file.filename,
-            status='processed',
-            user_id=current_user.id
-        )
-        db.session.add(log)
-        db.session.commit()
-
-        # Mostrar vista previa
-        return render_template(
-            'preview.html',
-            filename=file.filename,
-            preview=preview_info,
-            warnings=warnings,
-            validations=validations,
-            validation_errors=validation_errors,
-            statistics=statistics
-        )
-    
+        tabla = df.head(10).to_html(classes='table table-striped', index=False)
+        return render_template('preview.html', filename=file.filename, tabla=tabla)
     except Exception as e:
         flash(f'Error al procesar el archivo: {str(e)}', 'danger')
-        if os.path.exists(file_path):
-            os.remove(file_path)
         return redirect(url_for('etl.upload'))
 
 
@@ -185,6 +129,6 @@ def ver_upload(upload_id):
         flash(f'Error al leer el archivo: {error}', 'danger')
         return redirect(url_for('etl.historial'))
     
-    preview_info, _ = DataProcessor.get_data_preview(df)
-    
-    return render_template('ver_upload.html', upload=upload, preview=preview_info)
+    # Generar tabla HTML para las primeras 10 filas
+    tabla = df.head(10).to_html(classes='table table-striped', index=False)
+    return render_template('ver_upload.html', upload=upload, preview=preview_info, tabla=tabla)
