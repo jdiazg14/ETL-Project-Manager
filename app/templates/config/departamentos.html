@@ -23,7 +23,7 @@
                     <td class="px-6 py-4">{{ depto.nombre_depto }}</td>
                     <td class="px-6 py-4 text-center">
                         <a href="{{ url_for('config.editar_departamento', id_departamento=depto.id_departamento) }}" class="text-blue-600 hover:underline mr-2"><i class="fas fa-edit"></i> Editar</a>
-                        <form action="{{ url_for('config.eliminar_departamento', id_departamento=depto.id_departamento) }}" method="post" style="display:inline;">
+                        <form action="{{ url_for('config.eliminar_departamento', id_departamento=depto.id_departamento) }}" method="post" style="display:inline;" onsubmit="return confirm('¿Está seguro de eliminar este departamento?');">
                             <button type="submit" class="text-red-600 hover:underline"><i class="fas fa-trash"></i> Eliminar</button>
                         </form>
                     </td>

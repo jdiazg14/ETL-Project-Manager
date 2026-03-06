@@ -36,10 +36,10 @@ CREATE TABLE Dim_Tiempo (
 -- 5.1. TABLA: GRUPO DE DISTRIBUIDORES
 CREATE TABLE Dim_GrupoDistribuidor (
     id_grupo INT AUTO_INCREMENT PRIMARY KEY,
-    nit VARCHAR(15) UNIQUE,
-    nombre_grupo VARCHAR(100) NOT NULL,
+    nit VARCHAR(15) UNIQUE NULL,  -- permite nulos (nsi no se conoce el NIT)
+    nombre_grupo VARCHAR(100) NOT NULL UNIQUE,
     plan VARCHAR(15),
-    activo BOOLEAN DEFAULT TRUE
+    activo BOOLEAN DEFAULT 1
 ) ENGINE=InnoDB;
 
 -- 5.2. DIMENSIÓN DISTRIBUIDOR (Sucursal -> Grupo)
@@ -49,7 +49,7 @@ CREATE TABLE Dim_Distribuidor (
     nombre_distribuidor VARCHAR(255) NOT NULL,
     cupo_asignado DECIMAL(15,2) DEFAULT 0.00,
     id_municipio VARCHAR(5),
-    activo BOOLEAN DEFAULT TRUE,
+    activo BOOLEAN DEFAULT 1,
     id_grupo INT NULL,
     CONSTRAINT fk_dist_municipio FOREIGN KEY (id_municipio) REFERENCES Dim_Municipio(id_municipio),
     CONSTRAINT fk_dist_grupo FOREIGN KEY (id_grupo) REFERENCES Dim_GrupoDistribuidor(id_grupo)

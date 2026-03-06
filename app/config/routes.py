@@ -1,3 +1,76 @@
+
+from flask import Blueprint, render_template, redirect, url_for, flash, current_app, jsonify
+from flask_login import login_required, current_user
+from app.config.decorators import admin_required
+from sqlalchemy import func, desc, text
+from app.models import db, Users, Role, ETLProjectLog
+from app.models import DimDepartamento, DimMunicipio, DimDistribuidor, DimGrupoDistribuidor
+from app.config.forms import UsuarioForm, DepartamentoForm, MunicipioForm, DistribuidorForm, GrupoForm
+from app.config.role_forms import RoleForm
+
+# DEFINICIÓN DEL BLUEPRINT
+config_bp = Blueprint('config', __name__, url_prefix='/config', template_folder='../templates/config')
+
+
+@config_bp.route('/grupos/inactivar/<int:id_grupo>', methods=['POST'])
+@login_required
+@admin_required
+def inactivar_grupo(id_grupo):
+    grupo = DimGrupoDistribuidor.query.get_or_404(id_grupo)
+    grupo.activo = not grupo.activo
+    db.session.commit()
+    estado = 'inactivado' if not grupo.activo else 'activado'
+    flash(f'Grupo {estado} correctamente.', 'success')
+    return redirect(url_for('config.grupos_index'))
+
+@config_bp.route('/grupos/eliminar/<int:id_grupo>', methods=['POST'])
+@login_required
+@admin_required
+def eliminar_grupo(id_grupo):
+    grupo = DimGrupoDistribuidor.query.get_or_404(id_grupo)
+    if grupo.distribuidores and len(grupo.distribuidores) > 0:
+        flash('No se puede eliminar el grupo porque tiene distribuidores asociados. Considere inactivarlo.', 'danger')
+        return redirect(url_for('config.grupos_index'))
+    db.session.delete(grupo)
+    db.session.commit()
+    flash('Grupo eliminado correctamente.', 'success')
+    return redirect(url_for('config.grupos_index'))
+
+@config_bp.route('/grupos/editar/<int:id_grupo>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def editar_grupo(id_grupo):
+    grupo = DimGrupoDistribuidor.query.get_or_404(id_grupo)
+    form = GrupoForm(obj=grupo)
+    if form.validate_on_submit():
+        grupo.nombre_grupo = form.nombre_grupo.data
+        grupo.nit = form.nit.data
+        grupo.plan = form.plan.data
+        grupo.activo = form.activo.data if hasattr(form, 'activo') else grupo.activo
+        db.session.commit()
+        flash('Grupo actualizado correctamente.', 'success')
+        return redirect(url_for('config.grupos_index'))
+    return render_template('grupo_form.html', form=form, crear=False)
+
+@config_bp.route('/grupos', endpoint='grupos_index')
+@login_required
+@admin_required
+def grupos_index():
+    grupos = DimGrupoDistribuidor.query.order_by(DimGrupoDistribuidor.nombre_grupo).all()
+    return render_template('config/grupos.html', grupos=grupos)
+
+@config_bp.route('/grupos/nuevo', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def nuevo_grupo():
+    form = GrupoForm()
+    if form.validate_on_submit():
+        grupo = DimGrupoDistribuidor(nombre_grupo=form.nombre_grupo.data)
+        db.session.add(grupo)
+        db.session.commit()
+        flash('Grupo creado correctamente.', 'success')
+        return redirect(url_for('config.grupos_index'))
+    return render_template('grupo_form.html', form=form, crear=True)
 from flask import Blueprint, render_template, redirect, url_for, flash, current_app, jsonify
 from flask_login import login_required, current_user
 from app.config.decorators import admin_required
@@ -10,6 +83,18 @@ from app.config.role_forms import RoleForm
 
 # DEFINICIÓN DEL BLUEPRINT
 config_bp = Blueprint('config', __name__, url_prefix='/config', template_folder='../templates/config')
+
+# --- INACTIVAR DISTRIBUIDOR ---
+@config_bp.route('/distribuidores/inactivar/<int:id_distribuidor>', methods=['POST'])
+@login_required
+@admin_required
+def inactivar_distribuidor(id_distribuidor):
+    distribuidor = DimDistribuidor.query.get_or_404(id_distribuidor)
+    distribuidor.activo = not distribuidor.activo
+    db.session.commit()
+    estado = 'inactivado' if not distribuidor.activo else 'activado'
+    flash(f'Distribuidor {estado} correctamente.', 'success')
+    return redirect(url_for('config.lista_distribuidores'))
 
 # Ruta para obtener municipios por departamento (AJAX)
 @config_bp.route('/get_municipios/<int:depto_id>')
@@ -410,7 +495,10 @@ def editar_distribuidor(id_distribuidor):
 @admin_required
 def eliminar_distribuidor(id_distribuidor):
     distribuidor = DimDistribuidor.query.get_or_404(id_distribuidor)
+    if distribuidor.ventas and len(distribuidor.ventas) > 0:
+        flash('No se puede eliminar el distribuidor porque tiene ventas asociadas. Considere inactivarlo.', 'danger')
+        return redirect(url_for('config.lista_distribuidores'))
     db.session.delete(distribuidor)
     db.session.commit()
     flash('Distribuidor eliminado correctamente.', 'success')
-    return redirect(url_for('config.lista_distribuidores') )
+    return redirect(url_for('config.lista_distribuidores'))

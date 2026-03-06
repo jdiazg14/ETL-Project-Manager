@@ -9,7 +9,7 @@ class UsuarioForm(FlaskForm):
     password = PasswordField('Contraseña', validators=[Optional()])
     confirm_password = PasswordField('Confirmar Contraseña', validators=[Optional(), EqualTo('password', message='Las contraseñas deben coincidir')])
     role_id = SelectField('Rol', coerce=int, validators=[DataRequired()])
-    is_active = BooleanField('Activo')
+    is_active = BooleanField('Activo', default=True)
     submit = SubmitField('Guardar')
 
     def __init__(self, *args, **kwargs):
@@ -50,7 +50,7 @@ class DistribuidorForm(FlaskForm):
     codigo_distribuidor = StringField('Código Distribuidor', validators=[DataRequired()])
     nombre_distribuidor = StringField('Nombre Distribuidor', validators=[DataRequired()])
     cupo_asignado = StringField('Cupo Asignado')
-    id_grupo = SelectField('Grupo', coerce=lambda x: int(x) if x and x.isdigit() else None, validators=[Optional()])
+    id_grupo = SelectField('Grupo', coerce=lambda x: int(x) if x not in (None, '', 0) and (isinstance(x, int) or (isinstance(x, str) and x.isdigit())) else None, validators=[Optional()])
     id_departamento = SelectField('Departamento', coerce=str, validators=[DataRequired()])
     id_municipio = SelectField('Municipio', coerce=str, validators=[DataRequired()])
     activo = BooleanField('Activo', default=True)

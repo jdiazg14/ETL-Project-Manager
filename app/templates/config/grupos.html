@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Gestión de Grupos - ETL Manager{% endblock %}
+{% block content %}
+<div class="container-fluid py-4">
+    <div style="width: 95%; margin: 0 auto;">
+        <div class="row align-items-center mb-3">
+            <div class="col-md-8 d-flex align-items-center" style="gap: 0.5rem;">
+                <i class="fas fa-layer-group fa-2x text-4xl text-dark"></i>
+                <span class="m-0 h2 fw-bold text-dark" style="letter-spacing:-0.5px;">Grupos</span>
+            </div>
+            <div class="col-md-4 text-end">
+                <a href="{{ url_for('config.nuevo_grupo') }}" class="gradient-bg text-white px-4 py-2 rounded-lg fw-bold" style="white-space:nowrap;">
+                    <i class="fas fa-plus"></i> Nuevo Grupo
+                </a>
+            </div>
+        </div>
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                {% if grupos %}
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle mb-0 w-100" style="font-size:0.9rem;">
+                        <thead class="gradient-bg text-white">
+                            <tr>
+                                <th class="px-3">ID</th>
+                                <th class="px-3" style="max-width:400px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Nombre</th>
+                                <th class="px-3">NIT</th>
+                                <th class="px-3">Plan</th>
+                                <th class="px-3" style="white-space:nowrap;">Activo</th>
+                                <th class="px-3 text-center text-nowrap">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for grupo in grupos %}
+                            <tr>
+                                <td class="px-3">{{ grupo.id_grupo }}</td>
+                                <td class="px-3" style="max-width:400px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ grupo.nombre_grupo }}</td>
+                                <td class="px-3">{{ grupo.nit|replace('.', '') if grupo.nit and grupo.nit != 'None' else '' }}</td>
+                                <td class="px-3">{{ grupo.plan if grupo.plan else '' }}</td>
+                                <td class="px-3" style="white-space:nowrap;">
+                                    {% if grupo.activo %}
+                                        <span class="badge bg-success">Sí</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">No</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-3 text-center text-nowrap">
+                                    <a href="{{ url_for('config.editar_grupo', id_grupo=grupo.id_grupo) }}" class="btn btn-link p-0 mx-1" title="Editar"><i class="fas fa-edit text-primary"></i></a>
+                                    <form action="{{ url_for('config.inactivar_grupo', id_grupo=grupo.id_grupo) }}" method="post" style="display:inline;">
+                                        <button type="submit" class="btn btn-link p-0 mx-1" title="Inactivar" onclick="return confirm('¿Está seguro de inactivar este grupo?');"><i class="fas fa-toggle-off text-purple-700"></i></button>
+                                    </form>
+                                    <form action="{{ url_for('config.eliminar_grupo', id_grupo=grupo.id_grupo) }}" method="post" style="display:inline;">
+                                        <button type="submit" class="btn btn-link p-0 mx-1" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este grupo?');"><i class="fas fa-trash text-danger"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-gray-500 text-center py-8">No hay grupos registrados.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

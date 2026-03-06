@@ -1,43 +1,78 @@
 {% extends "base.html" %}
 {% block title %}Gestión de Distribuidores - ETL Manager{% endblock %}
 {% block content %}
-<div class="max-w-3xl mx-auto mt-10">
-    <h1 class="text-3xl font-bold mb-6"><i class="fas fa-store"></i> Distribuidores</h1>
-    <a href="{{ url_for('config.crear_distribuidor') }}" class="gradient-bg text-white px-6 py-3 rounded-lg hover:opacity-90 transition mb-6 inline-block">
-        <i class="fas fa-plus"></i> Nuevo Distribuidor
-    </a>
-    {% if distribuidores %}
-    <div class="bg-white rounded-lg card-shadow overflow-hidden">
-        <table class="w-full">
-            <thead class="gradient-bg text-white">
-                <tr>
-                    <th class="px-6 py-4 text-left font-semibold">Código</th>
-                    <th class="px-6 py-4 text-left font-semibold">Nombre</th>
-                    <th class="px-6 py-4 text-left font-semibold">Grupo</th>
-                    <th class="px-6 py-4 text-left font-semibold">Municipio</th>
-                    <th class="px-6 py-4 text-center font-semibold">Acciones</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y">
-                {% for dist in distribuidores %}
-                <tr class="hover:bg-gray-50 transition">
-                    <td class="px-6 py-4">{{ dist.codigo_distribuidor }}</td>
-                    <td class="px-6 py-4">{{ dist.nombre_distribuidor }}</td>
-                    <td class="px-6 py-4">{{ dist.grupo.nombre_grupo if dist.grupo else 'Independiente' }}</td>
-                    <td class="px-6 py-4">{{ dist.municipio.nombre_municipio }}</td>
-                    <td class="px-6 py-4 text-center">
-                        <a href="{{ url_for('config.editar_distribuidor', id_distribuidor=dist.id_distribuidor) }}" class="text-blue-600 hover:underline mr-2"><i class="fas fa-edit"></i> Editar</a>
-                        <form action="{{ url_for('config.eliminar_distribuidor', id_distribuidor=dist.id_distribuidor) }}" method="post" style="display:inline;">
-                            <button type="submit" class="text-red-600 hover:underline"><i class="fas fa-trash"></i> Eliminar</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+<div class="container-fluid py-4">
+    <div style="width: 95%; margin: 0 auto;">
+        <div class="row align-items-center mb-3">
+            <div class="col-md-8 d-flex align-items-center" style="gap: 0.5rem;">
+                <i class="fas fa-store fa-2x text-4xl text-dark"></i>
+                <span class="m-0 h2 fw-bold text-dark" style="letter-spacing:-0.5px;">Distribuidores</span>
+            </div>
+            <div class="col-md-4 text-end">
+                <a href="{{ url_for('config.crear_distribuidor') }}" class="gradient-bg text-white px-4 py-2 rounded-lg fw-bold" style="white-space:nowrap;">
+                    <i class="fas fa-plus"></i> Nuevo Distribuidor
+                </a>
+            </div>
+        </div>
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                {% if distribuidores %}
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle mb-0 w-100" style="font-size:0.9rem;">
+                        <colgroup>
+                            <col style="width:10%">
+                            <col style="width:40%">
+                            <col style="width:30%">
+                            <col style="width:12%">
+                            <col style="width:12%">
+                            <col style="width:8%">
+                            <col style="width:8%">
+                        </colgroup>
+                        <thead class="gradient-bg text-white">
+                            <tr>
+                                <th class="px-3">Código</th>
+                                <th class="px-3" style="max-width:400px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Nombre</th>
+                                <th class="px-3" style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Grupo</th>
+                                <th class="px-3">Municipio</th>
+                                <th class="px-3">Cupo</th>
+                                <th class="px-3" style="white-space:nowrap;">Activo</th>
+                                <th class="px-3 text-center text-nowrap">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for dist in distribuidores %}
+                            <tr>
+                                <td class="px-3">{{ dist.codigo_distribuidor }}</td>
+                                <td class="px-3" style="max-width:400px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ dist.nombre_distribuidor }}</td>
+                                <td class="px-3" style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ dist.grupo.nombre_grupo if dist.grupo else 'Independiente' }}</td>
+                                <td class="px-3">{{ dist.municipio.nombre_municipio if dist.municipio and dist.municipio.nombre_municipio else '' }}</td>
+                                <td class="px-3">$ {{ '{:,.2f}'.format(dist.cupo_asignado) if dist.cupo_asignado is not none else '' }}</td>
+                                <td class="px-3" style="white-space:nowrap;">
+                                    {% if dist.activo %}
+                                        <span class="badge bg-success">Sí</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">No</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-3 text-center text-nowrap">
+                                    <a href="{{ url_for('config.editar_distribuidor', id_distribuidor=dist.id_distribuidor) }}" class="btn btn-link p-0 mx-1" title="Editar"><i class="fas fa-edit text-primary"></i></a>
+                                    <form action="{{ url_for('config.inactivar_distribuidor', id_distribuidor=dist.id_distribuidor) }}" method="post" style="display:inline;">
+                                        <button type="submit" class="btn btn-link p-0 mx-1" title="Inactivar" onclick="return confirm('¿Está seguro de inactivar este distribuidor?');"><i class="fas fa-toggle-off text-purple-700"></i></button>
+                                    </form>
+                                    <form action="{{ url_for('config.eliminar_distribuidor', id_distribuidor=dist.id_distribuidor) }}" method="post" style="display:inline;">
+                                        <button type="submit" class="btn btn-link p-0 mx-1" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este distribuidor?');"><i class="fas fa-trash text-danger"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-gray-500 text-center py-8">No hay distribuidores registrados.</p>
+                {% endif %}
+            </div>
+        </div>
     </div>
-    {% else %}
-    <p class="text-gray-500 text-center py-8">No hay distribuidores registrados.</p>
-    {% endif %}
 </div>
 {% endblock %}

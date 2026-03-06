@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td class="px-6 py-4">${muni.nombre}</td>
                 <td class="px-6 py-4 text-center">
                     <a href="/config/municipios/${muni.id}/editar" class="text-blue-600 hover:underline mr-2"><i class="fas fa-edit"></i> Editar</a>
-                    <form action="/config/municipios/${muni.id}/eliminar" method="post" style="display:inline;">
+                    <form action="/config/municipios/${muni.id}/eliminar" method="post" style="display:inline;" onsubmit="return confirm('¿Está seguro de eliminar este municipio?');">
                         <button type="submit" class="text-red-600 hover:underline"><i class="fas fa-trash"></i> Eliminar</button>
                     </form>
                 </td>
