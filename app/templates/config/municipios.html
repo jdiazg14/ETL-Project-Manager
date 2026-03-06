@@ -6,36 +6,121 @@
     <a href="{{ url_for('config.crear_municipio') }}" class="gradient-bg text-white px-6 py-3 rounded-lg hover:opacity-90 transition mb-6 inline-block">
         <i class="fas fa-plus"></i> Nuevo Municipio
     </a>
-    {% if municipios %}
+    <div class="mb-4">
+        <label for="filtro-departamento" class="block text-gray-700 font-bold mb-2">Filtrar por Departamento:</label>
+        <select id="filtro-departamento" class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+            {% for depto in departamentos %}
+                <option value="{{ depto.id_departamento }}" {% if loop.first %}selected{% endif %}>{{ depto.nombre_depto }}</option>
+            {% endfor %}
+        </select>
+    </div>
     <div class="bg-white rounded-lg card-shadow overflow-hidden">
         <table class="w-full">
             <thead class="gradient-bg text-white">
                 <tr>
-                    <th class="px-6 py-4 text-left font-semibold">Código</th>
-                    <th class="px-6 py-4 text-left font-semibold">Nombre</th>
-                    <th class="px-6 py-4 text-left font-semibold">Departamento</th>
+                    <th id="th-codigo" class="px-6 py-4 text-left font-semibold cursor-pointer select-none">Código <i class="fas fa-sort"></i></th>
+                    <th id="th-nombre" class="px-6 py-4 text-left font-semibold cursor-pointer select-none">Nombre <i class="fas fa-sort"></i></th>
                     <th class="px-6 py-4 text-center font-semibold">Acciones</th>
                 </tr>
             </thead>
-            <tbody class="divide-y">
-                {% for muni in municipios %}
-                <tr class="hover:bg-gray-50 transition">
-                    <td class="px-6 py-4">{{ muni.id_municipio }}</td>
-                    <td class="px-6 py-4">{{ muni.nombre_municipio }}</td>
-                    <td class="px-6 py-4">{{ muni.departamento.nombre_depto }}</td>
-                    <td class="px-6 py-4 text-center">
-                        <a href="{{ url_for('config.editar_municipio', id_municipio=muni.id_municipio) }}" class="text-blue-600 hover:underline mr-2"><i class="fas fa-edit"></i> Editar</a>
-                        <form action="{{ url_for('config.eliminar_municipio', id_municipio=muni.id_municipio) }}" method="post" style="display:inline;">
-                            <button type="submit" class="text-red-600 hover:underline"><i class="fas fa-trash"></i> Eliminar</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
+            <tbody id="municipios-tbody" class="divide-y">
+                <!-- Municipios renderizados por JS -->
             </tbody>
         </table>
+        <p id="mensaje-inicial" class="text-gray-500 text-center py-8">Seleccione un departamento para ver los municipios</p>
     </div>
-    {% else %}
-    <p class="text-gray-500 text-center py-8">No hay municipios registrados.</p>
-    {% endif %}
 </div>
+{% block extra_js %}
+<script>
+const municipiosData = {};
+let municipiosActual = [];
+let orden = { campo: null, asc: true };
+
+document.addEventListener('DOMContentLoaded', function() {
+    const filtroDepto = document.getElementById('filtro-departamento');
+    const tbody = document.getElementById('municipios-tbody');
+    const mensaje = document.getElementById('mensaje-inicial');
+    const thCodigo = document.getElementById('th-codigo');
+    const thNombre = document.getElementById('th-nombre');
+
+    function limpiarTabla() {
+        tbody.innerHTML = '';
+    }
+
+    function renderMunicipios(municipios) {
+        limpiarTabla();
+        if (!municipios || municipios.length === 0) {
+            mensaje.textContent = 'No hay municipios para este departamento.';
+            mensaje.style.display = 'block';
+            return;
+        }
+        mensaje.style.display = 'none';
+        municipios.forEach(muni => {
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-gray-50 transition';
+            tr.innerHTML = `
+                <td class="px-6 py-4">${muni.id}</td>
+                <td class="px-6 py-4">${muni.nombre}</td>
+                <td class="px-6 py-4 text-center">
+                    <a href="/config/municipios/${muni.id}/editar" class="text-blue-600 hover:underline mr-2"><i class="fas fa-edit"></i> Editar</a>
+                    <form action="/config/municipios/${muni.id}/eliminar" method="post" style="display:inline;">
+                        <button type="submit" class="text-red-600 hover:underline"><i class="fas fa-trash"></i> Eliminar</button>
+                    </form>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    filtroDepto.addEventListener('change', function() {
+        const deptoId = this.value;
+        limpiarTabla();
+        mensaje.textContent = 'Cargando municipios...';
+        mensaje.style.display = 'block';
+        fetch(`/config/get_municipios/${deptoId}`)
+            .then(response => response.json())
+            .then(data => {
+                municipiosActual = data;
+                renderMunicipios(municipiosActual);
+            });
+    });
+
+    // Disparar el cambio automáticamente al cargar para mostrar el primer departamento
+    if (filtroDepto.options.length > 0) {
+        filtroDepto.dispatchEvent(new Event('change'));
+    }
+
+    function actualizarIconosOrden() {
+        // Limpia todos los íconos
+        thCodigo.querySelector('i').className = 'fas fa-sort';
+        thNombre.querySelector('i').className = 'fas fa-sort';
+        // Marca el campo ordenado
+        if (orden.campo === 'id') {
+            thCodigo.querySelector('i').className = orden.asc ? 'fas fa-sort-up' : 'fas fa-sort-down';
+        } else if (orden.campo === 'nombre') {
+            thNombre.querySelector('i').className = orden.asc ? 'fas fa-sort-up' : 'fas fa-sort-down';
+        }
+    }
+
+    function ordenarMunicipios(campo) {
+        if (orden.campo === campo) {
+            orden.asc = !orden.asc;
+        } else {
+            orden.campo = campo;
+            orden.asc = true;
+        }
+        municipiosActual.sort((a, b) => {
+            if (a[campo] < b[campo]) return orden.asc ? -1 : 1;
+            if (a[campo] > b[campo]) return orden.asc ? 1 : -1;
+            return 0;
+        });
+        actualizarIconosOrden();
+        renderMunicipios(municipiosActual);
+    }
+
+    thCodigo.addEventListener('click', () => ordenarMunicipios('id'));
+    thNombre.addEventListener('click', () => ordenarMunicipios('nombre'));
+});
+</script>
+{% endblock %}
 {% endblock %}

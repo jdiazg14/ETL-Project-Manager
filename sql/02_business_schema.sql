@@ -20,7 +20,6 @@ CREATE TABLE Dim_Municipio (
         ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
--- 4. DIMENSIÓN TIEMPO (Detalle diario para análisis de sorteos)
 CREATE TABLE Dim_Tiempo (
     id_tiempo INT AUTO_INCREMENT PRIMARY KEY,
     fecha DATE UNIQUE NOT NULL,
@@ -33,22 +32,29 @@ CREATE TABLE Dim_Tiempo (
     trimestre INT
 ) ENGINE=InnoDB;
 
--- 5. DIMENSIÓN DISTRIBUIDOR (Jerarquía integrada: Sucursal -> Razón Social)
-CREATE TABLE Dim_Distribuidor (
-    id_distribuidor INT AUTO_INCREMENT PRIMARY KEY,
-    codigo_sucursal VARCHAR(20) UNIQUE NOT NULL, -- El código de 6 dígitos del archivo
-    nombre_sucursal VARCHAR(255) NOT NULL,
-    nit VARCHAR(20) NOT NULL,                    -- Agrupador para Razón Social
-    razon_social VARCHAR(255),
-    cupo_asignado DECIMAL(15,2) DEFAULT 0.00,
-    grupo VARCHAR(50),                           -- GRUPO A, B, C...
-    id_municipio VARCHAR(5),                            -- Ubicación física de la sucursal
-    activo BOOLEAN DEFAULT TRUE,
-    CONSTRAINT fk_dist_municipio FOREIGN KEY (id_municipio) 
-        REFERENCES Dim_Municipio(id_municipio)
+
+-- 5.1. TABLA: GRUPO DE DISTRIBUIDORES
+CREATE TABLE Dim_GrupoDistribuidor (
+    id_grupo INT AUTO_INCREMENT PRIMARY KEY,
+    nit VARCHAR(15) UNIQUE,
+    nombre_grupo VARCHAR(100) NOT NULL,
+    plan VARCHAR(15),
+    activo BOOLEAN DEFAULT TRUE
 ) ENGINE=InnoDB;
 
--- 6. TABLA DE HECHOS: VENTAS (Movimientos diarios)
+-- 5.2. DIMENSIÓN DISTRIBUIDOR (Sucursal -> Grupo)
+CREATE TABLE Dim_Distribuidor (
+    id_distribuidor INT AUTO_INCREMENT PRIMARY KEY,
+    codigo_distribuidor VARCHAR(20) UNIQUE NOT NULL,
+    nombre_distribuidor VARCHAR(255) NOT NULL,
+    cupo_asignado DECIMAL(15,2) DEFAULT 0.00,
+    id_municipio VARCHAR(5),
+    activo BOOLEAN DEFAULT TRUE,
+    id_grupo INT NULL,
+    CONSTRAINT fk_dist_municipio FOREIGN KEY (id_municipio) REFERENCES Dim_Municipio(id_municipio),
+    CONSTRAINT fk_dist_grupo FOREIGN KEY (id_grupo) REFERENCES Dim_GrupoDistribuidor(id_grupo)
+) ENGINE=InnoDB;
+
 CREATE TABLE Fact_Ventas (
     id_venta INT AUTO_INCREMENT PRIMARY KEY,
     id_tiempo INT NOT NULL,

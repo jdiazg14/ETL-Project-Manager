@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, current_app
+from flask import Blueprint, render_template, redirect, url_for, flash, current_app, jsonify
 from flask_login import login_required, current_user
 from app.config.decorators import admin_required
 from sqlalchemy import func, desc, text
@@ -10,6 +10,13 @@ from app.config.role_forms import RoleForm
 
 # DEFINICIÓN DEL BLUEPRINT
 config_bp = Blueprint('config', __name__, url_prefix='/config', template_folder='../templates/config')
+
+# Ruta para obtener municipios por departamento (AJAX)
+@config_bp.route('/get_municipios/<int:depto_id>')
+def get_municipios(depto_id):
+    municipios = DimMunicipio.query.filter_by(id_departamento=depto_id).all()
+    municipio_list = [{'id': m.id_municipio, 'nombre': m.nombre_municipio} for m in municipios]
+    return jsonify(municipio_list)
 
 # --- DASHBOARD ADMINISTRATIVO ---
 @config_bp.route('/dashboard')
@@ -276,7 +283,8 @@ def eliminar_departamento(id_departamento):
 @admin_required
 def lista_municipios():
     municipios = DimMunicipio.query.all()
-    return render_template('municipios.html', municipios=municipios)
+    departamentos = DimDepartamento.query.order_by(DimDepartamento.nombre_depto).all()
+    return render_template('municipios.html', municipios=municipios, departamentos=departamentos)
 
 @config_bp.route('/municipios/nuevo', methods=['GET', 'POST'])
 @login_required

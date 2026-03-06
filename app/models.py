@@ -63,15 +63,45 @@ class DimMunicipio(db.Model):
     nombre_municipio = db.Column(db.String(100), nullable=False)
     distribuidores = db.relationship('DimDistribuidor', backref='municipio', lazy=True)
 
+
+# --- Nueva tabla: Grupo de Distribuidores ---
+class DimGrupoDistribuidor(db.Model):
+    __tablename__ = 'Dim_GrupoDistribuidor'
+    id_grupo = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    nit = db.Column(db.String(15), unique=True)
+    nombre_grupo = db.Column(db.String(100), nullable=False)
+    plan = db.Column(db.String(15))
+    activo = db.Column(db.Boolean, default=True)
+    distribuidores = db.relationship('DimDistribuidor', back_populates='grupo', cascade='all, delete-orphan', lazy=True)
+
+# --- Distribuidor normalizado ---
 class DimDistribuidor(db.Model):
     __tablename__ = 'Dim_Distribuidor'
-    id_distribuidor = db.Column(db.Integer, primary_key=True)
-    codigo_sucursal = db.Column(db.String(20), unique=True, nullable=False)
-    nombre_sucursal = db.Column(db.String(255), nullable=False)
-    nit = db.Column(db.String(20), nullable=False)
-    razon_social = db.Column(db.String(255))
+    id_distribuidor = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    codigo_distribuidor = db.Column(db.String(20), unique=True, nullable=False)
+    nombre_distribuidor = db.Column(db.String(255), nullable=False)
     cupo_asignado = db.Column(db.Numeric(15,2), default=0.00)
-    grupo = db.Column(db.String(50))
     id_municipio = db.Column(db.String(5), db.ForeignKey('Dim_Municipio.id_municipio'))
     activo = db.Column(db.Boolean, default=True)
+    id_grupo = db.Column(db.Integer, db.ForeignKey('Dim_GrupoDistribuidor.id_grupo'), nullable=True)
+    grupo = db.relationship('DimGrupoDistribuidor', back_populates='distribuidores')
+    ventas = db.relationship('FactVentas', back_populates='distribuidor', lazy=True)
+
+# --- Hechos de Ventas ---
+class FactVentas(db.Model):
+    __tablename__ = 'Fact_Ventas'
+    id_venta = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id_tiempo = db.Column(db.Integer, db.ForeignKey('Dim_Tiempo.id_tiempo'), nullable=False)
+    id_distribuidor = db.Column(db.Integer, db.ForeignKey('Dim_Distribuidor.id_distribuidor'), nullable=False)
+    id_municipio = db.Column(db.String(5), db.ForeignKey('Dim_Municipio.id_municipio'), nullable=False)
+    sorteo = db.Column(db.Integer, nullable=False)
+    cantidad_despachada = db.Column(db.Integer, default=0)
+    cantidad_devuelta = db.Column(db.Integer, default=0)
+    cantidad_vendida = db.Column(db.Integer, default=0)
+    bruto_despacho = db.Column(db.Numeric(15,2), default=0.00)
+    bruto_devuelto = db.Column(db.Numeric(15,2), default=0.00)
+    bruto_vendido = db.Column(db.Numeric(15,2), default=0.00)
+    neto_vendido = db.Column(db.Numeric(15,2), default=0.00)
+    porcentaje_comision = db.Column(db.Numeric(5,2))
+    distribuidor = db.relationship('DimDistribuidor', back_populates='ventas')
 

@@ -34,14 +34,35 @@ class MunicipioForm(FlaskForm):
     nombre_municipio = StringField('Nombre Municipio', validators=[DataRequired()])
     submit = SubmitField('Guardar')
 
-# --- Formularios para Distribuidores ---
-class DistribuidorForm(FlaskForm):
-    codigo_sucursal = StringField('Código Sucursal', validators=[DataRequired()])
-    nombre_sucursal = StringField('Nombre Sucursal', validators=[DataRequired()])
+
+# --- Formulario para Grupos ---
+from app.models import DimGrupoDistribuidor, DimDepartamento, DimMunicipio
+
+class GrupoForm(FlaskForm):
+    nombre_grupo = StringField('Nombre del Grupo', validators=[DataRequired()])
     nit = StringField('NIT', validators=[DataRequired()])
-    razon_social = StringField('Razón Social')
-    cupo_asignado = StringField('Cupo Asignado')
-    grupo = StringField('Grupo')
-    id_municipio = SelectField('Municipio', validators=[DataRequired()], coerce=str)
+    plan = StringField('Plan')
     activo = BooleanField('Activo', default=True)
     submit = SubmitField('Guardar')
+
+# --- Formularios para Distribuidores ---
+class DistribuidorForm(FlaskForm):
+    codigo_distribuidor = StringField('Código Distribuidor', validators=[DataRequired()])
+    nombre_distribuidor = StringField('Nombre Distribuidor', validators=[DataRequired()])
+    cupo_asignado = StringField('Cupo Asignado')
+    id_grupo = SelectField('Grupo', coerce=lambda x: int(x) if x and x.isdigit() else None, validators=[Optional()])
+    id_departamento = SelectField('Departamento', coerce=str, validators=[DataRequired()])
+    id_municipio = SelectField('Municipio', coerce=str, validators=[DataRequired()])
+    activo = BooleanField('Activo', default=True)
+    submit = SubmitField('Guardar')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        grupos = [(g.id_grupo, g.nombre_grupo) for g in DimGrupoDistribuidor.query.order_by(DimGrupoDistribuidor.nombre_grupo).all()]
+        self.id_grupo.choices = [('', '-- Sin Grupo --')] + grupos
+        self.id_departamento.choices = [(d.id_departamento, d.nombre_depto) for d in DimDepartamento.query.order_by(DimDepartamento.nombre_depto).all()]
+        # Municipios se cargan dinámicamente por JS, pero si hay un departamento seleccionado, cargar municipios
+        if self.id_departamento.data:
+            self.id_municipio.choices = [(m.id_municipio, m.nombre_municipio) for m in DimMunicipio.query.filter_by(id_departamento=self.id_departamento.data).order_by(DimMunicipio.nombre_municipio).all()]
+        else:
+            self.id_municipio.choices = []

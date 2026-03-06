@@ -14,11 +14,9 @@
                 <p class="text-gray-200 mt-2">Acceda a su cuenta ETL Manager</p>
             </div>
 
-            <!-- Formulario -->
             <form method="POST" class="p-6 space-y-4">
                 {{ form.hidden_tag() }}
 
-                <!-- Usuario -->
                 <div>
                     {{ form.username.label(class="block text-gray-700 font-semibold mb-2") }}
                     {{ form.username(class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition") }}
@@ -31,10 +29,17 @@
                     {% endif %}
                 </div>
 
-                <!-- Contraseña -->
+                <!-- Contraseña con botón mostrar/ocultar -->
                 <div>
                     {{ form.password.label(class="block text-gray-700 font-semibold mb-2") }}
-                    {{ form.password(class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition") }}
+                    <div class="relative">
+                        {{ form.password(class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition pr-10", id="password", type="password") }}
+                        <span class="absolute inset-y-0 right-0 flex items-center pr-3">
+                            <button type="button" class="input-group-text bg-transparent border-0 p-0" tabindex="-1" onclick="togglePassword()">
+                                <i id="toggleIcon" class="fas fa-eye text-gray-500"></i>
+                            </button>
+                        </span>
+                    </div>
                     {% if form.password.errors %}
                         <ul class="mt-2 text-red-500 text-sm">
                             {% for error in form.password.errors %}
@@ -56,19 +61,24 @@
                 </div>
             </form>
 
-            <!-- Footer -->
-            <div class="bg-gray-50 px-6 py-4 text-center text-gray-600 text-sm border-t">
-                <p>¿No tiene cuenta? <a href="{{ url_for('auth.registro') }}" class="text-purple-600 font-semibold hover:underline">Regístrese aquí</a></p>
-            </div>
-        </div>
-
-        <!-- Información adicional -->
-        <div class="mt-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-lg">
-            <p class="text-blue-700 text-sm">
-                <i class="fas fa-info-circle"></i>
-                <strong>Demostración:</strong> Use usuario: <code class="bg-blue-100 px-2 py-1 rounded">admin</code> y la contraseña que configuró.
-            </p>
+            <!-- Footer y sección de demostración eliminados -->
         </div>
     </div>
+
+<script>
+function togglePassword() {
+    var pwd = document.getElementById('password');
+    var icon = document.getElementById('toggleIcon');
+    if (pwd.type === 'password') {
+        pwd.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        pwd.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+</script>
 </div>
 {% endblock %}

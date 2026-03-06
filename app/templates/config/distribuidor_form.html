@@ -6,30 +6,16 @@
     <form method="POST" autocomplete="off">
         {{ form.hidden_tag() }}
         <div class="mb-4">
-            {{ form.codigo_sucursal.label(class="block text-gray-700 font-bold mb-2") }}
-            {{ form.codigo_sucursal(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all", autocomplete="off") }}
-            {% for error in form.codigo_sucursal.errors %}
+            {{ form.codigo_distribuidor.label(class="block text-gray-700 font-bold mb-2") }}
+            {{ form.codigo_distribuidor(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all", autocomplete="off") }}
+            {% for error in form.codigo_distribuidor.errors %}
                 <span class="text-red-500 text-xs">{{ error }}</span>
             {% endfor %}
         </div>
         <div class="mb-4">
-            {{ form.nombre_sucursal.label(class="block text-gray-700 font-bold mb-2") }}
-            {{ form.nombre_sucursal(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all", autocomplete="off") }}
-            {% for error in form.nombre_sucursal.errors %}
-                <span class="text-red-500 text-xs">{{ error }}</span>
-            {% endfor %}
-        </div>
-        <div class="mb-4">
-            {{ form.nit.label(class="block text-gray-700 font-bold mb-2") }}
-            {{ form.nit(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all", autocomplete="off") }}
-            {% for error in form.nit.errors %}
-                <span class="text-red-500 text-xs">{{ error }}</span>
-            {% endfor %}
-        </div>
-        <div class="mb-4">
-            {{ form.razon_social.label(class="block text-gray-700 font-bold mb-2") }}
-            {{ form.razon_social(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all", autocomplete="off") }}
-            {% for error in form.razon_social.errors %}
+            {{ form.nombre_distribuidor.label(class="block text-gray-700 font-bold mb-2") }}
+            {{ form.nombre_distribuidor(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all", autocomplete="off") }}
+            {% for error in form.nombre_distribuidor.errors %}
                 <span class="text-red-500 text-xs">{{ error }}</span>
             {% endfor %}
         </div>
@@ -41,15 +27,23 @@
             {% endfor %}
         </div>
         <div class="mb-4">
-            {{ form.grupo.label(class="block text-gray-700 font-bold mb-2") }}
-            {{ form.grupo(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all", autocomplete="off") }}
-            {% for error in form.grupo.errors %}
+            {{ form.id_grupo.label(class="block text-gray-700 font-bold mb-2") }}
+            {{ form.id_grupo(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all", autocomplete="off") }}
+            {% for error in form.id_grupo.errors %}
+                <span class="text-red-500 text-xs">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <div class="mb-4">
+            {{ form.id_departamento.label(class="block text-gray-700 font-bold mb-2") }}
+            {{ form.id_departamento(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all") }}
+            {% for error in form.id_departamento.errors %}
                 <span class="text-red-500 text-xs">{{ error }}</span>
             {% endfor %}
         </div>
         <div class="mb-4">
             {{ form.id_municipio.label(class="block text-gray-700 font-bold mb-2") }}
-            {{ form.id_municipio(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all") }}
+            {%- set selected_mun = form.id_municipio.data if form.id_municipio.data else '' -%}
+            {{ form.id_municipio(class="form-input w-full bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all", **{'data-selected': selected_mun}) }}
             {% for error in form.id_municipio.errors %}
                 <span class="text-red-500 text-xs">{{ error }}</span>
             {% endfor %}
@@ -67,4 +61,55 @@
         </div>
     </form>
 </div>
+{% endblock %}
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const deptoSelect = document.getElementById('id_departamento');
+    const municipioSelect = document.getElementById('id_municipio');
+    // Obtener el municipio seleccionado inicialmente (para edición)
+    const municipioSeleccionado = municipioSelect ? municipioSelect.getAttribute('data-selected') : null;
+    if (deptoSelect && municipioSelect) {
+        // Función para cargar municipios según el departamento seleccionado
+        function cargarMunicipios(deptoId, municipioIdSeleccionado = null) {
+            municipioSelect.innerHTML = '';
+            const placeholder = document.createElement('option');
+            placeholder.value = '';
+            placeholder.textContent = '-- Seleccione Municipio --';
+            municipioSelect.appendChild(placeholder);
+            if (deptoId) {
+                fetch(`/config/get_municipios/${deptoId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        municipioSelect.innerHTML = '';
+                        const placeholder = document.createElement('option');
+                        placeholder.value = '';
+                        placeholder.textContent = '-- Seleccione Municipio --';
+                        municipioSelect.appendChild(placeholder);
+                        data.forEach(function(mun) {
+                            const option = document.createElement('option');
+                            option.value = mun.id;
+                            option.textContent = mun.nombre;
+                            if (municipioIdSeleccionado && String(mun.id) === String(municipioIdSeleccionado)) {
+                                option.selected = true;
+                            }
+                            municipioSelect.appendChild(option);
+                        });
+                    });
+            }
+        }
+
+        // Sincronizar municipios al cargar la página (estado inicial)
+        const deptoIdInicial = deptoSelect.value;
+        if (deptoIdInicial) {
+            cargarMunicipios(deptoIdInicial, municipioSeleccionado);
+        }
+
+        deptoSelect.addEventListener('change', function() {
+            const deptoId = this.value;
+            cargarMunicipios(deptoId);
+        });
+    }
+});
+</script>
 {% endblock %}

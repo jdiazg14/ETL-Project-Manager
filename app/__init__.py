@@ -50,10 +50,12 @@ def create_app(config_class=None):
     from app.auth.routes import auth_bp
     from app.config.routes import config_bp
     from app.etl.routes import etl_bp
+    from app.admin import admin_bp
     
     app.register_blueprint(auth_bp)
     app.register_blueprint(config_bp)
     app.register_blueprint(etl_bp)
+    app.register_blueprint(admin_bp)
     
     # Ruta raíz
     @app.route('/')

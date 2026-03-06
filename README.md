@@ -36,6 +36,17 @@ DATABASE_URL=mysql+pymysql://usuario:password@localhost/nombre_db
 	flask create_admin
 	```
 
+
+## Acceso Inicial y Seguridad
+
+Al iniciar la aplicación por primera vez, se crea automáticamente un usuario administrador si la tabla de usuarios está vacía.
+
+**Credenciales por defecto:**
+- Usuario: `admin`
+- Contraseña: `Loteria123`
+
+> ⚠️ **Nota de seguridad:** Se recomienda cambiar la contraseña inmediatamente después del primer inicio de sesión desde el panel de administración.
+
 ## Notas
 - El proyecto no crea ni modifica el esquema de la base de datos automáticamente.
 - Solo se gestionan usuarios, roles y logs de carga.

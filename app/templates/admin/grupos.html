@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Gestión de Grupos{% endblock %}
+{% block content %}
+<div class="max-w-2xl mx-auto mt-10">
+    <h1 class="text-3xl font-bold mb-6"><i class="fas fa-layer-group"></i> Grupos</h1>
+    <a href="{{ url_for('admin.nuevo_grupo') }}" class="gradient-bg text-white px-6 py-3 rounded-lg hover:opacity-90 transition mb-6 inline-block">
+        <i class="fas fa-plus"></i> Nuevo Grupo
+    </a>
+    {% if grupos %}
+    <div class="bg-white rounded-lg card-shadow overflow-hidden">
+        <table class="w-full">
+            <thead class="gradient-bg text-white">
+                <tr>
+                    <th class="px-6 py-4 text-left font-semibold">ID</th>
+                    <th class="px-6 py-4 text-left font-semibold">Nombre</th>
+                    <th class="px-6 py-4 text-left font-semibold">NIT</th>
+                    <th class="px-6 py-4 text-left font-semibold">Plan</th>
+                    <th class="px-6 py-4 text-left font-semibold">Activo</th>
+                    <th class="px-6 py-4 text-center font-semibold">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y">
+                {% for grupo in grupos %}
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="px-6 py-4">{{ grupo.id_grupo }}</td>
+                    <td class="px-6 py-4">{{ grupo.nombre_grupo }}</td>
+                    <td class="px-6 py-4">{{ grupo.nit }}</td>
+                    <td class="px-6 py-4">{{ grupo.plan }}</td>
+                    <td class="px-6 py-4">{{ 'Sí' if grupo.activo else 'No' }}</td>
+                    <td class="px-6 py-4 text-center">
+                        <a href="{{ url_for('admin.editar_grupo', id_grupo=grupo.id_grupo) }}" class="text-blue-600 hover:underline mr-2"><i class="fas fa-edit"></i> Editar</a>
+                        <form action="{{ url_for('admin.eliminar_grupo', id_grupo=grupo.id_grupo) }}" method="post" style="display:inline;">
+                            <button type="submit" class="text-red-600 hover:underline"><i class="fas fa-trash"></i> Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-gray-500 text-center py-8">No hay grupos registrados.</p>
+    {% endif %}
+</div>
+{% endblock %}

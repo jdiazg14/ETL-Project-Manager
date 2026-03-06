@@ -1,4 +1,8 @@
--- 1. Tabla de Roles (Perfiles)
+-- 1. CREACIÓN DE LA BASE DE DATOS
+CREATE DATABASE IF NOT EXISTS etl_ventas_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE etl_ventas_db;
+
+-- 2. Tabla de Roles (Perfiles)
 CREATE TABLE role (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(20) UNIQUE NOT NULL, -- 'admin', 'analista', 'operador'
@@ -6,7 +10,7 @@ CREATE TABLE role (
 );
 
 
--- 2. Tabla de Usuarios (Relacionada con Roles)
+-- 3. Tabla de Usuarios (Relacionada con Roles)
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(64) UNIQUE NOT NULL,
@@ -18,7 +22,7 @@ CREATE TABLE users (
     CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES role(id)
 );
 
--- 3. Tabla de Logs de Proyectos ETL
+-- 4. Tabla de Logs de Proyectos ETL
 CREATE TABLE etl_project_logs (
     id INT AUTO_INCREMENT PRIMARY KEY,
     filename VARCHAR(255) NOT NULL,
@@ -28,7 +32,7 @@ CREATE TABLE etl_project_logs (
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
--- INSERTAR ROLES INICIALES
+-- 5. INSERTAR ROLES INICIALES
 INSERT INTO role (name, description) VALUES 
 ('admin', 'Acceso total y configuración'),
 ('analista', 'Solo carga y visualización de datos');

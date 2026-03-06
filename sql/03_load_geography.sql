@@ -1,1324 +1,1168 @@
+-- SCRIPT DE DEPARTAMENTOS Y MUNICIPIOS DE COLOMBIA
 USE etl_ventas_db;
 
--- ==========================================================
--- 1. TABLA DEPARTAMENTOS
--- ==========================================================
-INSERT INTO Dim_Departamento (id_departamento, nombre_depto) VALUES 
-('05', 'ANTIOQUIA'), 
-('08', 'ATLANTICO'), 
-('11', 'BOGOTA, D.C.'), 
-('13', 'BOLIVAR'), 
-('15', 'BOYACA'), 
-('17', 'CALDAS'), 
-('18', 'CAQUETA'), 
-('19', 'CAUCA'), 
-('20', 'CESAR'), 
-('23', 'CORDOBA'), 
-('25', 'CUNDINAMARCA'), 
-('27', 'CHOCO'), 
-('41', 'HUILA'), 
-('44', 'LA GUAJIRA'), 
-('47', 'MAGDALENA'), 
-('50', 'META'), 
-('52', 'NARIÑO'), 
-('54', 'NORTE DE SANTANDER'), 
-('63', 'QUINDIO'), 
-('66', 'RISARALDA'), 
-('68', 'SANTANDER'), 
-('70', 'SUCRE'), 
-('73', 'TOLIMA'), 
-('76', 'VALLE DEL CAUCA'), 
-('81', 'ARAUCA'), 
-('85', 'CASANARE'), 
-('86', 'PUTUMAYO'), 
-('88', 'SAN ANDRES'), 
-('91', 'AMAZONAS'), 
-('94', 'GUAINIA'), 
-('95', 'GUAVIARE'), 
-('97', 'VAUPES'), 
-('99', 'VICHADA');
+-- =========================
+-- DEPARTAMENTOS DE COLOMBIA 
+-- =========================
 
--- ==========================================================
--- ANTIOQUIA (05)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('05001', '05', 'MEDELLIN'),
-('05002', '05', 'ABEJORRAL'),
-('05004', '05', 'ABRIAQUI'),
-('05021', '05', 'ALEJANDRIA'),
-('05030', '05', 'AMAGA'),
-('05031', '05', 'AMALFI'),
-('05034', '05', 'ANDES'),
-('05036', '05', 'ANGELOPOLIS'),
-('05038', '05', 'ANGOSTURA'),
-('05040', '05', 'ANORI'),
-('05042', '05', 'SANTAFE DE ANTIOQUIA'),
-('05044', '05', 'ANZA'),
-('05045', '05', 'APARTADO'),
-('05051', '05', 'ARBOLETES'),
-('05055', '05', 'ARGELIA'),
-('05059', '05', 'ARMENIA'),
-('05079', '05', 'BARBOSA'),
-('05086', '05', 'BELMIRA'),
-('05088', '05', 'BELLO'),
-('05091', '05', 'BETANIA'),
-('05093', '05', 'BETULIA'),
-('05101', '05', 'CIUDAD BOLIVAR'),
-('05107', '05', 'BRICEÑO'),
-('05113', '05', 'BURITICA'),
-('05120', '05', 'CACERES'),
-('05125', '05', 'CAICEDO'),
-('05129', '05', 'CALDAS'),
-('05134', '05', 'CAMPAMENTO'),
-('05138', '05', 'CAÑASGORDAS'),
-('05142', '05', 'CARACOLI'),
-('05145', '05', 'CARAMANTA'),
-('05147', '05', 'CAREPA'),
-('05148', '05', 'EL CARMEN DE VIBORAL'),
-('05150', '05', 'CAROLINA'),
-('05154', '05', 'CAUCASIA'),
-('05172', '05', 'CHIGORODO'),
-('05190', '05', 'CISNEROS'),
-('05197', '05', 'COCORNA'),
-('05206', '05', 'CONCEPCION'),
-('05209', '05', 'CONCORDIA'),
-('05212', '05', 'COPACABANA'),
-('05234', '05', 'DABEIBA'),
-('05237', '05', 'DON MATIAS'),
-('05240', '05', 'EBEJICO'),
-('05250', '05', 'EL BAGRE'),
-('05264', '05', 'ENTRERRIOS'),
-('05266', '05', 'ENVIGADO'),
-('05282', '05', 'FREDONIA'),
-('05284', '05', 'FRONTINO'),
-('05306', '05', 'GIRALDO'),
-('05308', '05', 'GIRARDOTA'),
-('05310', '05', 'GOMEZ PLATA'),
-('05313', '05', 'GRANADA'),
-('05315', '05', 'GUADALUPE'),
-('05318', '05', 'GUARNE'),
-('05321', '05', 'GUATAPE'),
-('05347', '05', 'HELICONIA'),
-('05353', '05', 'HISPANIA'),
-('05360', '05', 'ITAGÜI'),
-('05361', '05', 'ITUANGO'),
-('05364', '05', 'JARDIN'),
-('05368', '05', 'JERICO'),
-('05376', '05', 'LA CEJA'),
-('05380', '05', 'LA ESTRELLA'),
-('05390', '05', 'LA PINTADA'),
-('05400', '05', 'LA UNION'),
-('05411', '05', 'LIBORINA'),
-('05425', '05', 'MACEO'),
-('05440', '05', 'MARINILLA'),
-('05467', '05', 'MONTEBELLO'),
-('05475', '05', 'MURINDO'),
-('05480', '05', 'MUTATA'),
-('05483', '05', 'NARIÑO'),
-('05490', '05', 'NECOCLI'),
-('05495', '05', 'NECHI'),
-('05501', '05', 'OLAYA'),
-('05541', '05', 'PEÑOL'),
-('05543', '05', 'PEQUE'),
-('05576', '05', 'PUEBLORRICO'),
-('05579', '05', 'PUERTO BERRIO'),
-('05585', '05', 'PUERTO NARE'),
-('05591', '05', 'PUERTO TRIUNFO'),
-('05604', '05', 'REMEDIOS'),
-('05607', '05', 'RETIRO'),
-('05615', '05', 'RIONEGRO'),
-('05628', '05', 'SABANALARGA'),
-('05631', '05', 'SABANETA'),
-('05642', '05', 'SALGAR'),
-('05647', '05', 'SAN ANDRES DE CUERQUIA'),
-('05649', '05', 'SAN CARLOS'),
-('05652', '05', 'SAN FRANCISCO'),
-('05656', '05', 'SAN JERONIMO'),
-('05658', '05', 'SAN JOSE DE LA MONTAÑA'),
-('05659', '05', 'SAN JUAN DE URABA'),
-('05660', '05', 'SAN LUIS'),
-('05664', '05', 'SAN PEDRO DE LOS MILAGROS'),
-('05665', '05', 'SAN PEDRO DE URABA'),
-('05667', '05', 'SAN RAFAEL'),
-('05670', '05', 'SAN ROQUE'),
-('05674', '05', 'SAN VICENTE'),
-('05679', '05', 'SANTA BARBARA'),
-('05686', '05', 'SANTA ROSA DE OSOS'),
-('05690', '05', 'SANTO DOMINGO'),
-('05697', '05', 'EL SANTUARIO'),
-('05736', '05', 'SEGOVIA'),
-('05756', '05', 'SONSON'),
-('05761', '05', 'SOPETRAN'),
-('05789', '05', 'TAMESIS'),
-('05790', '05', 'TARAZA'),
-('05792', '05', 'TARSO'),
-('05809', '05', 'TITIRIBI'),
-('05819', '05', 'TOLEDO'),
-('05837', '05', 'TURBO'),
-('05842', '05', 'URAMITA'),
-('05843', '05', 'URRAO'),
-('05845', '05', 'VALDIVIA'),
-('05854', '05', 'VALPARAISO'),
-('05856', '05', 'VEGACHI'),
-('05858', '05', 'VENECIA'),
-('05861', '05', 'VIGIA DEL FUERTE'),
-('05873', '05', 'YALI'),
-('05885', '05', 'YARUMAL'),
-('05890', '05', 'YOLOMBO'),
-('05893', '05', 'YONDO'),
-('05895', '05', 'ZARAGOZA');
-
--- ==========================================================
--- ATLANTICO (08)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('08001', '08', 'BARRANQUILLA'),
-('08078', '08', 'BARANOA'),
-('08137', '08', 'CAMPO DE LA CRUZ'),
-('08141', '08', 'CANDELARIA'),
-('08296', '08', 'GALAPA'),
-('08372', '08', 'JUAN DE ACOSTA'),
-('08421', '08', 'LURUACO'),
-('08433', '08', 'MALAMBO'),
-('08436', '08', 'MANATI'),
-('08520', '08', 'PALMAR DE VARELA'),
-('08549', '08', 'PIOJO'),
-('08558', '08', 'POLONUEVO'),
-('08560', '08', 'PONEDERA'),
-('08573', '08', 'PUERTO COLOMBIA'),
-('08606', '08', 'REPELON'),
-('08634', '08', 'SABANAGRANDE'),
-('08638', '08', 'SABANALARGA'),
-('08675', '08', 'SANTA LUCIA'),
-('08685', '08', 'SANTO TOMAS'),
-('08758', '08', 'SOLEDAD'),
-('08770', '08', 'SUAN'),
-('08832', '08', 'TUBARA'),
-('08849', '08', 'USIACURI');
-
--- ==========================================================
--- BOGOTA, D.C. (11)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('11001', '11', 'BOGOTA, D.C.');
-
--- ==========================================================
--- BOLIVAR (13)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('13001', '13', 'CARTAGENA DE INDIAS'),
-('13006', '13', 'ACHI'),
-('13030', '13', 'ALTOS DEL ROSARIO'),
-('13042', '13', 'ARENAL'),
-('13052', '13', 'ARJONA'),
-('13062', '13', 'ARROYOHONDO'),
-('13074', '13', 'BARRANCO DE LOBA'),
-('13080', '13', 'CALAMAR'),
-('13140', '13', 'CANTAGALLO'),
-('13160', '13', 'CICUCO'),
-('13188', '13', 'CORDOBA'),
-('13212', '13', 'CLEMENCIA'),
-('13222', '13', 'EL CARMEN DE BOLIVAR'),
-('13244', '13', 'EL GUAMO'),
-('13248', '13', 'EL PEÑON'),
-('13268', '13', 'EL CARMEN DE BOLIVAR'),
-('13300', '13', 'HATILLO DE LOBA'),
-('13430', '13', 'MAGANGUE'),
-('13433', '13', 'MAHATES'),
-('13440', '13', 'MARGARITA'),
-('13442', '13', 'MARIA LA BAJA'),
-('13458', '13', 'MONTECRISTO'),
-('13468', '13', 'MOMPOS'),
-('13473', '13', 'MORALES'),
-('13490', '13', 'NOROSI'),
-('13549', '13', 'PINILLOS'),
-('13580', '13', 'PIJIÑO DEL CARMEN'),
-('13600', '13', 'PUERTO COLOMBIA'),
-('13620', '13', 'PUERTO WILCHES'),
-('13647', '13', 'SAN ESTANISLAO'),
-('13650', '13', 'SAN FERNANDO'),
-('13654', '13', 'SAN JACINTO'),
-('13655', '13', 'SAN JACINTO DEL CAUCA'),
-('13657', '13', 'SAN JUAN NEPOMUCENO'),
-('13667', '13', 'SAN MARTIN DE LOBA'),
-('13670', '13', 'SAN PABLO'),
-('13673', '13', 'SANTA CATALINA'),
-('13683', '13', 'SANTA ROSA'),
-('13688', '13', 'SANTA ROSA DEL SUR'),
-('13744', '13', 'SIMITI'),
-('13760', '13', 'SOPLAVIENTO'),
-('13780', '13', 'TALAIGUA NUEVO'),
-('13810', '13', 'TIQUISIO'),
-('13836', '13', 'TURBACO'),
-('13838', '13', 'TURBANA'),
-('13873', '13', 'VILLANUEVA'),
-('13894', '13', 'ZAMBRANO');
-
--- ==========================================================
--- BOYACA (15)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('15001', '15', 'TUNJA'),
-('15022', '15', 'ALMEIDA'),
-('15047', '15', 'AQUITANIA'),
-('15051', '15', 'ARCABUCO'),
-('15087', '15', 'BELEN'),
-('15090', '15', 'BERBEO'),
-('15092', '15', 'BETEITIVA'),
-('15097', '15', 'BOAVITA'),
-('15104', '15', 'BOYACA'),
-('15106', '15', 'BRICEÑO'),
-('15109', '15', 'BUENAVISTA'),
-('15114', '15', 'BUSBANZA'),
-('15131', '15', 'CALDAS'),
-('15135', '15', 'CAMPOHERMOSO'),
-('15162', '15', 'CERINZA'),
-('15172', '15', 'CHINAVITA'),
-('15176', '15', 'CHIQUINQUIRA'),
-('15180', '15', 'CHISCAS'),
-('15183', '15', 'CHITA'),
-('15185', '15', 'CHITARAQUE'),
-('15187', '15', 'CHIVATA'),
-('15189', '15', 'CIENEGA'),
-('15204', '15', 'COMBITA'),
-('15212', '15', 'COPER'),
-('15215', '15', 'CORRALES'),
-('15218', '15', 'COVARACHIA'),
-('15223', '15', 'CUBARA'),
-('15224', '15', 'CUCAITA'),
-('15226', '15', 'CUITIVA'),
-('15232', '15', 'CHIQUIZA'),
-('15236', '15', 'CHIVOR'),
-('15238', '15', 'DUITAMA'),
-('15244', '15', 'EL COCUY'),
-('15248', '15', 'EL ESPINO'),
-('15272', '15', 'FIRAVITOBA'),
-('15276', '15', 'FLORESTA'),
-('15293', '15', 'GACHANTIVA'),
-('15296', '15', 'GAMEZA'),
-('15299', '15', 'GARAGOA'),
-('15317', '15', 'GUACAMAYAS'),
-('15322', '15', 'GUATEQUE'),
-('15325', '15', 'GUAYATA'),
-('15332', '15', 'GÜICAN'),
-('15362', '15', 'IZA'),
-('15367', '15', 'JENESANO'),
-('15368', '15', 'JERICO'),
-('15377', '15', 'LABRANZAGRANDE'),
-('15380', '15', 'LA CAPILLA'),
-('15403', '15', 'LA VICTORIA'),
-('15407', '15', 'LA UVITA'),
-('15425', '15', 'VILLA DE LEYVA'),
-('15442', '15', 'MACANAL'),
-('15455', '15', 'MARIPI'),
-('15464', '15', 'MIRAFLORES'),
-('15466', '15', 'MONGUA'),
-('15469', '15', 'MONGUI'),
-('15476', '15', 'MONIQUIRA'),
-('15480', '15', 'MOTAVITA'),
-('15491', '15', 'MUZO'),
-('15494', '15', 'NOBSA'),
-('15498', '15', 'NUEVO COLON'),
-('15500', '15', 'OICATA'),
-('15507', '15', 'OTANCHE'),
-('15511', '15', 'PACHAVITA'),
-('15514', '15', 'PAEZ'),
-('15516', '15', 'PAIPA'),
-('15518', '15', 'PAJARITO'),
-('15522', '15', 'PANQUEBA'),
-('15531', '15', 'PAUNA'),
-('15533', '15', 'PAYA'),
-('15537', '15', 'PAZ DE RIO'),
-('15542', '15', 'PESCA'),
-('15550', '15', 'PISBA'),
-('15572', '15', 'PUERTO BOYACA'),
-('15580', '15', 'QUIPAMA'),
-('15599', '15', 'RAMIRIQUI'),
-('15600', '15', 'RAQUIRA'),
-('15621', '15', 'RONDON'),
-('15632', '15', 'SABOYA'),
-('15638', '15', 'SACHICA'),
-('15646', '15', 'SAMACA'),
-('15660', '15', 'SAN EDUARDO'),
-('15664', '15', 'SAN JOSE DE PARE'),
-('15667', '15', 'SAN LUIS DE GACENO'),
-('15673', '15', 'SAN MATEO'),
-('15676', '15', 'SAN MIGUEL DE SEMA'),
-('15681', '15', 'SAN PABLO DE BORBUR'),
-('15686', '15', 'SANTANA'),
-('15690', '15', 'SANTA MARIA'),
-('15693', '15', 'SANTA ROSA DE VITERBO'),
-('15696', '15', 'SANTA SOFIA'),
-('15720', '15', 'SATIVANORTE'),
-('15723', '15', 'SATIVASUR'),
-('15740', '15', 'SIACHOQUE'),
-('15753', '15', 'SOATA'),
-('15755', '15', 'SOCOTA'),
-('15757', '15', 'SOCHA'),
-('15759', '15', 'SOGAMOSO'),
-('15761', '15', 'SOMONDOCO'),
-('15762', '15', 'SORA'),
-('15763', '15', 'SOTAQUIRA'),
-('15764', '15', 'SORACA'),
-('15774', '15', 'SUSACON'),
-('15776', '15', 'SUTAMARCHAN'),
-('15778', '15', 'SUTATENZA'),
-('15790', '15', 'TASCO'),
-('15798', '15', 'TENZA'),
-('15804', '15', 'TIBANA'),
-('15806', '15', 'TIBASOSA'),
-('15808', '15', 'TIJACA'),
-('15810', '15', 'TIPACOQUE'),
-('15814', '15', 'TOCA'),
-('15816', '15', 'TOGÜI'),
-('15820', '15', 'TOPAGA'),
-('15822', '15', 'TOTA'),
-('15832', '15', 'TUNUNGUA'),
-('15835', '15', 'TURMEQUE'),
-('15837', '15', 'TUTA'),
-('15839', '15', 'TUTAZA'),
-('15842', '15', 'UMBITA'),
-('15861', '15', 'VENTAQUEMADA'),
-('15879', '15', 'VIRACACHA'),
-('15897', '15', 'ZETAQUIRA');
-
--- ==========================================================
--- CALDAS (17)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('17001', '17', 'MANIZALES'),
-('17013', '17', 'AGUADAS'),
-('17042', '17', 'ANSERMA'),
-('17050', '17', 'ARANZAZU'),
-('17088', '17', 'BELALCAZAR'),
-('17174', '17', 'CHINCHINA'),
-('17272', '17', 'FILADELFIA'),
-('17380', '17', 'LA DORADA'),
-('17388', '17', 'LA MERCED'),
-('17433', '17', 'MANZANARES'),
-('17442', '17', 'MARMATO'),
-('17444', '17', 'MARQUETALIA'),
-('17446', '17', 'MARULANDA'),
-('17486', '17', 'NEIRA'),
-('17495', '17', 'NORCASIA'),
-('17513', '17', 'PACORA'),
-('17524', '17', 'PALESTINA'),
-('17541', '17', 'PENSILVANIA'),
-('17614', '17', 'RIOSUCIO'),
-('17616', '17', 'RISARALDA'),
-('17653', '17', 'SALAMINA'),
-('17662', '17', 'SAMANA'),
-('17665', '17', 'SAN JOSE'),
-('17777', '17', 'SUPIA'),
-('17867', '17', 'VICTORIA'),
-('17873', '17', 'VILLAMARIA'),
-('17877', '17', 'VITERBO');
-
--- ==========================================================
--- CAQUETA (18)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('18001', '18', 'FLORENCIA'),
-('18029', '18', 'ALBANIA'),
-('18094', '18', 'BELEN DE LOS ANDAQUIES'),
-('18150', '18', 'CARTAGENA DEL CHAIRA'),
-('18205', '18', 'CURILLO'),
-('18247', '18', 'EL DONCELLO'),
-('18250', '18', 'EL PAUJIL'),
-('18410', '18', 'LA MONTAÑITA'),
-('18460', '18', 'MILAN'),
-('18479', '18', 'MORELIA'),
-('18592', '18', 'PUERTO RICO'),
-('18610', '18', 'SAN JOSE DEL FRAGUA'),
-('18753', '18', 'SAN VICENTE DEL CAGUAN'),
-('18756', '18', 'SOLANO'),
-('18785', '18', 'SOLITA'),
-('18860', '18', 'VALPARAISO');
-
--- ==========================================================
--- CAUCA (19)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('19001', '19', 'POPAYAN'),
-('19022', '19', 'ALMAGUER'),
-('19050', '19', 'ARGELIA'),
-('19075', '19', 'BALBOA'),
-('19100', '19', 'BOLIVAR'),
-('19110', '19', 'BUENOS AIRES'),
-('19130', '19', 'CAJIBIO'),
-('19137', '19', 'CALDONO'),
-('19142', '19', 'CALOTO'),
-('19212', '19', 'CORINTO'),
-('19256', '19', 'EL TAMBO'),
-('19290', '19', 'FLORENCIA'),
-('19300', '19', 'GUACHENE'),
-('19318', '19', 'GUAPI'),
-('19355', '19', 'INZA'),
-('19364', '19', 'JAMBALO'),
-('19392', '19', 'LA SIERRA'),
-('19397', '19', 'LA VEGA'),
-('19418', '19', 'LOPEZ DE MICAY'),
-('19450', '19', 'MERCADERES'),
-('19455', '19', 'MIRANDA'),
-('19473', '19', 'MORALES'),
-('19513', '19', 'PADILLA'),
-('19517', '19', 'PAEZ'),
-('19532', '19', 'PATIA'),
-('19548', '19', 'PIAMONTE'),
-('19573', '19', 'PIENDAMO'),
-('19585', '19', 'PUERTO TEJADA'),
-('19622', '19', 'PURACE'),
-('19693', '19', 'ROSAS'),
-('19698', '19', 'SAN SEBASTIAN'),
-('19701', '19', 'SANTA ROSA'),
-('19743', '19', 'SILVIA'),
-('19760', '19', 'SOTARA'),
-('19780', '19', 'SUAREZ'),
-('19785', '19', 'SUCRE'),
-('19807', '19', 'TIMBIO'),
-('19809', '19', 'TIMBIQUI'),
-('19821', '19', 'TORIBIO'),
-('19824', '19', 'TOTORO'),
-('19845', '19', 'VILLA RICA');
-
--- ==========================================================
--- CESAR (20)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('20001', '20', 'VALLEDUPAR'),
-('20011', '20', 'AGUACHICA'),
-('20013', '20', 'AGUSTIN CODAZZI'),
-('20032', '20', 'ASTREA'),
-('20045', '20', 'BECERRIL'),
-('20060', '20', 'BOSCONIA'),
-('20175', '20', 'CHIMICHAGUA'),
-('20178', '20', 'CHIRIGUANA'),
-('20228', '20', 'CURUMANI'),
-('20238', '20', 'EL COPEY'),
-('20250', '20', 'EL PASO'),
-('20295', '20', 'GAMARRA'),
-('20310', '20', 'GONZALEZ'),
-('20383', '20', 'LA GLORIA'),
-('20400', '20', 'LA JAGUA DE IBIRICO'),
-('20443', '20', 'MANAURE'),
-('20517', '20', 'PAILITAS'),
-('20550', '20', 'PELAYA'),
-('20570', '20', 'PUEBLO BELLO'),
-('20614', '20', 'RIO DE ORO'),
-('20621', '20', 'LA PAZ'),
-('20710', '20', 'SAN ALBERTO'),
-('20750', '20', 'SAN DIEGO'),
-('20770', '20', 'SAN MARTIN'),
-('20787', '20', 'TAMALAMEQUE');
-
--- ==========================================================
--- CORDOBA (23)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('23001', '23', 'MONTERIA'),
-('23068', '23', 'AYAPEL'),
-('23079', '23', 'BUENAVISTA'),
-('23090', '23', 'CANALETE'),
-('23162', '23', 'CERETE'),
-('23168', '23', 'CHIMA'),
-('23182', '23', 'CHINU'),
-('23189', '23', 'CIENAGA DE ORO'),
-('23300', '23', 'COTORRA'),
-('23350', '23', 'LA APARTADA'),
-('23417', '23', 'LORICA'),
-('23419', '23', 'LOS CORDOBAS'),
-('23464', '23', 'MOMIL'),
-('23466', '23', 'MONTELIBANO'),
-('23500', '23', 'MOÑITOS'),
-('23555', '23', 'PLANETA RICA'),
-('23570', '23', 'PUEBLO NUEVO'),
-('23574', '23', 'PUERTO ESCONDIDO'),
-('23580', '23', 'PUERTO LIBERTADOR'),
-('23586', '23', 'PURISIMA'),
-('23660', '23', 'SAHAGUN'),
-('23670', '23', 'SAN ANDRES SOTAVENTO'),
-('23672', '23', 'SAN ANTERO'),
-('23675', '23', 'SAN BERNARDO DEL VIENTO'),
-('23678', '23', 'SAN CARLOS'),
-('23682', '23', 'SAN JOSE DE URE'),
-('23686', '23', 'SAN PELAYO'),
-('23807', '23', 'TIERRALTA'),
-('23815', '23', 'TUCHIN'),
-('23855', '23', 'VALENCIA');
-
--- ==========================================================
--- CUNDINAMARCA (25)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('25001', '25', 'AGUA DE DIOS'),
-('25019', '25', 'ALBAN'),
-('25035', '25', 'ANAPOIMA'),
-('25040', '25', 'ANOLAIMA'),
-('25053', '25', 'ARBELAEZ'),
-('25086', '25', 'BELTRAN'),
-('25095', '25', 'BITUIMA'),
-('25099', '25', 'BOJACA'),
-('25120', '25', 'CABRERA'),
-('25123', '25', 'CACHIPAY'),
-('25126', '25', 'CAJICA'),
-('25148', '25', 'CAPARRAPI'),
-('25151', '25', 'CAQUEZA'),
-('25154', '25', 'CARMEN DE CARUPA'),
-('25168', '25', 'CHAGUANI'),
-('25175', '25', 'CHIA'),
-('25178', '25', 'CHIPAQUE'),
-('25181', '25', 'CHOACHI'),
-('25183', '25', 'CHOCONTA'),
-('25200', '25', 'COGUA'),
-('25214', '25', 'COTA'),
-('25224', '25', 'CUCUNUBA'),
-('25245', '25', 'EL COLEGIO'),
-('25258', '25', 'EL PEÑON'),
-('25260', '25', 'EL ROSAL'),
-('25269', '25', 'FACATATIVA'),
-('25279', '25', 'FOMEQUE'),
-('25281', '25', 'FOSCA'),
-('25286', '25', 'FUNZA'),
-('25290', '25', 'FUQUENE'),
-('25293', '25', 'FUSAGASUGA'),
-('25297', '25', 'GACHALA'),
-('25299', '25', 'GACHANCIPA'),
-('25307', '25', 'GACHETA'),
-('25312', '25', 'GAMA'),
-('25317', '25', 'GIRARDOT'),
-('25320', '25', 'GRANADA'),
-('25322', '25', 'GUACHETA'),
-('25324', '25', 'GUADUAS'),
-('25326', '25', 'GUASCA'),
-('25328', '25', 'GUATAVITA'),
-('25335', '25', 'GUAYABAL DE SIQUIMA'),
-('25339', '25', 'GUAYABETAL'),
-('25345', '25', 'GUTIERREZ'),
-('25352', '25', 'JERUSALEN'),
-('25368', '25', 'JUNIN'),
-('25372', '25', 'LA CALERA'),
-('25377', '25', 'LA MESA'),
-('25386', '25', 'LA PALMA'),
-('25394', '25', 'LA PEÑA'),
-('25398', '25', 'LA VEGA'),
-('25402', '25', 'LENGUAZAQUE'),
-('25407', '25', 'MACHETA'),
-('25421', '25', 'MADRID'),
-('25430', '25', 'MANTA'),
-('25436', '25', 'MEDINA'),
-('25438', '25', 'MOSQUERA'),
-('25473', '25', 'NARIÑO'),
-('25483', '25', 'NEMOCON'),
-('25486', '25', 'NILO'),
-('25488', '25', 'NIMAIMA'),
-('25489', '25', 'NOCAIMA'),
-('25491', '25', 'VENECIA'),
-('25506', '25', 'PACHO'),
-('25513', '25', 'PAIME'),
-('25518', '25', 'PANDI'),
-('25524', '25', 'PARATEBUENO'),
-('25530', '25', 'PASCA'),
-('25535', '25', 'PUERTO SALGAR'),
-('25572', '25', 'PULI'),
-('25580', '25', 'QUEBRADANEGRA'),
-('25592', '25', 'QUETAME'),
-('25594', '25', 'QUIPILE'),
-('25596', '25', 'APULO'),
-('25599', '25', 'RICAURTE'),
-('25612', '25', 'SAN ANTONIO DEL TEQUENDAMA'),
-('25645', '25', 'SAN BERNARDO'),
-('25649', '25', 'SAN CAYETANO'),
-('25653', '25', 'SAN FRANCISCO'),
-('25658', '25', 'SAN JUAN DE RIO SECO'),
-('25662', '25', 'SANTANDERCITO'),
-('25718', '25', 'SASAIMA'),
-('25736', '25', 'SESQUILE'),
-('25740', '25', 'SIBATE'),
-('25743', '25', 'SILVANIA'),
-('25745', '25', 'SIMIJACA'),
-('25754', '25', 'SOACHA'),
-('25758', '25', 'SOPO'),
-('25769', '25', 'SUBACHOQUE'),
-('25772', '25', 'SUESCA'),
-('25777', '25', 'SUPATA'),
-('25779', '25', 'SUSA'),
-('25781', '25', 'SUTATAUSA'),
-('25785', '25', 'TABIO'),
-('25793', '25', 'TAUSA'),
-('25797', '25', 'TENA'),
-('25799', '25', 'TENJO'),
-('25805', '25', 'TIBACUY'),
-('25807', '25', 'TIBIRITA'),
-('25815', '25', 'TOCAIMA'),
-('25817', '25', 'TOCANCIPA'),
-('25823', '25', 'TOPAIPI'),
-('25839', '25', 'UBALA'),
-('25841', '25', 'UBAQUE'),
-('25843', '25', 'UBATE'),
-('25845', '25', 'UNE'),
-('25851', '25', 'UTICA'),
-('25862', '25', 'VERGARA'),
-('25867', '25', 'VIANI'),
-('25871', '25', 'VILLAGOMEZ'),
-('25873', '25', 'VILLAPINZON'),
-('25875', '25', 'VILLETA'),
-('25878', '25', 'VIOTA'),
-('25885', '25', 'YACONI'),
-('25898', '25', 'ZIPACON'),
-('25899', '25', 'ZIPAQUIRA');
-
--- ==========================================================
--- CHOCO (27)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('27001', '27', 'QUIBDO'),
-('27006', '27', 'ACANDI'),
-('27025', '27', 'ALTO BAUDO'),
-('27050', '27', 'ATRATO'),
-('27073', '27', 'BAGADO'),
-('27075', '27', 'BAHIA SOLANO'),
-('27077', '27', 'BAJO BAUDO'),
-('27082', '27', 'BOJAYA'),
-('27099', '27', 'EL CARMEN DE ATRATO'),
-('27135', '27', 'CANTON DE SAN PABLO'),
-('27150', '27', 'CARMEN DEL DARIEN'),
-('27160', '27', 'CERTEGUI'),
-('27205', '27', 'CONDOTO'),
-('27245', '27', 'EL EL PARAL'),
-('27250', '27', 'EL LITORAL DEL SAN JUAN'),
-('27361', '27', 'ISTMINA'),
-('27372', '27', 'JURADO'),
-('27413', '27', 'LLORO'),
-('27425', '27', 'MEDIO ATRATO'),
-('27430', '27', 'MEDIO BAUDO'),
-('27450', '27', 'MEDIO SAN JUAN'),
-('27491', '27', 'NOVITA'),
-('27495', '27', 'NUQUI'),
-('27580', '27', 'RIO IRO'),
-('27591', '27', 'RIO QUITO'),
-('27600', '27', 'RIOSUCIO'),
-('27615', '27', 'SAN JOSE DEL PALMAR'),
-('27660', '27', 'SIPI'),
-('27745', '27', 'TADO'),
-('27787', '27', 'UNGUIA'),
-('27800', '27', 'UNION PANAMERICANA');
-
--- ==========================================================
--- HUILA (41)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('41001', '41', 'NEIVA'),
-('41006', '41', 'ACEVEDO'),
-('41013', '41', 'AGRADO'),
-('41016', '41', 'AIPE'),
-('41020', '41', 'ALECIRAS'),
-('41026', '41', 'ALTAMIRA'),
-('41078', '41', 'BARAYA'),
-('41132', '41', 'CAMPOALEGRE'),
-('41206', '41', 'COLOMBIA'),
-('41244', '41', 'ELIAS'),
-('41298', '41', 'GARZON'),
-('41306', '41', 'GIGANTE'),
-('41319', '41', 'GUADALUPE'),
-('41349', '41', 'HOBO'),
-('41357', '41', 'IQUIRA'),
-('41359', '41', 'ISNOS'),
-('41378', '41', 'LA ARGENTINA'),
-('41396', '41', 'LA PLATA'),
-('41483', '41', 'NATAGA'),
-('41503', '41', 'OPORAPA'),
-('41518', '41', 'PAICOL'),
-('41524', '41', 'PALERMO'),
-('41530', '41', 'PALESTINA'),
-('41548', '41', 'PITAL'),
-('41551', '41', 'PITALITO'),
-('41615', '41', 'RIVERA'),
-('41660', '41', 'SALADOBLANCO'),
-('41668', '41', 'SAN AGUSTIN'),
-('41676', '41', 'SANTA MARIA'),
-('41770', '41', 'SUAZA'),
-('41791', '41', 'TARQUI'),
-('41797', '41', 'TESALIA'),
-('41799', '41', 'TELLO'),
-('41801', '41', 'TERUEL'),
-('41807', '41', 'TIMANA'),
-('41872', '41', 'VILLAVIEJA'),
-('41885', '41', 'YAGUARA');
-
--- ==========================================================
--- LA GUAJIRA (44)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('44001', '44', 'RIOHACHA'),
-('44035', '44', 'ALBANIA'),
-('44078', '44', 'BARRANCAS'),
-('44090', '44', 'DIBULLA'),
-('44098', '44', 'DISTRACCION'),
-('44110', '44', 'EL MOLINO'),
-('44279', '44', 'FONSECA'),
-('44378', '44', 'HATONUEVO'),
-('44420', '44', 'LA JAGUA DEL PILAR'),
-('44430', '44', 'MAICAO'),
-('44560', '44', 'MANAURE'),
-('44650', '44', 'SAN JUAN DEL CESAR'),
-('44847', '44', 'URIBIA'),
-('44855', '44', 'URUMITA'),
-('44874', '44', 'VILLANUEVA');
-
--- ==========================================================
--- MAGDALENA (47)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('47001', '47', 'SANTA MARTA'),
-('47030', '47', 'ALGARROBO'),
-('47053', '47', 'ARACATACA'),
-('47058', '47', 'ARIGUANI'),
-('47161', '47', 'CERRO SAN ANTONIO'),
-('47170', '47', 'CHIBOLO'),
-('47189', '47', 'CIENAGA'),
-('47205', '47', 'CONCORDIA'),
-('47245', '47', 'EL BANCO'),
-('47258', '47', 'EL PIÑON'),
-('47268', '47', 'EL RETEN'),
-('47288', '47', 'FUNDACION'),
-('47318', '47', 'GUAMAL'),
-('47460', '47', 'NUEVA GRANADA'),
-('47541', '47', 'PEDRAZA'),
-('47545', '47', 'PIJIÑO DEL CARMEN'),
-('47551', '47', 'PIVIJAY'),
-('47555', '47', 'PLATO'),
-('47570', '47', 'PUEBLOVIEJO'),
-('47605', '47', 'REMOLINO'),
-('47660', '47', 'SABANAS DE SAN ANGEL'),
-('47675', '47', 'SALAMINA'),
-('47692', '47', 'SAN SEBASTIAN DE BUENAVISTA'),
-('47703', '47', 'SAN ZENON'),
-('47707', '47', 'SANTA ANA'),
-('47720', '47', 'SANTA BARBARA DE PINTO'),
-('47745', '47', 'SITIONUEVO'),
-('47798', '47', 'TENERIFE'),
-('47960', '47', 'ZAPAYAN'),
-('47980', '47', 'ZONA BANANERA');
-
--- ==========================================================
--- META (50)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('50001', '50', 'VILLAVICENCIO'),
-('50006', '50', 'ACACIAS'),
-('50110', '50', 'BARRANCA DE UPIA'),
-('50124', '50', 'CABUYARO'),
-('50150', '50', 'CASTILLA LA NUEVA'),
-('50223', '50', 'CUBARRAL'),
-('50226', '50', 'CUMARAL'),
-('50245', '50', 'EL CALVARIO'),
-('50251', '50', 'EL CASTILLO'),
-('50270', '50', 'EL DORADO'),
-('50287', '50', 'FUENTE DE ORO'),
-('50313', '50', 'GRANADA'),
-('50318', '50', 'GUAMAL'),
-('50325', '50', 'MAPIRIPAN'),
-('50330', '50', 'MESETAS'),
-('50350', '50', 'LA MACARENA'),
-('50370', '50', 'URIBE'),
-('50400', '50', 'LEJANIAS'),
-('50450', '50', 'PUERTO CONCORDIA'),
-('50568', '50', 'PUERTO GAITAN'),
-('50573', '50', 'PUERTO LOPEZ'),
-('50577', '50', 'PUERTO LLERAS'),
-('50590', '50', 'PUERTO RICO'),
-('50606', '50', 'RESTREPO'),
-('50680', '50', 'SAN CARLOS DE GUAROA'),
-('50683', '50', 'SAN JUAN DE ARAMA'),
-('50686', '50', 'SAN JUANITO'),
-('50689', '50', 'SAN MARTIN'),
-('50711', '50', 'VISTAHERMOSA');
-
--- ==========================================================
--- NARIÑO (52)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('52001', '52', 'PASTO'),
-('52019', '52', 'ALBAN'),
-('52022', '52', 'ALDANA'),
-('52036', '52', 'ANCUYA'),
-('52051', '52', 'ARBOLEDA'),
-('52079', '52', 'BARBACOAS'),
-('52083', '52', 'BELEN'),
-('52110', '52', 'BUUESACO'),
-('52203', '52', 'COLON'),
-('52207', '52', 'CONSACA'),
-('52210', '52', 'CONTADERO'),
-('52215', '52', 'CORDOBA'),
-('52224', '52', 'CUASPUD'),
-('52227', '52', 'CUMBAL'),
-('52233', '52', 'CUMBITARA'),
-('52240', '52', 'CHACHAGÜI'),
-('52250', '52', 'EL CHARCO'),
-('52254', '52', 'EL PEÑOL'),
-('52256', '52', 'EL ROSARIO'),
-('52258', '52', 'EL TABLON DE GOMEZ'),
-('52260', '52', 'EL TAMBO'),
-('52287', '52', 'FUNES'),
-('52317', '52', 'GUACHUCAL'),
-('52320', '52', 'GUAITARILLA'),
-('52323', '52', 'GUALMATAN'),
-('52352', '52', 'ILES'),
-('52354', '52', 'IMUES'),
-('52356', '52', 'IPIALES'),
-('52378', '52', 'LA CRUZ'),
-('52381', '52', 'LA FLORIDA'),
-('52385', '52', 'LA LLANADA'),
-('52390', '52', 'LA TOLA'),
-('52399', '52', 'LA UNION'),
-('52405', '52', 'LEIVA'),
-('52411', '52', 'LINARES'),
-('52418', '52', 'LOS ANDES'),
-('52427', '52', 'MAGÜI'),
-('52435', '52', 'MALLAMA'),
-('52473', '52', 'MOSQUERA'),
-('52480', '52', 'NARIÑO'),
-('52490', '52', 'OLAYA HERRERA'),
-('52506', '52', 'OSPINA'),
-('52520', '52', 'FRANCISCO PIZARRO'),
-('52540', '52', 'POLICARPA'),
-('52560', '52', 'POTOSI'),
-('52565', '52', 'PUERRES'),
-('52573', '52', 'PUPIALES'),
-('52585', '52', 'RICAURTE'),
-('52612', '52', 'ROBERTO PAYAN'),
-('52621', '52', 'SAMANIEGO'),
-('52678', '52', 'SAN BERNARDO'),
-('52683', '52', 'SANDONA'),
-('52685', '52', 'SAN LORENZO'),
-('52687', '52', 'SAN PABLO'),
-('52693', '52', 'SAN PEDRO DE CARTAGO'),
-('52694', '52', 'SANTA BARBARA'),
-('52696', '52', 'SANTA CRUZ'),
-('52699', '52', 'SAPUYES'),
-('52720', '52', 'TAMINANGO'),
-('52786', '52', 'TANGUA'),
-('52835', '52', 'TUMACO'),
-('52838', '52', 'TUQUERRES'),
-('52885', '52', 'YACUANQUER');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('05','ANTIOQUIA');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('08','ATLÁNTICO');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('11','BOGOTÁ, D.C.');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('13','BOLÍVAR');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('15','BOYACÁ');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('17','CALDAS');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('18','CAQUETÁ');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('19','CAUCA');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('20','CESAR');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('23','CÓRDOBA');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('25','CUNDINAMARCA');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('27','CHOCÓ');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('41','HUILA');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('44','LA GUAJIRA');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('47','MAGDALENA');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('50','META');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('52','NARIÑO');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('54','NORTE DE SANTANDER');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('63','QUINDÍO');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('66','RISARALDA');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('68','SANTANDER');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('70','SUCRE');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('73','TOLIMA');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('76','VALLE DEL CAUCA');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('81','ARAUCA');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('85','CASANARE');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('86','PUTUMAYO');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('88','ARCHIPIÉLAGO DE SAN ANDRÉS, PROVIDENCIA Y SANTA CATALINA');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('91','AMAZONAS');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('94','GUAINÍA');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('95','GUAVIARE');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('97','VAUPÉS');
+INSERT IGNORE INTO Dim_Departamento (id_departamento, nombre_depto) VALUES ('99','VICHADA');
 
 
--- ==========================================================
--- NORTE DE SANTANDER (54)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('54001', '54', 'CUCUTA'),
-('54003', '54', 'ABREGO'),
-('54051', '54', 'ARBOLEDAS'),
-('54099', '54', 'BOCHALEMA'),
-('54109', '54', 'BUCARASICA'),
-('54125', '54', 'CACHIRA'),
-('54128', '54', 'CACOTA'),
-('54172', '54', 'CHINACOTA'),
-('54174', '54', 'CHITAGA'),
-('54206', '54', 'CONVENCION'),
-('54223', '54', 'CUCUTILLA'),
-('54239', '54', 'DURANIA'),
-('54245', '54', 'EL CARMEN'),
-('54250', '54', 'EL TARRA'),
-('54261', '54', 'EL ZULIA'),
-('54313', '54', 'GRAMALOTE'),
-('54344', '54', 'HACARI'),
-('54347', '54', 'HERRAN'),
-('54377', '54', 'LABATECA'),
-('54385', '54', 'LA ESPERANZA'),
-('54398', '54', 'LA PLAYA'),
-('54405', '54', 'LOS PATIOS'),
-('54418', '54', 'LOURDES'),
-('54480', '54', 'MUTISCUA'),
-('54498', '54', 'OCAÑA'),
-('54518', '54', 'PAMPLONA'),
-('54520', '54', 'PAMPLONITA'),
-('54553', '54', 'PUERTO SANTANDER'),
-('54599', '54', 'RAGONVALIA'),
-('54660', '54', 'SALAZAR'),
-('54670', '54', 'SAN CALIXTO'),
-('54673', '54', 'SAN CAYETANO'),
-('54680', '54', 'SANTIAGO'),
-('54720', '54', 'SARDINATA'),
-('54743', '54', 'SILOS'),
-('54800', '54', 'TEORAMA'),
-('54810', '54', 'TIBU'),
-('54820', '54', 'TOLEDO'),
-('54871', '54', 'VILLA CARO'),
-('54874', '54', 'VILLA DEL ROSARIO');
+-- =======================
+-- MUNICIPIOS DE COLOMBIA 
+-- =======================
 
--- ==========================================================
--- QUINDIO (63)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('63001', '63', 'ARMENIA'),
-('63111', '63', 'BUENAVISTA'),
-('63130', '63', 'CALARCA'),
-('63190', '63', 'CIRCASIA'),
-('63212', '63', 'CORDOBA'),
-('63272', '63', 'FILANDIA'),
-('63302', '63', 'GENOVA'),
-('63401', '63', 'LA TEBAIDA'),
-('63470', '63', 'MONTENEGRO'),
-('63547', '63', 'PIJAO'),
-('63594', '63', 'QUIMBAYA'),
-('63690', '63', 'SALENTO');
-
--- ==========================================================
--- RISARALDA (66)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('66001', '66', 'PEREIRA'),
-('66045', '66', 'APIA'),
-('66075', '66', 'BALBOA'),
-('66170', '66', 'DOSQUEBRADAS'),
-('66318', '66', 'GUATICA'),
-('66383', '66', 'LA CELIA'),
-('66400', '66', 'LA VIRGINIA'),
-('66440', '66', 'MARSELLA'),
-('66456', '66', 'MISTRATO'),
-('66572', '66', 'PUEBLO RICO'),
-('66594', '66', 'QUINCHIA'),
-('66682', '66', 'SANTA ROSA DE CABAL'),
-('66687', '66', 'SANTUARIO');
-
--- ==========================================================
--- SANTANDER (68)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('68001', '68', 'BUCARAMANGA'),
-('68013', '68', 'AGUADA'),
-('68020', '68', 'ALBANIA'),
-('68042', '68', 'ARATOCA'),
-('68051', '68', 'BARBOSA'),
-('68055', '68', 'BARICHARA'),
-('68077', '68', 'BARRANCABERMEJA'),
-('68079', '68', 'BETULIA'),
-('68081', '68', 'BOLIVAR'),
-('68092', '68', 'CABRERA'),
-('68101', '68', 'CALIFORNIA'),
-('68107', '68', 'CAPITANEJO'),
-('68121', '68', 'CARCASI'),
-('68132', '68', 'CEPITA'),
-('68147', '68', 'CERRITO'),
-('68152', '68', 'CHARALA'),
-('68160', '68', 'CHARTA'),
-('68162', '68', 'CHIMA'),
-('68167', '68', 'CHIPATA'),
-('68169', '68', 'CIMITARRA'),
-('68176', '68', 'CONCEPCION'),
-('68179', '68', 'CONFINES'),
-('68190', '68', 'CONTRATACION'),
-('68207', '68', 'COROMORO'),
-('68209', '68', 'CURITI'),
-('68211', '68', 'EL CARMEN DE CHUCURI'),
-('68217', '68', 'EL GUACAMAYO'),
-('68229', '68', 'EL PEÑON'),
-('68231', '68', 'EL PLAYON'),
-('68235', '68', 'ENCINO'),
-('68245', '68', 'ENCISO'),
-('68250', '68', 'FLORIAN'),
-('68255', '68', 'FLORIDABLANCA'),
-('68264', '68', 'GALAN'),
-('68266', '68', 'GAMBITA'),
-('68271', '68', 'GIRON'),
-('68276', '68', 'GUACA'),
-('68281', '68', 'GUADALUPE'),
-('68284', '68', 'GUAPOTA'),
-('68286', '68', 'GUAVATA'),
-('68289', '68', 'GÜEPSA'),
-('68294', '68', 'HATO'),
-('68307', '68', 'JESUS MARIA'),
-('68318', '68', 'JORDAN'),
-('68320', '68', 'LA BELLEZA'),
-('68322', '68', 'LANDAZURI'),
-('68324', '68', 'LA PAZ'),
-('68327', '68', 'LEBRIJA'),
-('68344', '68', 'LOS SANTOS'),
-('68368', '68', 'MACARAVITA'),
-('68370', '68', 'MALAGA'),
-('68377', '68', 'MATANZA'),
-('68385', '68', 'MOGOTES'),
-('68397', '68', 'MOLAGAVITA'),
-('68406', '68', 'OCAMONTE'),
-('68418', '68', 'OIBA'),
-('68425', '68', 'ONZAGA'),
-('68432', '68', 'PALMAR'),
-('68444', '68', 'PALMAS DEL SOCORRO'),
-('68464', '68', 'PARAMO'),
-('68468', '68', 'PIEDECUESTA'),
-('68498', '68', 'PINCHOTE'),
-('68501', '68', 'PUENTE NACIONAL'),
-('68503', '68', 'PUERTO PARRA'),
-('68522', '68', 'PUERTO WILCHES'),
-('68533', '68', 'RIONEGRO'),
-('68547', '68', 'SABANA DE TORRES'),
-('68549', '68', 'SAN ANDRES'),
-('68572', '68', 'SAN BENITO'),
-('68573', '68', 'SAN GIL'),
-('68575', '68', 'SAN JOAQUIN'),
-('68577', '68', 'SAN JOSE DE MIRANDA'),
-('68615', '68', 'SAN MIGUEL'),
-('68655', '68', 'SAN VICENTE DE CHUCURI'),
-('68669', '68', 'SANTA BARBARA'),
-('68673', '68', 'SANTA HELENA DEL OPON'),
-('68679', '68', 'SIMACOTA'),
-('68684', '68', 'SOCORRO'),
-('68686', '68', 'SUAITA'),
-('68689', '68', 'SUCRE'),
-('68705', '68', 'SURATA'),
-('68720', '68', 'TONA'),
-('68745', '68', 'VALLE DE SAN JOSE'),
-('68755', '68', 'VELEZ'),
-('68770', '68', 'VETAS'),
-('68773', '68', 'VILLANUEVA'),
-('68789', '68', 'ZAPATOCA');
-
--- ==========================================================
--- SUCRE (70)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('70001', '70', 'SINCELEJO'),
-('70110', '70', 'BUENAVISTA'),
-('70124', '70', 'CAIMITO'),
-('70204', '70', 'COLOSO'),
-('70215', '70', 'COROZAL'),
-('70221', '70', 'COVEÑAS'),
-('70230', '70', 'CHALAN'),
-('70233', '70', 'EL ROBLE'),
-('70235', '70', 'GALERAS'),
-('70265', '70', 'GUARANDA'),
-('70400', '70', 'LA UNION'),
-('70418', '70', 'LOS PALMITOS'),
-('70429', '70', 'MAJAGUAL'),
-('70473', '70', 'MORROA'),
-('70508', '70', 'OVEJAS'),
-('70523', '70', 'PALMITO'),
-('70670', '70', 'SAMPUES'),
-('70678', '70', 'SAN BENITO ABAD'),
-('70702', '70', 'SAN JUAN DE BETULIA'),
-('70708', '70', 'SAN MARCOS'),
-('70713', '70', 'SAN ONOFRE'),
-('70717', '70', 'SAN PEDRO'),
-('70742', '70', 'SAN LUIS DE SINCE'),
-('70771', '70', 'SUCRE'),
-('70820', '70', 'SANTIAGO DE TOLU'),
-('70823', '70', 'TOLU VIEJO');
-
--- ==========================================================
--- TOLIMA (73)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('73001', '73', 'IBAGUE'),
-('73024', '73', 'ALPUJARRA'),
-('73026', '73', 'ALVARADO'),
-('73030', '73', 'AMBALEMA'),
-('73043', '73', 'ANZOATEGUI'),
-('73055', '73', 'ARMERO'),
-('73067', '73', 'ATACO'),
-('73124', '73', 'CAJAMARCA'),
-('73148', '73', 'CARMEN DE APICALA'),
-('73152', '73', 'CASABIANCA'),
-('73168', '73', 'CHAPARRAL'),
-('73200', '73', 'COELLO'),
-('73217', '73', 'COYAIMA'),
-('73226', '73', 'CUNDAY'),
-('73236', '73', 'DOLORES'),
-('73268', '73', 'ESPINAL'),
-('73270', '73', 'FALAN'),
-('73275', '73', 'FLANDES'),
-('73283', '73', 'FRESNO'),
-('73319', '73', 'GUAMO'),
-('73347', '73', 'HERVEO'),
-('73349', '73', 'HONDA'),
-('73352', '73', 'ICONONZO'),
-('73408', '73', 'LERIDA'),
-('73411', '73', 'LIBANO'),
-('73443', '73', 'MARIQUITA'),
-('73449', '73', 'MELGAR'),
-('73461', '73', 'MURILLO'),
-('73483', '73', 'NATAGAIMA'),
-('73504', '73', 'ORTEGA'),
-('73520', '73', 'PALOCABILDO'),
-('73547', '73', 'PLANADAS'),
-('73555', '73', 'PRADO'),
-('73563', '73', 'PURIFICACION'),
-('73585', '73', 'RIOBLANCO'),
-('73616', '73', 'RONCESVALLES'),
-('73622', '73', 'ROVIRA'),
-('73624', '73', 'SALDAÑA'),
-('73671', '73', 'SAN ANTONIO'),
-('73675', '73', 'SAN LUIS'),
-('73678', '73', 'SANTA ISABEL'),
-('73770', '73', 'SUAREZ'),
-('73854', '73', 'VALLE DE SAN JUAN'),
-('73861', '73', 'VENADILLO'),
-('73870', '73', 'VILLAHERMOSA'),
-('73873', '73', 'VILLARRICA');
-
--- ==========================================================
--- VALLE DEL CAUCA (76)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('76001', '76', 'CALI'),
-('76020', '76', 'ALCALA'),
-('76036', '76', 'ANDALUCIA'),
-('76041', '76', 'ANSERMANUEVO'),
-('76054', '76', 'ARGELIA'),
-('76100', '76', 'BOLIVAR'),
-('76109', '76', 'BUENAVENTURA'),
-('76111', '76', 'GUADALAJARA DE BUGA'),
-('76113', '76', 'BUGALAGRANDE'),
-('76122', '76', 'CAICEDONIA'),
-('76126', '76', 'CALIMA'),
-('76130', '76', 'CANDELARIA'),
-('76147', '76', 'CARTAGO'),
-('76233', '76', 'DAGUA'),
-('76243', '76', 'EL CAIRO'),
-('76246', '76', 'EL CERRITO'),
-('76248', '76', 'EL DOVIO'),
-('76250', '76', 'FLORIDA'),
-('76275', '76', 'GINEBRA'),
-('76306', '76', 'GUACARI'),
-('76318', '76', 'JAMUNDI'),
-('76364', '76', 'LA CUMBRE'),
-('76377', '76', 'LA UNION'),
-('76400', '76', 'LA VICTORIA'),
-('76403', '76', 'OBANDO'),
-('76497', '76', 'PALMIRA'),
-('76520', '76', 'PRADERA'),
-('76606', '76', 'RESTREPO'),
-('76616', '76', 'RIOFRIO'),
-('76622', '76', 'ROLDANILLO'),
-('76670', '76', 'SAN PEDRO'),
-('76736', '76', 'SEVILLA'),
-('76823', '76', 'TORO'),
-('76828', '76', 'TRUJILLO'),
-('76834', '76', 'TULUA'),
-('76845', '76', 'ULLOA'),
-('76863', '76', 'VERSALLES'),
-('76869', '76', 'VIJES'),
-('76890', '76', 'YOTOCO'),
-('76892', '76', 'YUMBO'),
-('76895', '76', 'ZARZAL');
-
--- ==========================================================
--- ARAUCA (81)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('81001', '81', 'ARAUCA'),
-('81065', '81', 'ARAUQUITA'),
-('81300', '81', 'CRAVO NORTE'),
-('81591', '81', 'FORTUL'),
-('81736', '81', 'PUERTO RONDON'),
-('81794', '81', 'SARAVENA'),
-('81850', '81', 'TAME');
-
--- ==========================================================
--- CASANARE (85)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('85001', '85', 'YOPAL'),
-('85010', '85', 'AGUAZUL'),
-('85015', '85', 'CHAMEZA'),
-('85125', '85', 'HATO COROZAL'),
-('85136', '85', 'LA SALINA'),
-('85139', '85', 'MANI'),
-('85162', '85', 'MONTERREY'),
-('85225', '85', 'NUNCHIA'),
-('85230', '85', 'OROCUE'),
-('85250', '85', 'PAZ DE ARIPORO'),
-('85263', '85', 'PORE'),
-('85279', '85', 'RECETOR'),
-('85300', '85', 'SABANALARGA'),
-('85315', '85', 'SACAMA'),
-('85325', '85', 'SAN LUIS DE PALENQUE'),
-('85400', '85', 'TAMARA'),
-('85410', '85', 'TAURAMENA'),
-('85430', '85', 'TRINIDAD'),
-('85440', '85', 'VILLANUEVA');
-
--- ==========================================================
--- PUTUMAYO (86)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('86001', '86', 'MOCOA'),
-('86219', '86', 'COLON'),
-('86320', '86', 'ORRITO'),
-('86568', '86', 'PUERTO ASIS'),
-('86569', '86', 'PUERTO CAICEDO'),
-('86571', '86', 'PUERTO GUZMAN'),
-('86573', '86', 'PUERTO LEGUIZAMO'),
-('86749', '86', 'SIBUNDOY'),
-('86755', '86', 'SAN FRANCISCO'),
-('86757', '86', 'SAN MIGUEL'),
-('86760', '86', 'SANTIAGO'),
-('86865', '86', 'VALLE DEL GUAMUEZ'),
-('86885', '86', 'VILLAGARZON');
-
--- ==========================================================
--- SAN ANDRES, PROVIDENCIA Y SANTA CATALINA (88)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('88001', '88', 'SAN ANDRES'),
-('88564', '88', 'PROVIDENCIA');
-
--- ==========================================================
--- AMAZONAS (91)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('91001', '91', 'LETICIA'),
-('91263', '91', 'EL ENCANTO'),
-('91405', '91', 'LA CHORRERA'),
-('91407', '91', 'LA PEDRERA'),
-('91430', '91', 'LA VICTORIA'),
-('91460', '91', 'MIRITI - PARANA'),
-('91530', '91', 'PUERTO ALEGRIA'),
-('91536', '91', 'PUERTO ARICA'),
-('91540', '91', 'PUERTO NARIÑO'),
-('91669', '91', 'PUERTO SANTANDER'),
-('91798', '91', 'TARAPACA');
-
--- ==========================================================
--- GUAINIA (94)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('94001', '94', 'INIRIDA'),
-('94343', '94', 'BARRANCO MINAS'),
-('94663', '94', 'MAPIRIPANA'),
-('94883', '94', 'SAN FELIPE'),
-('94884', '94', 'PUERTO COLOMBIA'),
-('94885', '94', 'LA GUADALUPE'),
-('94886', '94', 'CACAHUAL'),
-('94887', '94', 'PANA PANA'),
-('94888', '94', 'MORICHAL');
-
--- ==========================================================
--- GUAVIARE (95)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('95001', '95', 'SAN JOSE DEL GUAVIARE'),
-('95015', '95', 'CALAMAR'),
-('95025', '95', 'EL RETORNO'),
-('95200', '95', 'MIRAFLORES');
-
--- ==========================================================
--- VAUPES (97)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('97001', '97', 'MITU'),
-('97161', '97', 'CARURU'),
-('97511', '97', 'PACOA'),
-('97666', '97', 'TARAIRA'),
-('97777', '97', 'PAPUNAUA'),
-('97889', '97', 'YAVARATE');
-
--- ==========================================================
--- VICHADA (99)
--- ==========================================================
-INSERT INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES 
-('99001', '99', 'PUERTO CARREÑO'),
-('99524', '99', 'LA PRIMAVERA'),
-('99624', '99', 'SANTA ROSALIA'),
-('99773', '99', 'CUMARIBO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05001','05','MEDELLÍN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05002','05','ABEJORRAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05004','05','ABRIAQUÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05021','05','ALEJANDRÍA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05030','05','AMAGÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05031','05','AMALFI');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05034','05','ANDES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05036','05','ANGELÓPOLIS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05038','05','ANGOSTURA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05040','05','ANORÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05042','05','SANTA FÉ DE ANTIOQUIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05044','05','ANZÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05045','05','APARTADÓ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05051','05','ARBOLETES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05055','05','ARGELIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05059','05','ARMENIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05079','05','BARBOSA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05086','05','BELMIRA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05088','05','BELLO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05091','05','BETANIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05093','05','BETULIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05101','05','CIUDAD BOLÍVAR');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05107','05','BRICEÑO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05113','05','BURITICÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05120','05','CÁCERES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05125','05','CAICEDO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05129','05','CALDAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05134','05','CAMPAMENTO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05138','05','CAÑASGORDAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05142','05','CARACOLÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05145','05','CARAMANTA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05147','05','CAREPA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05148','05','EL CARMEN DE VIBORAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05150','05','CAROLINA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05154','05','CAUCASIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05172','05','CHIGORODÓ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05190','05','CISNEROS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05197','05','COCORNÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05206','05','CONCEPCIÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05209','05','CONCORDIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05212','05','COPACABANA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05234','05','DABEIBA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05237','05','DONMATÍAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05240','05','EBÉJICO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05250','05','EL BAGRE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05264','05','ENTRERRÍOS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05266','05','ENVIGADO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05282','05','FREDONIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05284','05','FRONTINO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05306','05','GIRALDO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05308','05','GIRARDOTA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05310','05','GÓMEZ PLATA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05313','05','GRANADA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05315','05','GUADALUPE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05318','05','GUARNE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05321','05','GUATAPÉ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05347','05','HELICONIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05353','05','HISPANIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05360','05','ITAGÜÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05361','05','ITUANGO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05364','05','JARDÍN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05368','05','JERICÓ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05376','05','LA CEJA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05380','05','LA ESTRELLA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05390','05','LA PINTADA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05400','05','LA UNIÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05411','05','LIBORINA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05425','05','MACEO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05440','05','MARINILLA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05467','05','MONTEBELLO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05475','05','MURINDÓ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05480','05','MUTATÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05483','05','NARIÑO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05490','05','NECOCLÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05495','05','NECHÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05501','05','OLAYA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05541','05','PEÑOL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05543','05','PEQUE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05576','05','PUEBLORRICO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05579','05','PUERTO BERRÍO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05585','05','PUERTO NARE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05591','05','PUERTO TRIUNFO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05604','05','REMEDIOS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05607','05','RETIRO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05615','05','RIONEGRO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05628','05','SABANALARGA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05631','05','SABANETA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05642','05','SALGAR');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05647','05','SAN ANDRÉS DE CUERQUÍA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05649','05','SAN CARLOS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05652','05','SAN FRANCISCO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05656','05','SAN JERÓNIMO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05658','05','SAN JOSÉ DE LA MONTAÑA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05659','05','SAN JUAN DE URABÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05660','05','SAN LUIS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05664','05','SAN PEDRO DE LOS MILAGROS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05665','05','SAN PEDRO DE URABÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05667','05','SAN RAFAEL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05670','05','SAN ROQUE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05674','05','SAN VICENTE FERRER');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05679','05','SANTA BÁRBARA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05686','05','SANTA ROSA DE OSOS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05690','05','SANTO DOMINGO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05697','05','EL SANTUARIO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05736','05','SEGOVIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05756','05','SONSÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05761','05','SOPETRÁN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05789','05','TÁMESIS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05790','05','TARAZÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05792','05','TARSO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05809','05','TITIRIBÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05819','05','TOLEDO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05837','05','TURBO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05842','05','URAMITA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05847','05','URRAO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05854','05','VALDIVIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05856','05','VALPARAÍSO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05858','05','VEGACHÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05861','05','VENECIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05873','05','VIGÍA DEL FUERTE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05885','05','YALÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05887','05','YARUMAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05890','05','YOLOMBÓ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05893','05','YONDÓ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('05895','05','ZARAGOZA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('08001','08','BARRANQUILLA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('08078','08','BARANOA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('08137','08','CAMPO DE LA CRUZ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('08141','08','CANDELARIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('08296','08','GALAPA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('08372','08','JUAN DE ACOSTA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('08421','08','LURUACO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('08433','08','MALAMBO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('08436','08','MANATÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('08520','08','PALMAR DE VARELA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('08549','08','PIOJÓ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('08558','08','POLONUEVO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('08560','08','PONEDERA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('08573','08','PUERTO COLOMBIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('08606','08','REPELÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('08634','08','SABANAGRANDE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('08638','08','SABANALARGA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('08675','08','SANTA LUCÍA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('08685','08','SANTO TOMÁS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('08758','08','SOLEDAD');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('08770','08','SUAN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('08832','08','TUBARÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('08849','08','USIACURÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('11001','11','BOGOTÁ, D.C.');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13001','13','CARTAGENA DE INDIAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13006','13','ACHÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13030','13','ALTOS DEL ROSARIO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13042','13','ARENAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13052','13','ARJONA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13062','13','ARROYOHONDO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13074','13','BARRANCO DE LOBA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13140','13','CALAMAR');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13160','13','CANTAGALLO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13188','13','CICUCO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13212','13','CÓRDOBA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13222','13','CLEMENCIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13244','13','EL CARMEN DE BOLÍVAR');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13248','13','EL GUAMO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13268','13','EL PEÑÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13300','13','HATILLO DE LOBA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13430','13','MAGANGUÉ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13433','13','MAHATES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13440','13','MARGARITA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13442','13','MARÍA LA BAJA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13458','13','MONTECRISTO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13468','13','SANTA CRUZ DE MOMPOX');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13473','13','MORALES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13490','13','NOROSÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13549','13','PINILLOS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13580','13','REGIDOR');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13600','13','RÍO VIEJO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13620','13','SAN CRISTÓBAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13647','13','SAN ESTANISLAO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13650','13','SAN FERNANDO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13654','13','SAN JACINTO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13655','13','SAN JACINTO DEL CAUCA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13657','13','SAN JUAN NEPOMUCENO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13667','13','SAN MARTÍN DE LOBA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13670','13','SAN PABLO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13673','13','SANTA CATALINA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13683','13','SANTA ROSA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13688','13','SANTA ROSA DEL SUR');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13744','13','SIMITÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13760','13','SOPLAVIENTO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13780','13','TALAIGUA NUEVO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13810','13','TIQUISIO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13836','13','TURBACO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13838','13','TURBANA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13873','13','VILLANUEVA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('13894','13','ZAMBRANO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15001','15','TUNJA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15022','15','ALMEIDA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15047','15','AQUITANIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15051','15','ARCABUCO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15087','15','BELÉN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15090','15','BERBEO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15092','15','BETÉITIVA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15097','15','BOAVITA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15104','15','BOYACÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15106','15','BRICEÑO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15109','15','BUENAVISTA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15114','15','BUSBANZÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15131','15','CALDAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15135','15','CAMPOHERMOSO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15162','15','CERINZA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15172','15','CHINAVITA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15176','15','CHIQUINQUIRÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15180','15','CHISCAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15183','15','CHITA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15185','15','CHITARAQUE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15187','15','CHIVATÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15189','15','CIÉNEGA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15204','15','CÓMBITA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15212','15','COPER');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15215','15','CORRALES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15218','15','COVARACHÍA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15223','15','CUBARÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15224','15','CUCAITA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15226','15','CUÍTIVA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15232','15','CHÍQUIZA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15236','15','CHIVOR');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15238','15','DUITAMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15244','15','EL COCUY');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15248','15','EL ESPINO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15272','15','FIRAVITOBA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15276','15','FLORESTA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15293','15','GACHANTIVÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15296','15','GÁMEZA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15299','15','GARAGOA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15317','15','GUACAMAYAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15322','15','GUATEQUE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15325','15','GUAYATÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15332','15','GÜICÁN DE LA SIERRA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15362','15','IZA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15367','15','JENESANO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15368','15','JERICÓ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15377','15','LABRANZAGRANDE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15380','15','LA CAPILLA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15401','15','LA VICTORIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15403','15','LA UVITA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15407','15','VILLA DE LEYVA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15425','15','MACANAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15442','15','MARIPÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15455','15','MIRAFLORES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15464','15','MONGUA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15466','15','MONGUÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15469','15','MONIQUIRÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15476','15','MOTAVITA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15480','15','MUZO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15491','15','NOBSA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15494','15','NUEVO COLÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15500','15','OICATÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15507','15','OTANCHE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15511','15','PACHAVITA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15514','15','PÁEZ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15516','15','PAIPA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15518','15','PAJARITO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15522','15','PANQUEBA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15531','15','PAUNA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15533','15','PAYA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15537','15','PAZ DE RÍO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15542','15','PESCA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15550','15','PISBA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15572','15','PUERTO BOYACÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15580','15','QUÍPAMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15599','15','RAMIRIQUÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15600','15','RÁQUIRA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15621','15','RONDÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15632','15','SABOYÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15638','15','SÁCHICA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15646','15','SAMACÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15660','15','SAN EDUARDO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15664','15','SAN JOSÉ DE PARE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15667','15','SAN LUIS DE GACENO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15673','15','SAN MATEO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15676','15','SAN MIGUEL DE SEMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15681','15','SAN PABLO DE BORBUR');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15686','15','SANTANA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15690','15','SANTA MARÍA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15693','15','SANTA ROSA DE VITERBO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15696','15','SANTA SOFÍA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15720','15','SATIVANORTE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15723','15','SATIVASUR');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15740','15','SIACHOQUE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15753','15','SOATÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15755','15','SOCOTÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15757','15','SOCHA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15759','15','SOGAMOSO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15761','15','SOMONDOCO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15762','15','SORA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15763','15','SOTAQUIRÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15764','15','SORACÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15774','15','SUSACÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15776','15','SUTAMARCHÁN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15778','15','SUTATENZA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15790','15','TASCO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15798','15','TENZA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15804','15','TIBANÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15806','15','TIBASOSA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15808','15','TINJACÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15810','15','TIPACOQUE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15814','15','TOCA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15816','15','TOGÜÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15820','15','TÓPAGA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15822','15','TOTA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15832','15','TUNUNGUÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15835','15','TURMEQUÉ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15837','15','TUTA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15839','15','TUTAZÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15842','15','ÚMBITA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15861','15','VENTAQUEMADA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15879','15','VIRACACHÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('15897','15','ZETAQUIRA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17001','17','MANIZALES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17013','17','AGUADAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17042','17','ANSERMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17050','17','ARANZAZU');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17088','17','BELALCÁZAR');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17174','17','CHINCHINÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17272','17','FILADELFIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17380','17','LA DORADA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17388','17','LA MERCED');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17433','17','MANZANARES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17442','17','MARMATO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17444','17','MARQUETALIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17446','17','MARULANDA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17486','17','NEIRA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17495','17','NORCASIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17513','17','PÁCORA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17524','17','PALESTINA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17541','17','PENSILVANIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17614','17','RIOSUCIO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17616','17','RISARALDA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17653','17','SALAMINA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17662','17','SAMANÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17665','17','SAN JOSÉ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17777','17','SUPÍA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17867','17','VICTORIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17873','17','VILLAMARÍA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('17877','17','VITERBO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('18001','18','FLORENCIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('18029','18','ALBANIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('18094','18','BELÉN DE LOS ANDAQUÍES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('18150','18','CARTAGENA DEL CHAIRÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('18205','18','CURILLO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('18247','18','EL DONCELLO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('18256','18','EL PAUJÍL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('18410','18','LA MONTAÑITA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('18460','18','MILÁN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('18479','18','MORELIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('18592','18','PUERTO RICO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('18610','18','SAN JOSÉ DEL FRAGUA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('18753','18','SAN VICENTE DEL CAGUÁN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('18756','18','SOLANO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('18785','18','SOLITA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('18860','18','VALPARAÍSO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19001','19','POPAYÁN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19022','19','ALMAGUER');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19050','19','ARGELIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19075','19','BALBOA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19100','19','BOLÍVAR');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19110','19','BUENOS AIRES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19130','19','CAJIBÍO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19137','19','CALDONO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19142','19','CALOTO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19212','19','CORINTO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19256','19','EL TAMBO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19290','19','FLORENCIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19300','19','GUACHENÉ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19318','19','GUAPI');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19355','19','INZÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19364','19','JAMBALÓ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19392','19','LA SIERRA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19397','19','LA VEGA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19418','19','LÓPEZ DE MICAY');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19450','19','MERCADERES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19455','19','MIRANDA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19473','19','MORALES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19513','19','PADILLA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19517','19','PÁEZ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19532','19','PATÍA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19533','19','PIAMONTE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19548','19','PIENDAMÓ - TUNÍA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19573','19','PUERTO TEJADA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19585','19','PURACÉ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19622','19','ROSAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19693','19','SAN SEBASTIÁN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19698','19','SANTANDER DE QUILICHAO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19701','19','SANTA ROSA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19743','19','SILVIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19760','19','SOTARÁ PAISPAMBA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19780','19','SUÁREZ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19785','19','SUCRE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19807','19','TIMBÍO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19809','19','TIMBIQUÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19821','19','TORIBÍO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19824','19','TOTORÓ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('19845','19','VILLA RICA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('20001','20','VALLEDUPAR');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('20011','20','AGUACHICA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('20013','20','AGUSTÍN CODAZZI');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('20032','20','ASTREA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('20045','20','BECERRIL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('20060','20','BOSCONIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('20175','20','CHIMICHAGUA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('20178','20','CHIRIGUANÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('20228','20','CURUMANÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('20238','20','EL COPEY');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('20250','20','EL PASO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('20295','20','GAMARRA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('20310','20','GONZÁLEZ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('20383','20','LA GLORIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('20400','20','LA JAGUA DE IBIRICO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('20443','20','MANAURE BALCÓN DEL CESAR');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('20517','20','PAILITAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('20550','20','PELAYA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('20570','20','PUEBLO BELLO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('20614','20','RÍO DE ORO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('20621','20','LA PAZ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('20710','20','SAN ALBERTO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('20750','20','SAN DIEGO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('20770','20','SAN MARTÍN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('20787','20','TAMALAMEQUE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23001','23','MONTERÍA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23068','23','AYAPEL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23079','23','BUENAVISTA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23090','23','CANALETE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23162','23','CERETÉ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23168','23','CHIMÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23182','23','CHINÚ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23189','23','CIÉNAGA DE ORO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23300','23','COTORRA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23350','23','LA APARTADA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23417','23','LORICA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23419','23','LOS CÓRDOBAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23464','23','MOMIL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23466','23','MONTELÍBANO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23500','23','MOÑITOS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23555','23','PLANETA RICA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23570','23','PUEBLO NUEVO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23574','23','PUERTO ESCONDIDO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23580','23','PUERTO LIBERTADOR');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23586','23','PURÍSIMA DE LA CONCEPCIÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23660','23','SAHAGÚN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23670','23','SAN ANDRÉS DE SOTAVENTO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23672','23','SAN ANTERO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23675','23','SAN BERNARDO DEL VIENTO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23678','23','SAN CARLOS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23682','23','SAN JOSÉ DE URÉ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23686','23','SAN PELAYO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23807','23','TIERRALTA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23815','23','TUCHÍN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('23855','23','VALENCIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25001','25','AGUA DE DIOS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25019','25','ALBÁN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25035','25','ANAPOIMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25040','25','ANOLAIMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25053','25','ARBELÁEZ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25086','25','BELTRÁN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25095','25','BITUIMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25099','25','BOJACÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25120','25','CABRERA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25123','25','CACHIPAY');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25126','25','CAJICÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25148','25','CAPARRAPÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25151','25','CÁQUEZA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25154','25','CARMEN DE CARUPA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25168','25','CHAGUANÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25175','25','CHÍA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25178','25','CHIPAQUE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25181','25','CHOACHÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25183','25','CHOCONTÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25200','25','COGUA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25214','25','COTA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25224','25','CUCUNUBÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25245','25','EL COLEGIO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25258','25','EL PEÑÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25260','25','EL ROSAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25269','25','FACATATIVÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25279','25','FÓMEQUE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25281','25','FOSCA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25286','25','FUNZA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25288','25','FÚQUENE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25290','25','FUSAGASUGÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25293','25','GACHALÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25295','25','GACHANCIPÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25297','25','GACHETÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25299','25','GAMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25307','25','GIRARDOT');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25312','25','GRANADA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25317','25','GUACHETÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25320','25','GUADUAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25322','25','GUASCA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25324','25','GUATAQUÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25326','25','GUATAVITA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25328','25','GUAYABAL DE SÍQUIMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25335','25','GUAYABETAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25339','25','GUTIÉRREZ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25368','25','JERUSALÉN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25372','25','JUNÍN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25377','25','LA CALERA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25386','25','LA MESA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25394','25','LA PALMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25398','25','LA PEÑA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25402','25','LA VEGA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25407','25','LENGUAZAQUE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25426','25','MACHETÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25430','25','MADRID');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25436','25','MANTA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25438','25','MEDINA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25473','25','MOSQUERA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25483','25','NARIÑO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25486','25','NEMOCÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25488','25','NILO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25489','25','NIMAIMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25491','25','NOCAIMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25506','25','VENECIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25513','25','PACHO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25518','25','PAIME');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25524','25','PANDI');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25530','25','PARATEBUENO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25535','25','PASCA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25572','25','PUERTO SALGAR');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25580','25','PULÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25592','25','QUEBRADANEGRA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25594','25','QUETAME');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25596','25','QUIPILE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25599','25','APULO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25612','25','RICAURTE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25645','25','SAN ANTONIO DEL TEQUENDAMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25649','25','SAN BERNARDO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25653','25','SAN CAYETANO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25658','25','SAN FRANCISCO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25662','25','SAN JUAN DE RIOSECO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25718','25','SASAIMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25736','25','SESQUILÉ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25740','25','SIBATÉ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25743','25','SILVANIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25745','25','SIMIJACA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25754','25','SOACHA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25758','25','SOPÓ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25769','25','SUBACHOQUE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25772','25','SUESCA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25777','25','SUPATÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25779','25','SUSA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25781','25','SUTATAUSA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25785','25','TABIO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25793','25','TAUSA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25797','25','TENA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25799','25','TENJO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25805','25','TIBACUY');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25807','25','TIBIRITA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25815','25','TOCAIMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25817','25','TOCANCIPÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25823','25','TOPAIPÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25839','25','UBALÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25841','25','UBAQUE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25843','25','VILLA DE SAN DIEGO DE UBATÉ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25845','25','UNE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25851','25','ÚTICA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25862','25','VERGARA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25867','25','VIANÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25871','25','VILLAGÓMEZ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25873','25','VILLAPINZÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25875','25','VILLETA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25878','25','VIOTÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25885','25','YACOPÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25898','25','ZIPACÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('25899','25','ZIPAQUIRÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27001','27','QUIBDÓ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27006','27','ACANDÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27025','27','ALTO BAUDÓ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27050','27','ATRATO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27073','27','BAGADÓ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27075','27','BAHÍA SOLANO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27077','27','BAJO BAUDÓ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27099','27','BOJAYÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27135','27','EL CANTÓN DEL SAN PABLO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27150','27','CARMEN DEL DARIÉN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27160','27','CÉRTEGUI');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27205','27','CONDOTO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27245','27','EL CARMEN DE ATRATO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27250','27','EL LITORAL DEL SAN JUAN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27361','27','ISTMINA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27372','27','JURADÓ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27413','27','LLORÓ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27425','27','MEDIO ATRATO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27430','27','MEDIO BAUDÓ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27450','27','MEDIO SAN JUAN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27491','27','NÓVITA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27493','27','NUEVO BELÉN DE BAJIRÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27495','27','NUQUÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27580','27','RÍO IRÓ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27600','27','RÍO QUITO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27615','27','RIOSUCIO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27660','27','SAN JOSÉ DEL PALMAR');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27745','27','SIPÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27787','27','TADÓ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27800','27','UNGUÍA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('27810','27','UNIÓN PANAMERICANA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41001','41','NEIVA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41006','41','ACEVEDO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41013','41','AGRADO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41016','41','AIPE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41020','41','ALGECIRAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41026','41','ALTAMIRA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41078','41','BARAYA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41132','41','CAMPOALEGRE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41206','41','COLOMBIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41244','41','ELÍAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41298','41','GARZÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41306','41','GIGANTE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41319','41','GUADALUPE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41349','41','HOBO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41357','41','ÍQUIRA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41359','41','ISNOS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41378','41','LA ARGENTINA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41396','41','LA PLATA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41483','41','NÁTAGA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41503','41','OPORAPA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41518','41','PAICOL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41524','41','PALERMO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41530','41','PALESTINA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41548','41','PITAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41551','41','PITALITO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41615','41','RIVERA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41660','41','SALADOBLANCO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41668','41','SAN AGUSTÍN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41676','41','SANTA MARÍA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41770','41','SUAZA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41791','41','TARQUI');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41797','41','TESALIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41799','41','TELLO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41801','41','TERUEL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41807','41','TIMANÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41872','41','VILLAVIEJA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('41885','41','YAGUARÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('44001','44','RIOHACHA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('44035','44','ALBANIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('44078','44','BARRANCAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('44090','44','DIBULLA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('44098','44','DISTRACCIÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('44110','44','EL MOLINO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('44279','44','FONSECA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('44378','44','HATONUEVO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('44420','44','LA JAGUA DEL PILAR');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('44430','44','MAICAO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('44560','44','MANAURE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('44650','44','SAN JUAN DEL CESAR');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('44847','44','URIBIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('44855','44','URUMITA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('44874','44','VILLANUEVA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47001','47','SANTA MARTA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47030','47','ALGARROBO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47053','47','ARACATACA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47058','47','ARIGUANÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47161','47','CERRO DE SAN ANTONIO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47170','47','CHIVOLO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47189','47','CIÉNAGA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47205','47','CONCORDIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47245','47','EL BANCO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47258','47','EL PIÑÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47268','47','EL RETÉN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47288','47','FUNDACIÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47318','47','GUAMAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47460','47','NUEVA GRANADA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47541','47','PEDRAZA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47545','47','PIJIÑO DEL CARMEN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47551','47','PIVIJAY');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47555','47','PLATO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47570','47','PUEBLOVIEJO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47605','47','REMOLINO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47660','47','SABANAS DE SAN ÁNGEL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47675','47','SALAMINA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47692','47','SAN SEBASTIÁN DE BUENAVISTA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47703','47','SAN ZENÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47707','47','SANTA ANA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47720','47','SANTA BÁRBARA DE PINTO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47745','47','SITIONUEVO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47798','47','TENERIFE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47960','47','ZAPAYÁN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('47980','47','ZONA BANANERA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50001','50','VILLAVICENCIO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50006','50','ACACÍAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50110','50','BARRANCA DE UPÍA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50124','50','CABUYARO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50150','50','CASTILLA LA NUEVA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50223','50','CUBARRAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50226','50','CUMARAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50245','50','EL CALVARIO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50251','50','EL CASTILLO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50270','50','EL DORADO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50287','50','FUENTE DE ORO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50313','50','GRANADA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50318','50','GUAMAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50325','50','MAPIRIPÁN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50330','50','MESETAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50350','50','LA MACARENA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50370','50','URIBE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50400','50','LEJANÍAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50450','50','PUERTO CONCORDIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50568','50','PUERTO GAITÁN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50573','50','PUERTO LÓPEZ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50577','50','PUERTO LLERAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50590','50','PUERTO RICO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50606','50','RESTREPO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50680','50','SAN CARLOS DE GUAROA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50683','50','SAN JUAN DE ARAMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50686','50','SAN JUANITO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50689','50','SAN MARTÍN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('50711','50','VISTAHERMOSA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52001','52','PASTO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52019','52','ALBÁN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52022','52','ALDANA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52036','52','ANCUYA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52051','52','ARBOLEDA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52079','52','BARBACOAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52083','52','BELÉN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52110','52','BUESACO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52203','52','COLÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52207','52','CONSACÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52210','52','CONTADERO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52215','52','CÓRDOBA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52224','52','CUASPUD CARLOSAMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52227','52','CUMBAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52233','52','CUMBITARA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52240','52','CHACHAGÜÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52250','52','EL CHARCO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52254','52','EL PEÑOL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52256','52','EL ROSARIO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52258','52','EL TABLÓN DE GÓMEZ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52260','52','EL TAMBO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52287','52','FUNES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52317','52','GUACHUCAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52320','52','GUAITARILLA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52323','52','GUALMATÁN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52352','52','ILES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52354','52','IMUÉS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52356','52','IPIALES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52378','52','LA CRUZ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52381','52','LA FLORIDA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52385','52','LA LLANADA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52390','52','LA TOLA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52399','52','LA UNIÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52405','52','LEIVA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52411','52','LINARES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52418','52','LOS ANDES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52427','52','MAGÜÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52435','52','MALLAMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52473','52','MOSQUERA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52480','52','NARIÑO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52490','52','OLAYA HERRERA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52506','52','OSPINA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52520','52','FRANCISCO PIZARRO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52540','52','POLICARPA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52560','52','POTOSÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52565','52','PROVIDENCIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52573','52','PUERRES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52585','52','PUPIALES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52612','52','RICAURTE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52621','52','ROBERTO PAYÁN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52678','52','SAMANIEGO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52683','52','SANDONÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52685','52','SAN BERNARDO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52687','52','SAN LORENZO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52693','52','SAN PABLO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52694','52','SAN PEDRO DE CARTAGO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52696','52','SANTA BÁRBARA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52699','52','SANTACRUZ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52720','52','SAPUYES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52786','52','TAMINANGO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52788','52','TANGUA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52835','52','SAN ANDRÉS DE TUMACO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52838','52','TÚQUERRES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('52885','52','YACUANQUER');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54001','54','SAN JOSÉ DE CÚCUTA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54003','54','ÁBREGO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54051','54','ARBOLEDAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54099','54','BOCHALEMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54109','54','BUCARASICA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54125','54','CÁCOTA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54128','54','CÁCHIRA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54172','54','CHINÁCOTA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54174','54','CHITAGÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54206','54','CONVENCIÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54223','54','CUCUTILLA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54239','54','DURANIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54245','54','EL CARMEN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54250','54','EL TARRA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54261','54','EL ZULIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54313','54','GRAMALOTE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54344','54','HACARÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54347','54','HERRÁN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54377','54','LABATECA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54385','54','LA ESPERANZA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54398','54','LA PLAYA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54405','54','LOS PATIOS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54418','54','LOURDES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54480','54','MUTISCUA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54498','54','OCAÑA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54518','54','PAMPLONA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54520','54','PAMPLONITA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54553','54','PUERTO SANTANDER');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54599','54','RAGONVALIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54660','54','SALAZAR');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54670','54','SAN CALIXTO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54673','54','SAN CAYETANO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54680','54','SANTIAGO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54720','54','SARDINATA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54743','54','SILOS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54800','54','TEORAMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54810','54','TIBÚ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54820','54','TOLEDO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54871','54','VILLA CARO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('54874','54','VILLA DEL ROSARIO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('63001','63','ARMENIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('63111','63','BUENAVISTA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('63130','63','CALARCÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('63190','63','CIRCASIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('63212','63','CÓRDOBA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('63272','63','FILANDIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('63302','63','GÉNOVA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('63401','63','LA TEBAIDA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('63470','63','MONTENEGRO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('63548','63','PIJAO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('63594','63','QUIMBAYA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('63690','63','SALENTO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('66001','66','PEREIRA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('66045','66','APÍA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('66075','66','BALBOA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('66088','66','BELÉN DE UMBRÍA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('66170','66','DOSQUEBRADAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('66318','66','GUÁTICA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('66383','66','LA CELIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('66400','66','LA VIRGINIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('66440','66','MARSELLA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('66456','66','MISTRATÓ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('66572','66','PUEBLO RICO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('66594','66','QUINCHÍA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('66682','66','SANTA ROSA DE CABAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('66687','66','SANTUARIO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68001','68','BUCARAMANGA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68013','68','AGUADA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68020','68','ALBANIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68051','68','ARATOCA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68077','68','BARBOSA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68079','68','BARICHARA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68081','68','BARRANCABERMEJA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68092','68','BETULIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68101','68','BOLÍVAR');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68121','68','CABRERA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68132','68','CALIFORNIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68147','68','CAPITANEJO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68152','68','CARCASÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68160','68','CEPITÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68162','68','CERRITO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68167','68','CHARALÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68169','68','CHARTA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68176','68','CHIMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68179','68','CHIPATÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68190','68','CIMITARRA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68207','68','CONCEPCIÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68209','68','CONFINES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68211','68','CONTRATACIÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68217','68','COROMORO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68229','68','CURITÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68235','68','EL CARMEN DE CHUCURÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68245','68','EL GUACAMAYO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68250','68','EL PEÑÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68255','68','EL PLAYÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68264','68','ENCINO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68266','68','ENCISO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68271','68','FLORIÁN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68276','68','FLORIDABLANCA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68296','68','GALÁN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68298','68','GÁMBITA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68307','68','GIRÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68318','68','GUACA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68320','68','GUADALUPE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68322','68','GUAPOTÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68324','68','GUAVATÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68327','68','GÜEPSA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68344','68','HATO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68368','68','JESÚS MARÍA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68370','68','JORDÁN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68377','68','LA BELLEZA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68385','68','LANDÁZURI');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68397','68','LA PAZ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68406','68','LEBRIJA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68418','68','LOS SANTOS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68425','68','MACARAVITA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68432','68','MÁLAGA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68444','68','MATANZA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68464','68','MOGOTES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68468','68','MOLAGAVITA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68498','68','OCAMONTE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68500','68','OIBA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68502','68','ONZAGA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68522','68','PALMAR');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68524','68','PALMAS DEL SOCORRO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68533','68','PÁRAMO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68547','68','PIEDECUESTA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68549','68','PINCHOTE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68572','68','PUENTE NACIONAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68573','68','PUERTO PARRA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68575','68','PUERTO WILCHES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68615','68','RIONEGRO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68655','68','SABANA DE TORRES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68669','68','SAN ANDRÉS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68673','68','SAN BENITO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68679','68','SAN GIL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68682','68','SAN JOAQUÍN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68684','68','SAN JOSÉ DE MIRANDA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68686','68','SAN MIGUEL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68689','68','SAN VICENTE DE CHUCURÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68705','68','SANTA BÁRBARA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68720','68','SANTA HELENA DEL OPÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68745','68','SIMACOTA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68755','68','SOCORRO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68770','68','SUAITA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68773','68','SUCRE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68780','68','SURATÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68820','68','TONA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68855','68','VALLE DE SAN JOSÉ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68861','68','VÉLEZ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68867','68','VETAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68872','68','VILLANUEVA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('68895','68','ZAPATOCA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70001','70','SINCELEJO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70110','70','BUENAVISTA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70124','70','CAIMITO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70204','70','COLOSÓ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70215','70','COROZAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70221','70','COVEÑAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70230','70','CHALÁN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70233','70','EL ROBLE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70235','70','GALERAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70265','70','GUARANDA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70400','70','LA UNIÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70418','70','LOS PALMITOS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70429','70','MAJAGUAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70473','70','MORROA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70508','70','OVEJAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70523','70','PALMITO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70670','70','SAMPUÉS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70678','70','SAN BENITO ABAD');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70702','70','SAN JUAN DE BETULIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70708','70','SAN MARCOS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70713','70','SAN ONOFRE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70717','70','SAN PEDRO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70742','70','SAN LUIS DE SINCÉ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70771','70','SUCRE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70820','70','SANTIAGO DE TOLÚ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('70823','70','SAN JOSÉ DE TOLUVIEJO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73001','73','IBAGUÉ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73024','73','ALPUJARRA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73026','73','ALVARADO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73030','73','AMBALEMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73043','73','ANZOÁTEGUI');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73055','73','ARMERO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73067','73','ATACO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73124','73','CAJAMARCA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73148','73','CARMEN DE APICALÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73152','73','CASABIANCA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73168','73','CHAPARRAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73200','73','COELLO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73217','73','COYAIMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73226','73','CUNDAY');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73236','73','DOLORES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73268','73','ESPINAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73270','73','FALAN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73275','73','FLANDES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73283','73','FRESNO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73319','73','GUAMO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73347','73','HERVEO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73349','73','HONDA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73352','73','ICONONZO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73408','73','LÉRIDA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73411','73','LÍBANO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73443','73','SAN SEBASTIÁN DE MARIQUITA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73449','73','MELGAR');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73461','73','MURILLO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73483','73','NATAGAIMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73504','73','ORTEGA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73520','73','PALOCABILDO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73547','73','PIEDRAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73555','73','PLANADAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73563','73','PRADO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73585','73','PURIFICACIÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73616','73','RIOBLANCO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73622','73','RONCESVALLES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73624','73','ROVIRA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73671','73','SALDAÑA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73675','73','SAN ANTONIO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73678','73','SAN LUIS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73686','73','SANTA ISABEL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73770','73','SUÁREZ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73854','73','VALLE DE SAN JUAN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73861','73','VENADILLO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73870','73','VILLAHERMOSA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('73873','73','VILLARRICA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76001','76','SANTIAGO DE CALI');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76020','76','ALCALÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76036','76','ANDALUCÍA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76041','76','ANSERMANUEVO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76054','76','ARGELIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76100','76','BOLÍVAR');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76109','76','BUENAVENTURA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76111','76','GUADALAJARA DE BUGA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76113','76','BUGALAGRANDE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76122','76','CAICEDONIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76126','76','CALIMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76130','76','CANDELARIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76147','76','CARTAGO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76233','76','DAGUA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76243','76','EL ÁGUILA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76246','76','EL CAIRO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76248','76','EL CERRITO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76250','76','EL DOVIO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76275','76','FLORIDA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76306','76','GINEBRA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76318','76','GUACARÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76364','76','JAMUNDÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76377','76','LA CUMBRE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76400','76','LA UNIÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76403','76','LA VICTORIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76497','76','OBANDO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76520','76','PALMIRA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76563','76','PRADERA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76606','76','RESTREPO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76616','76','RIOFRÍO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76622','76','ROLDANILLO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76670','76','SAN PEDRO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76736','76','SEVILLA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76823','76','TORO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76828','76','TRUJILLO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76834','76','TULUÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76845','76','ULLOA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76863','76','VERSALLES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76869','76','VIJES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76890','76','YOTOCO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76892','76','YUMBO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('76895','76','ZARZAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('81001','81','ARAUCA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('81065','81','ARAUQUITA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('81220','81','CRAVO NORTE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('81300','81','FORTUL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('81591','81','PUERTO RONDÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('81736','81','SARAVENA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('81794','81','TAME');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('85001','85','YOPAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('85010','85','AGUAZUL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('85015','85','CHÁMEZA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('85125','85','HATO COROZAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('85136','85','LA SALINA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('85139','85','MANÍ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('85162','85','MONTERREY');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('85225','85','NUNCHÍA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('85230','85','OROCUÉ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('85250','85','PAZ DE ARIPORO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('85263','85','PORE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('85279','85','RECETOR');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('85300','85','SABANALARGA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('85315','85','SÁCAMA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('85325','85','SAN LUIS DE PALENQUE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('85400','85','TÁMARA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('85410','85','TAURAMENA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('85430','85','TRINIDAD');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('85440','85','VILLANUEVA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('86001','86','MOCOA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('86219','86','COLÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('86320','86','ORITO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('86568','86','PUERTO ASÍS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('86569','86','PUERTO CAICEDO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('86571','86','PUERTO GUZMÁN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('86573','86','PUERTO LEGUÍZAMO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('86749','86','SIBUNDOY');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('86755','86','SAN FRANCISCO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('86757','86','SAN MIGUEL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('86760','86','SANTIAGO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('86865','86','VALLE DEL GUAMUEZ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('86885','86','VILLAGARZÓN');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('88001','88','SAN ANDRÉS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('88564','88','PROVIDENCIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('91001','91','LETICIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('91263','91','EL ENCANTO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('91405','91','LA CHORRERA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('91407','91','LA PEDRERA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('91430','91','LA VICTORIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('91460','91','MIRITÍ - PARANÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('91530','91','PUERTO ALEGRÍA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('91536','91','PUERTO ARICA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('91540','91','PUERTO NARIÑO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('91669','91','PUERTO SANTANDER');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('91798','91','TARAPACÁ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('94001','94','INÍRIDA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('94343','94','BARRANCOMINAS');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('94883','94','SAN FELIPE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('94884','94','PUERTO COLOMBIA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('94885','94','LA GUADALUPE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('94886','94','CACAHUAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('94887','94','PANA PANA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('94888','94','MORICHAL');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('95001','95','SAN JOSÉ DEL GUAVIARE');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('95015','95','CALAMAR');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('95025','95','EL RETORNO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('95200','95','MIRAFLORES');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('97001','97','MITÚ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('97161','97','CARURÚ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('97511','97','PACOA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('97666','97','TARAIRA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('97777','97','PAPUNAHUA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('97889','97','YAVARATÉ');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('99001','99','PUERTO CARREÑO');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('99524','99','LA PRIMAVERA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('99624','99','SANTA ROSALÍA');
+INSERT IGNORE INTO Dim_Municipio (id_municipio, id_departamento, nombre_municipio) VALUES ('99773','99','CUMARIBO');

@@ -13,7 +13,32 @@ from app import create_app
 from app.models import db, Users, Role
 
 # Crear aplicación
+
 app = create_app()
+
+
+# Crear usuario admin automáticamente si la tabla Users está vacía (ejecutar al iniciar la app)
+def create_initial_admin():
+    from app.models import Users, Role, db
+    if Users.query.count() == 0:
+        admin_role = Role.query.filter_by(name='admin').first()
+        if not admin_role:
+            print('No existe el rol "admin" en la tabla role. Inserte el rol primero.')
+            return
+        admin = Users(
+            username='admin',
+            email='admin@empresa.com',
+            role_id=admin_role.id,
+            is_active=True
+        )
+        admin.set_password('Loteria123')
+        db.session.add(admin)
+        db.session.commit()
+        print('Usuario administrador inicial creado: admin / Loteria123')
+
+# Ejecutar la función justo después de crear la app
+with app.app_context():
+    create_initial_admin()
 
 
 @app.route('/')
@@ -32,37 +57,6 @@ def make_shell_context():
         'db': db,
         'Users': Users,
     }
-
-
-
-@app.cli.command()
-def create_admin():
-    """Crear un usuario administrador según el esquema."""
-    username = input('Ingrese nombre de usuario admin: ')
-    email = input('Ingrese correo electrónico: ')
-    password = input('Ingrese contraseña: ')
-
-    if Users.query.filter_by(username=username).first():
-        print(f'El usuario "{username}" ya existe.')
-        return
-
-    admin_role = Role.query.filter_by(name='admin').first()
-    if not admin_role:
-        print('No existe el rol "admin" en la tabla role. Inserte el rol primero.')
-        return
-
-    admin = Users(
-        username=username,
-        email=email,
-        role_id=admin_role.id,
-        is_active=True
-    )
-    admin.set_password(password)
-
-    db.session.add(admin)
-    db.session.commit()
-
-    print(f'¡Usuario administrador "{username}" creado exitosamente!')
 
 
 if __name__ == '__main__':
