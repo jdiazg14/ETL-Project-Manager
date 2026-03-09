@@ -25,16 +25,17 @@ def create_initial_admin():
         if not admin_role:
             print('No existe el rol "admin" en la tabla role. Inserte el rol primero.')
             return
+        admin_password = os.environ.get('INITIAL_ADMIN_PASSWORD', 'ClaveTemporal123')
         admin = Users(
             username='admin',
             email='admin@empresa.com',
             role_id=admin_role.id,
             is_active=True
         )
-        admin.set_password('Loteria123')
+        admin.set_password(admin_password)
         db.session.add(admin)
         db.session.commit()
-        print('Usuario administrador inicial creado: admin / Loteria123')
+        print('Usuario administrador inicial creado: admin / contraseña definida por la variable de entorno INITIAL_ADMIN_PASSWORD')
 
 # Ejecutar la función justo después de crear la app
 with app.app_context():

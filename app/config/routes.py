@@ -1,8 +1,8 @@
 
-from flask import Blueprint, render_template, redirect, url_for, flash, current_app, jsonify
+from flask import Blueprint, render_template, redirect, url_for, flash, current_app, jsonify, request
 from flask_login import login_required, current_user
 from app.config.decorators import admin_required
-from sqlalchemy import func, desc, text
+from sqlalchemy import func, desc, text, or_
 from app.models import db, Users, Role, ETLProjectLog
 from app.models import DimDepartamento, DimMunicipio, DimDistribuidor, DimGrupoDistribuidor
 from app.config.forms import UsuarioForm, DepartamentoForm, MunicipioForm, DistribuidorForm, GrupoForm
@@ -50,14 +50,42 @@ def editar_grupo(id_grupo):
         db.session.commit()
         flash('Grupo actualizado correctamente.', 'success')
         return redirect(url_for('config.grupos_index'))
-    return render_template('grupo_form.html', form=form, crear=False)
+    return render_template('config/grupo_form.html', form=form, crear=False)
 
 @config_bp.route('/grupos', endpoint='grupos_index')
 @login_required
 @admin_required
 def grupos_index():
-    grupos = DimGrupoDistribuidor.query.order_by(DimGrupoDistribuidor.nombre_grupo).all()
-    return render_template('config/grupos.html', grupos=grupos)
+    page = request.args.get('page', 1, type=int)
+    search = request.args.get('search', '', type=str)
+    sort = request.args.get('sort', 'nombre_grupo', type=str)
+    direction = request.args.get('direction', 'asc')
+    sort_map = {
+        'id_grupo': DimGrupoDistribuidor.id_grupo,
+        'nombre_grupo': DimGrupoDistribuidor.nombre_grupo,
+        'nit': DimGrupoDistribuidor.nit,
+        'plan': DimGrupoDistribuidor.plan,
+        'activo': DimGrupoDistribuidor.activo
+    }
+    sort_col = sort_map.get(sort, DimGrupoDistribuidor.nombre_grupo)
+    query = DimGrupoDistribuidor.query
+    if search:
+        search_lower = search.lower()
+        query = query.filter(
+            or_(
+                DimGrupoDistribuidor.nombre_grupo.ilike(f'%{search}%'),
+                DimGrupoDistribuidor.nit.ilike(f'%{search}%'),
+                DimGrupoDistribuidor.plan.ilike(f'%{search}%'),
+                (DimGrupoDistribuidor.activo == True if search_lower in ['si', 'sí', 'activo', 'true', '1'] else False),
+                (DimGrupoDistribuidor.activo == False if search_lower in ['no', 'inactivo', 'false', '0'] else False)
+            )
+        )
+    if direction == 'desc':
+        sort_col = sort_col.desc()
+    else:
+        sort_col = sort_col.asc()
+    grupos_pagination = query.order_by(sort_col).paginate(page=page, per_page=10)
+    return render_template('config/grupos.html', grupos=grupos_pagination.items, pagination=grupos_pagination, search=search, sort=sort, direction=direction)
 
 @config_bp.route('/grupos/nuevo', methods=['GET', 'POST'])
 @login_required
@@ -70,19 +98,7 @@ def nuevo_grupo():
         db.session.commit()
         flash('Grupo creado correctamente.', 'success')
         return redirect(url_for('config.grupos_index'))
-    return render_template('grupo_form.html', form=form, crear=True)
-from flask import Blueprint, render_template, redirect, url_for, flash, current_app, jsonify
-from flask_login import login_required, current_user
-from app.config.decorators import admin_required
-from sqlalchemy import func, desc, text
-from app.models import db, Users, Role, ETLProjectLog
-from app.models import DimDepartamento, DimMunicipio, DimDistribuidor
-from app.config.forms import UsuarioForm
-from app.config.forms import DepartamentoForm, MunicipioForm, DistribuidorForm
-from app.config.role_forms import RoleForm
-
-# DEFINICIÓN DEL BLUEPRINT
-config_bp = Blueprint('config', __name__, url_prefix='/config', template_folder='../templates/config')
+    return render_template('config/grupo_form.html', form=form, crear=True)
 
 # --- INACTIVAR DISTRIBUIDOR ---
 @config_bp.route('/distribuidores/inactivar/<int:id_distribuidor>', methods=['POST'])
@@ -431,8 +447,47 @@ def eliminar_municipio(id_municipio):
 @login_required
 @admin_required
 def lista_distribuidores():
-    distribuidores = DimDistribuidor.query.all()
-    return render_template('distribuidores.html', distribuidores=distribuidores)
+    page = request.args.get('page', 1, type=int)
+    search = request.args.get('search', '', type=str)
+    sort = request.args.get('sort', 'nombre_distribuidor', type=str)
+    direction = request.args.get('direction', 'asc')
+    # Mapeo de campos de ordenamiento
+    sort_map = {
+        'codigo_distribuidor': DimDistribuidor.codigo_distribuidor,
+        'nombre_distribuidor': DimDistribuidor.nombre_distribuidor,
+        'grupo': DimGrupoDistribuidor.nombre_grupo,
+        'municipio': DimMunicipio.nombre_municipio,
+        'cupo_asignado': DimDistribuidor.cupo_asignado,
+        'activo': DimDistribuidor.activo
+    }
+    sort_col = sort_map.get(sort, DimDistribuidor.nombre_distribuidor)
+    query = DimDistribuidor.query
+    # Hacer join solo si se ordena por campo relacionado
+    if sort == 'grupo':
+        query = query.join(DimDistribuidor.grupo, isouter=True)
+    elif sort == 'municipio':
+        query = query.join(DimDistribuidor.municipio, isouter=True)
+    if search:
+        search_lower = search.lower()
+        query = query.join(DimDistribuidor.grupo, isouter=True).join(DimDistribuidor.municipio, isouter=True)
+        query = query.filter(
+            or_(
+                DimDistribuidor.codigo_distribuidor.ilike(f'%{search}%'),
+                DimDistribuidor.nombre_distribuidor.ilike(f'%{search}%'),
+                DimDistribuidor.cupo_asignado.cast(db.String).ilike(f'%{search}%'),
+                DimGrupoDistribuidor.nombre_grupo.ilike(f'%{search}%'),
+                DimMunicipio.nombre_municipio.ilike(f'%{search}%'),
+                (DimDistribuidor.activo == True if search_lower in ['si', 'sí', 'activo', 'true', '1'] else False),
+                (DimDistribuidor.activo == False if search_lower in ['no', 'inactivo', 'false', '0'] else False)
+            )
+        )
+    # Aplica dirección asc/desc
+    if direction == 'desc':
+        sort_col = sort_col.desc()
+    else:
+        sort_col = sort_col.asc()
+    distribuidores_pagination = query.order_by(sort_col).paginate(page=page, per_page=10)
+    return render_template('config/distribuidores.html', distribuidores=distribuidores_pagination.items, pagination=distribuidores_pagination, search=search, sort=sort, direction=direction)
 
 @config_bp.route('/distribuidores/nuevo', methods=['GET', 'POST'])
 @login_required

@@ -23,3 +23,9 @@ Thumbs.db
 /data/temp/
 *.csv
 *.xlsx
+
+# --- Google Drive Temporales ---
+.tmp.driveupload/
+*.driveupload
+*.*.driveupload
+.google.drive.db

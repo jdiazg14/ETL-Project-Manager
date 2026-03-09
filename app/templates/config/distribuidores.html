@@ -4,11 +4,19 @@
 <div class="container-fluid py-4">
     <div style="width: 95%; margin: 0 auto;">
         <div class="row align-items-center mb-3">
-            <div class="col-md-8 d-flex align-items-center" style="gap: 0.5rem;">
+            <div class="col-md-6 d-flex align-items-center" style="gap: 0.5rem;">
                 <i class="fas fa-store fa-2x text-4xl text-dark"></i>
                 <span class="m-0 h2 fw-bold text-dark" style="letter-spacing:-0.5px;">Distribuidores</span>
             </div>
-            <div class="col-md-4 text-end">
+            <div class="col-md-6 text-end">
+                <form class="d-inline-flex align-items-center" method="get" action="">
+                    <input type="text" name="search" value="{{ search }}" class="form-control form-control-sm me-2" placeholder="Buscar por código, nombre, grupo, municipio, cupo o activo...">
+                    <input type="hidden" name="sort" value="{{ sort }}">
+                    <button class="btn btn-outline-primary btn-sm me-2" type="submit">Filtrar</button>
+                    {% if search %}
+                    <a href="?sort={{ sort }}" class="btn btn-outline-secondary btn-sm" title="Limpiar búsqueda"><i class="fas fa-times"></i></a>
+                    {% endif %}
+                </form>
                 <a href="{{ url_for('config.crear_distribuidor') }}" class="gradient-bg text-white px-4 py-2 rounded-lg fw-bold" style="white-space:nowrap;">
                     <i class="fas fa-plus"></i> Nuevo Distribuidor
                 </a>
@@ -17,26 +25,41 @@
         <div class="card shadow-sm">
             <div class="card-body p-0">
                 {% if distribuidores %}
-                <div class="table-responsive">
-                    <table class="table table-striped align-middle mb-0 w-100" style="font-size:0.9rem;">
-                        <colgroup>
-                            <col style="width:10%">
-                            <col style="width:40%">
-                            <col style="width:30%">
-                            <col style="width:12%">
-                            <col style="width:12%">
-                            <col style="width:8%">
-                            <col style="width:8%">
-                        </colgroup>
+                <div class="bg-white rounded-lg card-shadow overflow-hidden">
+                    <table class="w-full">
                         <thead class="gradient-bg text-white">
                             <tr>
-                                <th class="px-3">Código</th>
-                                <th class="px-3" style="max-width:400px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Nombre</th>
-                                <th class="px-3" style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Grupo</th>
-                                <th class="px-3">Municipio</th>
-                                <th class="px-3">Cupo</th>
-                                <th class="px-3" style="white-space:nowrap;">Activo</th>
-                                <th class="px-3 text-center text-nowrap">Acciones</th>
+                                <th class="px-6 py-4 text-left font-semibold cursor-pointer select-none">
+                                    <a href="?search={{ search }}&sort=codigo_distribuidor&direction={{ 'asc' if sort != 'codigo_distribuidor' or direction == 'desc' else 'desc' }}" class="text-white text-decoration-none">
+                                        Código <i class="fas fa-sort{% if sort == 'codigo_distribuidor' %}{% if direction == 'asc' %}-up{% elif direction == 'desc' %}-down{% endif %}{% endif %}"></i>
+                                    </a>
+                                </th>
+                                <th class="px-6 py-4 text-left font-semibold cursor-pointer select-none">
+                                    <a href="?search={{ search }}&sort=nombre_distribuidor&direction={{ 'asc' if sort != 'nombre_distribuidor' or direction == 'desc' else 'desc' }}" class="text-white text-decoration-none">
+                                        Nombre <i class="fas fa-sort{% if sort == 'nombre_distribuidor' %}{% if direction == 'asc' %}-up{% elif direction == 'desc' %}-down{% endif %}{% endif %}"></i>
+                                    </a>
+                                </th>
+                                <th class="px-6 py-4 text-left font-semibold cursor-pointer select-none">
+                                    <a href="?search={{ search }}&sort=grupo&direction={{ 'asc' if sort != 'grupo' or direction == 'desc' else 'desc' }}" class="text-white text-decoration-none">
+                                        Grupo <i class="fas fa-sort{% if sort == 'grupo' %}{% if direction == 'asc' %}-up{% elif direction == 'desc' %}-down{% endif %}{% endif %}"></i>
+                                    </a>
+                                </th>
+                                <th class="px-6 py-4 text-left font-semibold cursor-pointer select-none">
+                                    <a href="?search={{ search }}&sort=municipio&direction={{ 'asc' if sort != 'municipio' or direction == 'desc' else 'desc' }}" class="text-white text-decoration-none">
+                                        Municipio <i class="fas fa-sort{% if sort == 'municipio' %}{% if direction == 'asc' %}-up{% elif direction == 'desc' %}-down{% endif %}{% endif %}"></i>
+                                    </a>
+                                </th>
+                                <th class="px-6 py-4 text-left font-semibold cursor-pointer select-none">
+                                    <a href="?search={{ search }}&sort=cupo_asignado&direction={{ 'asc' if sort != 'cupo_asignado' or direction == 'desc' else 'desc' }}" class="text-white text-decoration-none">
+                                        Cupo <i class="fas fa-sort{% if sort == 'cupo_asignado' %}{% if direction == 'asc' %}-up{% elif direction == 'desc' %}-down{% endif %}{% endif %}"></i>
+                                    </a>
+                                </th>
+                                <th class="px-6 py-4 text-left font-semibold cursor-pointer select-none">
+                                    <a href="?search={{ search }}&sort=activo&direction={{ 'asc' if sort != 'activo' or direction == 'desc' else 'desc' }}" class="text-white text-decoration-none">
+                                        Activo <i class="fas fa-sort{% if sort == 'activo' %}{% if direction == 'asc' %}-up{% elif direction == 'desc' %}-down{% endif %}{% endif %}"></i>
+                                    </a>
+                                </th>
+                                <th class="px-6 py-4 text-center font-semibold select-none" style="white-space:nowrap;">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -46,7 +69,7 @@
                                 <td class="px-3" style="max-width:400px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ dist.nombre_distribuidor }}</td>
                                 <td class="px-3" style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ dist.grupo.nombre_grupo if dist.grupo else 'Independiente' }}</td>
                                 <td class="px-3">{{ dist.municipio.nombre_municipio if dist.municipio and dist.municipio.nombre_municipio else '' }}</td>
-                                <td class="px-3">$ {{ '{:,.2f}'.format(dist.cupo_asignado) if dist.cupo_asignado is not none else '' }}</td>
+                                <td class="px-3">{{ '{:,.2f}'.format(dist.cupo_asignado) if dist.cupo_asignado is not none else '' }}</td>
                                 <td class="px-3" style="white-space:nowrap;">
                                     {% if dist.activo %}
                                         <span class="badge bg-success">Sí</span>
@@ -57,7 +80,9 @@
                                 <td class="px-3 text-center text-nowrap">
                                     <a href="{{ url_for('config.editar_distribuidor', id_distribuidor=dist.id_distribuidor) }}" class="btn btn-link p-0 mx-1" title="Editar"><i class="fas fa-edit text-primary"></i></a>
                                     <form action="{{ url_for('config.inactivar_distribuidor', id_distribuidor=dist.id_distribuidor) }}" method="post" style="display:inline;">
-                                        <button type="submit" class="btn btn-link p-0 mx-1" title="Inactivar" onclick="return confirm('¿Está seguro de inactivar este distribuidor?');"><i class="fas fa-toggle-off text-purple-700"></i></button>
+                                        <button type="submit" class="btn btn-link p-0 mx-1" title="{{ 'Inactivar' if dist.activo else 'Activar' }}" onclick="return confirm('¿Está seguro de {{ 'inactivar' if dist.activo else 'activar' }} este distribuidor?');">
+                                            <i class="fas {{ 'fa-toggle-on text-purple-700' if dist.activo else 'fa-toggle-off text-gray-400' }}"></i>
+                                        </button>
                                     </form>
                                     <form action="{{ url_for('config.eliminar_distribuidor', id_distribuidor=dist.id_distribuidor) }}" method="post" style="display:inline;">
                                         <button type="submit" class="btn btn-link p-0 mx-1" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este distribuidor?');"><i class="fas fa-trash text-danger"></i></button>
@@ -73,6 +98,53 @@
                 {% endif %}
             </div>
         </div>
+        {% if pagination and pagination.pages > 1 %}
+        <nav class="mt-3 d-flex justify-content-center">
+            <ul class="pagination pagination-sm">
+                <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                    <a class="page-link" style="color: #6f42c1;" href="?search={{ search }}&sort={{ sort }}&direction={{ direction }}&page=1">«</a>
+                </li>
+                <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                    <a class="page-link" style="color: #6f42c1;" href="?search={{ search }}&sort={{ sort }}&direction={{ direction }}&page={{ pagination.prev_num }}">‹</a>
+                </li>
+                {% set total_pages = pagination.pages %}
+                {% set current = pagination.page %}
+                {% set max_pages = 10 %}
+                {% if total_pages <= max_pages %}
+                    {% set start = 1 %}
+                    {% set end = total_pages %}
+                {% else %}
+                    {% if current <= 6 %}
+                        {% set start = 1 %}
+                        {% set end = max_pages %}
+                    {% elif current > total_pages - 5 %}
+                        {% set start = total_pages - max_pages + 1 %}
+                        {% set end = total_pages %}
+                    {% else %}
+                        {% set start = current - 5 %}
+                        {% set end = current + 4 %}
+                    {% endif %}
+                {% endif %}
+                {% if start > 1 %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+                {% for p in range(start, end + 1) %}
+                <li class="page-item {% if p == current %}active{% endif %}">
+                    <a class="page-link {% if p == current %}bg-primary border-primary text-white{% endif %}" style="{% if p == current %}background-color: #6f42c1; border-color: #6f42c1; color: #fff;{% else %}color: #6f42c1;{% endif %}" href="?search={{ search }}&sort={{ sort }}&direction={{ direction }}&page={{ p }}">{{ p }}</a>
+                </li>
+                {% endfor %}
+                {% if end < total_pages %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+                <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                    <a class="page-link" style="color: #6f42c1;" href="?search={{ search }}&sort={{ sort }}&direction={{ direction }}&page={{ pagination.next_num }}">›</a>
+                </li>
+                <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                    <a class="page-link" style="color: #6f42c1;" href="?search={{ search }}&sort={{ sort }}&direction={{ direction }}&page={{ pagination.pages }}">»</a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

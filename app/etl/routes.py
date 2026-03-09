@@ -95,18 +95,9 @@ def confirm_upload():
 @etl_bp.route('/historial')
 @login_required
 def historial():
-    """
-    Mostrar historial de cargas del usuario.
-    Los admins ven todas las cargas.
-    """
-    if current_user.is_admin():
-        uploads = DataUpload.query.order_by(DataUpload.uploaded_at.desc()).all()
-    else:
-        uploads = DataUpload.query.filter_by(user_id=current_user.id).order_by(
-            DataUpload.uploaded_at.desc()
-        ).all()
-    
-    return render_template('historial.html', uploads=uploads)
+    from flask import flash, redirect, url_for
+    flash('Función en desarrollo', 'warning')
+    return redirect(url_for('config.dashboard'))
 
 
 @etl_bp.route('/ver/<int:upload_id>')
