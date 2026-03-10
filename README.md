@@ -2,7 +2,7 @@
 # ETL-Project-Manager
 
 ## Resumen
-Este proyecto es un gestor ETL minimalista para cargas de archivos y registro de logs, con autenticación y control de roles. El esquema de base de datos está gestionado externamente en PostgreSQL y solo se manejan las tablas `role`, `user` y `etl_project_logs`.
+Este proyecto es un gestor ETL para cargas de archivos y registro de logs, con autenticación y control de roles. El esquema de base de datos está gestionado externamente en MySQL.
 
 ## Arquitectura
 - **Backend:** Flask + SQLAlchemy
@@ -19,7 +19,7 @@ DATABASE_URL=mysql+pymysql://usuario:password@localhost/nombre_db
 - **Carga de archivos:** Los archivos se procesan en memoria (pandas DataFrame), no se almacenan en la base de datos.
 
 ## Configuración rápida
-1. Crea y configura tu base de datos PostgreSQL según `schema.sql`.
+1. Crea y configura tu base de datos MySQL según `schema.sql`.
 2. Crea un archivo `.env` con la variable `DATABASE_URL` y tu `SECRET_KEY`.
 3. Instala dependencias:
 	 ```bash
@@ -29,13 +29,6 @@ DATABASE_URL=mysql+pymysql://usuario:password@localhost/nombre_db
 	 ```bash
 	 python run.py
 	 ```
-
-## Comandos útiles
-- Crear usuario admin:
-	```bash
-	flask create_admin
-	```
-
 
 ## Acceso Inicial y Seguridad
 

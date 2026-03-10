@@ -24,7 +24,7 @@ class Users(UserMixin, db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    logs = db.relationship('ETLProjectLog', backref='users', lazy=True)
+    logs = db.relationship('ETLProjectLog', back_populates='user', lazy=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -39,15 +39,19 @@ class Users(UserMixin, db.Model):
         return f'<Users {self.username}>'
 
 class ETLProjectLog(db.Model):
+    """Bitacora inmutable de eventos ETL para auditoria y cumplimiento."""
     __tablename__ = 'etl_project_logs'
     id = db.Column(db.Integer, primary_key=True)
-    filename = db.Column(db.String(255), nullable=False)
-    status = db.Column(db.String(50))
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    upload_date = db.Column(db.DateTime, default=datetime.utcnow)
+    action = db.Column(db.String(50), nullable=False)
+    nombre_archivo = db.Column(db.String(255), nullable=False)
+    fecha_carga_archivo = db.Column(db.DateTime, nullable=False)
+    registros_afectados = db.Column(db.Integer, nullable=False, default=0)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    upload_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    user = db.relationship('Users', back_populates='logs')
 
     def __repr__(self):
-        return f'<ETLProjectLog {self.filename}>'
+        return f'<ETLProjectLog {self.action} {self.nombre_archivo}>'
 
 # --- Modelos de negocio ---
 class DimDepartamento(db.Model):
@@ -87,6 +91,19 @@ class DimDistribuidor(db.Model):
     grupo = db.relationship('DimGrupoDistribuidor', back_populates='distribuidores')
     ventas = db.relationship('FactVentas', back_populates='distribuidor', lazy=True)
 
+
+class DimTiempo(db.Model):
+    __tablename__ = 'Dim_Tiempo'
+    id_tiempo = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    fecha = db.Column(db.Date, unique=True, nullable=False)
+    anio = db.Column(db.Integer, nullable=False)
+    mes = db.Column(db.Integer, nullable=False)
+    dia = db.Column(db.Integer, nullable=False)
+    dia_semana_nombre = db.Column(db.String(20))
+    dia_semana_num = db.Column(db.Integer)
+    es_fin_semana = db.Column(db.Boolean)
+    trimestre = db.Column(db.Integer)
+
 # --- Hechos de Ventas ---
 class FactVentas(db.Model):
     __tablename__ = 'Fact_Ventas'
@@ -94,6 +111,8 @@ class FactVentas(db.Model):
     id_tiempo = db.Column(db.Integer, db.ForeignKey('Dim_Tiempo.id_tiempo'), nullable=False)
     id_distribuidor = db.Column(db.Integer, db.ForeignKey('Dim_Distribuidor.id_distribuidor'), nullable=False)
     id_municipio = db.Column(db.String(5), db.ForeignKey('Dim_Municipio.id_municipio'), nullable=False)
+    nombre_archivo = db.Column(db.String(255), nullable=False)
+    fecha_carga = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     sorteo = db.Column(db.Integer, nullable=False)
     cantidad_despachada = db.Column(db.Integer, default=0)
     cantidad_devuelta = db.Column(db.Integer, default=0)

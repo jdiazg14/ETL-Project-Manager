@@ -14,7 +14,10 @@
 
     <!-- Card de Carga -->
     <div class="bg-white rounded-lg card-shadow p-8">
-        <form method="POST" enctype="multipart/form-data" class="space-y-6">
+        <!-- Contenedor de Mensajes de Validación -->
+        <div id="mensajesValidacion" class="hidden mb-6 rounded-lg border px-4 py-4 text-sm"></div>
+
+        <form method="POST" enctype="multipart/form-data" class="space-y-6" id="formUpload">
             <!-- Área de Drop/Upload -->
             <div class="border-3 border-dashed border-purple-300 rounded-lg p-12 text-center bg-purple-50 hover:bg-purple-100 transition cursor-pointer"
                  id="dropZone">
@@ -62,13 +65,10 @@
             </div>
 
             <!-- Botones -->
-            <div class="flex gap-4">
-                <button type="submit" class="flex-1 gradient-bg text-white font-bold py-3 rounded-lg hover:opacity-90 transition cursor-pointer">
+            <div>
+                <button type="submit" class="w-full gradient-bg text-white font-bold py-3 rounded-lg hover:opacity-90 transition cursor-pointer">
                     <i class="fas fa-upload"></i> Cargar y Procesar
                 </button>
-                <a href="{{ url_for('etl.historial') }}" class="flex-1 bg-gray-300 text-gray-800 font-bold py-3 rounded-lg hover:bg-gray-400 transition text-center">
-                    <i class="fas fa-history"></i> Ver Historial
-                </a>
             </div>
         </form>
     </div>
@@ -106,6 +106,8 @@
     const fileInput = document.getElementById('fileInput');
     const selectedFile = document.getElementById('selectedFile');
     const fileName = document.getElementById('fileName');
+    const formUpload = document.getElementById('formUpload');
+    const mensajesValidacion = document.getElementById('mensajesValidacion');
 
     // Click para seleccionar archivo
     dropZone.addEventListener('click', () => fileInput.click());
@@ -133,13 +135,266 @@
     // Cambio de archivo
     fileInput.addEventListener('change', updateFileDisplay);
 
+    /**
+     * Reset de interfaz al iniciar una nueva carga de archivo.
+     * - Limpia errores previos.
+     * - Cierra modales/alertas de exito de la sesion anterior.
+     * - Bloquea guardado hasta validar nuevamente.
+     */
+    function resetEstadoCarga() {
+        ocultarMensajes();
+
+        if (typeof hideGlobalModal === 'function') {
+            hideGlobalModal();
+        } else {
+            const modal = document.getElementById('globalModal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+        }
+
+        if (window.__flashMessages) {
+            window.__flashMessages = [];
+        }
+
+        bloquearGuardarSiExiste();
+    }
+
     function updateFileDisplay() {
         if (fileInput.files.length > 0) {
             fileName.textContent = fileInput.files[0].name;
             selectedFile.classList.remove('hidden');
+            resetEstadoCarga();
         } else {
             selectedFile.classList.add('hidden');
         }
+    }
+
+    // ========================================================================
+    // SISTEMA DE VALIDACIÓN POR CAPAS - FRONTEND
+    // ========================================================================
+    
+    /**
+     * Interceptar el envío del formulario para validación asíncrona
+     * METODOLOGÍA: Permite mostrar errores detallados sin recargar la página
+     */
+    formUpload.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Reset de estado visual para nuevo intento de carga.
+        resetEstadoCarga();
+        
+        // Crear FormData con el archivo
+        const formData = new FormData(formUpload);
+        
+        // Mostrar indicador de carga
+        mostrarCargando();
+        
+        // Enviar petición AJAX
+        fetch(formUpload.action || window.location.href, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            // Si el servidor retorna HTML (200 OK con vista previa), redirigir
+            if (response.ok && response.headers.get('content-type').includes('text/html')) {
+                return response.text().then(html => {
+                    // Reemplazar el contenido de la página con la vista previa
+                    document.open();
+                    document.write(html);
+                    document.close();
+                });
+            }
+            
+            // Si no es HTML, debe ser JSON (errores de validación)
+            return response.json().then(data => {
+                if (!response.ok) {
+                    // Respuesta de error (400) con reporte de validación
+                    mostrarErroresValidacion(data);
+                }
+            });
+        })
+        .catch(error => {
+            ocultarCargando();
+            mostrarError('Error al procesar el archivo: ' + error.message);
+        });
+    });
+    
+    /**
+     * Mostrar indicador de carga durante el procesamiento
+     */
+    function mostrarCargando() {
+        mensajesValidacion.className = 'mb-6 rounded-lg border px-4 py-4 text-sm bg-blue-50 border-blue-200 text-blue-800';
+        mensajesValidacion.innerHTML = `
+            <div class="flex items-center">
+                <i class="fas fa-spinner fa-spin mr-2"></i>
+                <span>Procesando archivo y validando datos...</span>
+            </div>
+        `;
+        mensajesValidacion.classList.remove('hidden');
+    }
+    
+    /**
+     * Ocultar todos los mensajes
+     */
+    function ocultarMensajes() {
+        mensajesValidacion.classList.add('hidden');
+        mensajesValidacion.innerHTML = '';
+    }
+    
+    /**
+     * Ocultar indicador de carga
+     */
+    function ocultarCargando() {
+        ocultarMensajes();
+    }
+    
+    /**
+     * Mostrar mensaje de error genérico
+     */
+    function mostrarError(mensaje) {
+        mensajesValidacion.className = 'mb-6 rounded-lg border px-4 py-4 text-sm bg-red-50 border-red-200 text-red-800';
+        mensajesValidacion.innerHTML = `
+            <div class="flex items-start">
+                <i class="fas fa-exclamation-circle mt-0.5 mr-2"></i>
+                <span>${mensaje}</span>
+            </div>
+        `;
+        mensajesValidacion.classList.remove('hidden');
+        bloquearGuardarSiExiste();
+    }
+
+    /**
+     * Bloquea el botón Guardar si está presente en la vista actual.
+     * Este guardarraíl evita persistencia cuando backend reporta formato inválido.
+     */
+    function bloquearGuardarSiExiste() {
+        const btnGuardar = document.getElementById('btn-guardar-bd');
+        if (!btnGuardar) {
+            return;
+        }
+        btnGuardar.disabled = true;
+        btnGuardar.className = 'w-full bg-gray-400 text-gray-700 font-bold py-3 rounded-lg cursor-not-allowed';
+    }
+    
+    /**
+     * Mostrar errores de validación detallados por capas
+     * METODOLOGÍA: Este sistema de reporte permite al usuario identificar
+     * exactamente qué datos deben corregirse antes de persistir en la BD.
+     * 
+     * @param {Object} reporte - Diccionario con errores categorizados
+     */
+    function mostrarErroresValidacion(reporte) {
+        ocultarCargando();
+        
+        let htmlErrores = '<div class="space-y-3">';
+        htmlErrores += '<div class="font-bold text-red-900 mb-2"><i class="fas fa-exclamation-triangle"></i> Errores de Validación</div>';
+        
+        // --- Error genérico ---
+        if (reporte.error) {
+            htmlErrores += `<div class="pl-4">${reporte.error}</div>`;
+        }
+        
+        // --- Errores de Formato: Columnas faltantes ---
+        if (reporte.formato) {
+            htmlErrores += `
+                <div class="border-l-4 border-orange-500 pl-3">
+                    <div class="font-semibold text-orange-900">Formato de Archivo:</div>
+                    <div class="text-orange-800">${reporte.formato}</div>
+                </div>
+            `;
+        }
+
+        // --- Errores de Formato: Fila exacta por columna numérica ---
+        if (reporte.formato_detalle && reporte.formato_detalle.length > 0) {
+            htmlErrores += `
+                <div class="border-l-4 border-orange-500 pl-3">
+                    <div class="font-semibold text-orange-900">Detalle de celdas con formato inválido:</div>
+                    <ul class="list-disc list-inside text-orange-800">
+            `;
+            reporte.formato_detalle.forEach(item => {
+                const filasTexto = (item.filas || []).join(', ');
+                htmlErrores += `<li>Columna <strong>${item.columna}</strong>: filas ${filasTexto}</li>`;
+            });
+            htmlErrores += '</ul></div>';
+        }
+        
+        // --- Errores de Formato: Valores nulos ---
+        if (reporte.valores_nulos) {
+            htmlErrores += `
+                <div class="border-l-4 border-yellow-500 pl-3">
+                    <div class="font-semibold text-yellow-900">Valores Nulos Detectados:</div>
+                    <ul class="list-disc list-inside text-yellow-800">
+            `;
+            reporte.valores_nulos.forEach(error => {
+                htmlErrores += `<li>${error}</li>`;
+            });
+            htmlErrores += '</ul></div>';
+        }
+        
+        // --- Errores de Formato Numérico ---
+        if (reporte.formato_numerico) {
+            htmlErrores += `
+                <div class="border-l-4 border-orange-500 pl-3">
+                    <div class="font-semibold text-orange-900">Errores de Tipo de Dato:</div>
+                    <ul class="list-disc list-inside text-orange-800">
+            `;
+            reporte.formato_numerico.forEach(error => {
+                htmlErrores += `<li>${error}</li>`;
+            });
+            htmlErrores += '</ul></div>';
+        }
+
+        // --- Avisos de Integridad: Porcentaje nulo completado ---
+        if (reporte.avisos && reporte.avisos.length > 0) {
+            htmlErrores += `
+                <div class="border-l-4 border-yellow-500 pl-3">
+                    <div class="font-semibold text-yellow-900">Avisos del Proceso ETL:</div>
+                    <ul class="list-disc list-inside text-yellow-800">
+            `;
+            reporte.avisos.forEach(aviso => {
+                htmlErrores += `<li>${aviso}</li>`;
+            });
+            htmlErrores += '</ul></div>';
+        }
+        
+        // --- Validación de Integridad: Sorteo duplicado ---
+        if (reporte.sorteo) {
+            htmlErrores += `
+                <div class="border-l-4 border-red-500 pl-3">
+                    <div class="font-semibold text-red-900">Sorteo Duplicado:</div>
+                    <div class="text-red-800">${reporte.sorteo}</div>
+                </div>
+            `;
+        }
+        
+        // --- Validación de Integridad: Distribuidores faltantes ---
+        if (reporte.distribuidores_faltantes && reporte.distribuidores_faltantes.length > 0) {
+            htmlErrores += `
+                <div class="border-l-4 border-purple-500 pl-3">
+                    <div class="font-semibold text-purple-900">Distribuidores No Registrados:</div>
+                    <div class="text-purple-800 mb-1">Los siguientes códigos de distribuidor no existen en la base de datos:</div>
+                    <ul class="list-disc list-inside text-purple-800">
+            `;
+            reporte.distribuidores_faltantes.forEach(codigo => {
+                htmlErrores += `<li>• Falta crear el distribuidor <strong>${codigo}</strong></li>`;
+            });
+            htmlErrores += '</ul></div>';
+        }
+        
+        htmlErrores += '</div>';
+        
+        // Renderizar en el contenedor
+        mensajesValidacion.className = 'mb-6 rounded-lg border px-4 py-4 text-sm bg-red-50 border-red-200 text-red-800';
+        mensajesValidacion.innerHTML = htmlErrores;
+        mensajesValidacion.classList.remove('hidden');
+
+        if (reporte.bloquear_guardado) {
+            bloquearGuardarSiExiste();
+        }
+        
+        // Hacer scroll al contenedor de errores
+        mensajesValidacion.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 </script>
 {% endblock %}

@@ -25,10 +25,12 @@ CREATE TABLE users (
 -- 4. Tabla de Logs de Proyectos ETL
 CREATE TABLE etl_project_logs (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    filename VARCHAR(255) NOT NULL,
-    status VARCHAR(50),
+    action VARCHAR(50) NOT NULL,
+    nombre_archivo VARCHAR(255) NOT NULL,
+    fecha_carga_archivo DATETIME NOT NULL,
+    registros_afectados INT NOT NULL DEFAULT 0,
     user_id INT,
-    upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    upload_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id)
 );
 

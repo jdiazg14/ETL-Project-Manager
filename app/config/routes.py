@@ -130,8 +130,8 @@ def dashboard():
     total_admins = Users.query.filter_by(role_id=admin_role.id if admin_role else None).count()
     total_analistas = Users.query.filter_by(role_id=analista_role.id if analista_role else None).count()
     total_logs = ETLProjectLog.query.count()
-    logs_procesados = ETLProjectLog.query.filter_by(status='processed').count()
-    logs_error = ETLProjectLog.query.filter_by(status='error').count()
+    logs_procesados = ETLProjectLog.query.filter_by(action='CARGA').count()
+    logs_error = ETLProjectLog.query.filter_by(action='ERROR').count()
     latest_logs = ETLProjectLog.query.order_by(ETLProjectLog.upload_date.desc()).limit(10).all()
     try:
         db.session.execute(text('SELECT 1'))
@@ -494,19 +494,22 @@ def lista_distribuidores():
 @admin_required
 def crear_distribuidor():
     form = DistribuidorForm()
-    form.id_municipio.choices = [(m.id_municipio, m.nombre_municipio) for m in DimMunicipio.query.all()]
+    # Mantiene municipios sincronizados con el departamento seleccionado
+    if form.id_departamento.data:
+        municipios = DimMunicipio.query.filter_by(id_departamento=form.id_departamento.data).order_by(DimMunicipio.nombre_municipio).all()
+        form.id_municipio.choices = [(m.id_municipio, m.nombre_municipio) for m in municipios]
+    else:
+        form.id_municipio.choices = []
     if form.validate_on_submit():
-        existing = DimDistribuidor.query.filter_by(codigo_sucursal=form.codigo_sucursal.data).first()
+        existing = DimDistribuidor.query.filter_by(codigo_distribuidor=form.codigo_distribuidor.data).first()
         if existing:
-            flash('El código de sucursal ya existe.', 'danger')
+            flash('El código de distribuidor ya existe.', 'danger')
             return render_template('distribuidor_form.html', form=form, crear=True)
         distribuidor = DimDistribuidor(
-            codigo_sucursal=form.codigo_sucursal.data,
-            nombre_sucursal=form.nombre_sucursal.data,
-            nit=form.nit.data,
-            razon_social=form.razon_social.data,
+            codigo_distribuidor=form.codigo_distribuidor.data,
+            nombre_distribuidor=form.nombre_distribuidor.data,
             cupo_asignado=form.cupo_asignado.data,
-            grupo=form.grupo.data,
+            id_grupo=form.id_grupo.data,
             id_municipio=form.id_municipio.data,
             activo=form.activo.data
         )
@@ -526,14 +529,25 @@ def crear_distribuidor():
 def editar_distribuidor(id_distribuidor):
     distribuidor = DimDistribuidor.query.get_or_404(id_distribuidor)
     form = DistribuidorForm(obj=distribuidor)
-    form.id_municipio.choices = [(m.id_municipio, m.nombre_municipio) for m in DimMunicipio.query.all()]
+
+    # En edición, precarga el departamento del municipio actual para marcar selected
+    if request.method == 'GET' and distribuidor.municipio:
+        form.id_departamento.data = distribuidor.municipio.id_departamento
+
+    if form.id_departamento.data:
+        municipios = DimMunicipio.query.filter_by(id_departamento=form.id_departamento.data).order_by(DimMunicipio.nombre_municipio).all()
+        form.id_municipio.choices = [(m.id_municipio, m.nombre_municipio) for m in municipios]
+    else:
+        form.id_municipio.choices = []
+
+    if request.method == 'GET' and distribuidor.id_municipio:
+        form.id_municipio.data = distribuidor.id_municipio
+
     if form.validate_on_submit():
-        distribuidor.codigo_sucursal = form.codigo_sucursal.data
-        distribuidor.nombre_sucursal = form.nombre_sucursal.data
-        distribuidor.nit = form.nit.data
-        distribuidor.razon_social = form.razon_social.data
+        distribuidor.codigo_distribuidor = form.codigo_distribuidor.data
+        distribuidor.nombre_distribuidor = form.nombre_distribuidor.data
         distribuidor.cupo_asignado = form.cupo_asignado.data
-        distribuidor.grupo = form.grupo.data
+        distribuidor.id_grupo = form.id_grupo.data
         distribuidor.id_municipio = form.id_municipio.data
         distribuidor.activo = form.activo.data
         try:

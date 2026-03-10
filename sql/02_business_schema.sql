@@ -60,6 +60,8 @@ CREATE TABLE Fact_Ventas (
     id_tiempo INT NOT NULL,
     id_distribuidor INT NOT NULL,
     id_municipio VARCHAR(5) NOT NULL,      -- Para reportes geográficos rápidos
+    nombre_archivo VARCHAR(255) NOT NULL,   -- Trazabilidad por lote ETL
+    fecha_carga DATETIME NOT NULL,          -- Fecha/hora exacta del lote
     sorteo INT NOT NULL,
     cantidad_despachada INT DEFAULT 0,
     cantidad_devuelta INT DEFAULT 0,
@@ -74,3 +76,4 @@ CREATE TABLE Fact_Ventas (
     CONSTRAINT fk_fac_dist FOREIGN KEY (id_distribuidor) REFERENCES Dim_Distribuidor(id_distribuidor),
     CONSTRAINT fk_fac_muni FOREIGN KEY (id_municipio) REFERENCES Dim_Municipio(id_municipio)
 ) ENGINE=InnoDB;
+

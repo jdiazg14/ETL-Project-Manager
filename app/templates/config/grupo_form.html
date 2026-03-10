@@ -1,44 +1,40 @@
 {% extends 'base.html' %}
 {% block title %}{{ 'Editar Grupo' if not crear else 'Nuevo Grupo' }} - ETL Manager{% endblock %}
 {% block content %}
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-7">
-            <div class="card shadow-sm">
-                <div class="card-header gradient-bg text-white">
-                    <h5 class="mb-0">{{ 'Editar Grupo' if not crear else 'Nuevo Grupo' }}</h5>
+<div class="max-w-2xl mx-auto py-8">
+    <div class="bg-white rounded-lg card-shadow">
+        <div class="gradient-bg text-white px-6 py-4 rounded-t-lg">
+            <h1 class="text-2xl font-bold mb-0">{{ 'Editar Grupo' if not crear else 'Nuevo Grupo' }}</h1>
+        </div>
+        <div class="p-6">
+            <form method="POST" class="space-y-4">
+                {{ form.hidden_tag() }}
+                <div>
+                    <label for="nombre_grupo" class="block text-gray-700 font-bold mb-2">Nombre</label>
+                    {{ form.nombre_grupo(class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white", id="nombre_grupo", placeholder="Nombre del grupo") }}
+                    {% if form.nombre_grupo.errors %}
+                        <div class="text-red-600 text-sm mt-1">{{ form.nombre_grupo.errors[0] }}</div>
+                    {% endif %}
                 </div>
-                <div class="card-body">
-                    <form method="POST">
-                        {{ form.hidden_tag() }}
-                        <div class="mb-3">
-                            <label for="nombre_grupo" class="form-label">Nombre</label>
-                            {{ form.nombre_grupo(class="form-control", id="nombre_grupo", placeholder="Nombre del grupo") }}
-                            {% if form.nombre_grupo.errors %}
-                                <div class="text-danger small">{{ form.nombre_grupo.errors[0] }}</div>
-                            {% endif %}
-                        </div>
-                        <div class="mb-3">
-                            <label for="nit" class="form-label">NIT</label>
-                            {{ form.nit(class="form-control", id="nit", placeholder="NIT del grupo") }}
-                            {% if form.nit.errors %}
-                                <div class="text-danger small">{{ form.nit.errors[0] }}</div>
-                            {% endif %}
-                        </div>
-                        <div class="mb-3">
-                            <label for="plan" class="form-label">Plan</label>
-                            {{ form.plan(class="form-control", id="plan", placeholder="Plan del grupo") }}
-                            {% if form.plan.errors %}
-                                <div class="text-danger small">{{ form.plan.errors[0] }}</div>
-                            {% endif %}
-                        </div>
-                        <div class="d-flex justify-content-end gap-2">
-                            <button type="submit" class="btn btn-success">Guardar</button>
-                            <a href="{{ url_for('config.grupos_index') }}" class="btn btn-secondary">Cancelar</a>
-                        </div>
-                    </form>
+                <div>
+                    <label for="nit" class="block text-gray-700 font-bold mb-2">NIT</label>
+                    {{ form.nit(class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white", id="nit", placeholder="NIT del grupo") }}
+                    {% if form.nit.errors %}
+                        <div class="text-red-600 text-sm mt-1">{{ form.nit.errors[0] }}</div>
+                    {% endif %}
                 </div>
-            </div>
+                <div>
+                    <label for="plan" class="block text-gray-700 font-bold mb-2">Plan</label>
+                    {{ form.plan(class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white", id="plan", placeholder="Plan del grupo") }}
+                    {% if form.plan.errors %}
+                        <div class="text-red-600 text-sm mt-1">{{ form.plan.errors[0] }}</div>
+                    {% endif %}
+                </div>
+                <div class="flex justify-end gap-2 mt-6">
+                    {{ form.submit(class="gradient-bg text-white px-6 py-2 rounded-lg font-semibold hover:opacity-90 transition cursor-pointer") }}
+                    <a href="{{ url_for('config.grupos_index') }}" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition text-center">Cancelar</a>
+                </div>
+            </form>
         </div>
     </div>
 </div>

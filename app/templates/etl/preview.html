@@ -9,7 +9,6 @@
         <h1 class="text-4xl font-bold text-gray-800 mb-2">
             <i class="fas fa-eye"></i> Vista Previa de Datos
         </h1>
-        <p class="text-gray-600">Revise los datos antes de guardar en la base de datos</p>
     </div>
 
 
@@ -19,20 +18,38 @@
         <p class="text-lg font-bold text-gray-800">{{ filename }}</p>
     </div>
 
+    {% if avisos_integridad %}
+    <div class="mb-6 rounded-lg border border-yellow-300 bg-yellow-50 p-4 text-yellow-900">
+        <h3 class="font-semibold mb-2"><i class="fas fa-exclamation-triangle"></i> Avisos de Integridad de Entrada</h3>
+        <ul class="list-disc list-inside text-sm">
+            {% for aviso in avisos_integridad %}
+            <li>{{ aviso }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
     <!-- Muestra de Datos -->
-    <div class="bg-white rounded-lg card-shadow p-6 mb-6">
+    <div class="bg-white rounded-lg card-shadow p-6 mb-6 border border-gray-200">
         <h2 class="text-2xl font-bold text-gray-800 mb-4">
-            <i class="fas fa-table"></i> Muestra de Datos (Primeras 10 Filas)
+            <i class="fas fa-table"></i> Muestra de Datos
         </h2>
-        <div class="overflow-x-auto">
-            {{ tabla|safe }}
+        <div id="previewTableContainer" class="w-full border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                {{ tabla|safe }}
+            </div>
         </div>
+        <div id="previewPagination" class="mt-4 flex items-center justify-between"></div>
     </div>
 
     <!-- Botones de Acción -->
     <div class="flex gap-4 mb-8">
+        <button type="button" id="btn-validar-negocio" class="flex-1 bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition cursor-pointer">
+            <i class="fas fa-check-circle"></i> Validar Reglas de Negocio
+        </button>
         <form method="POST" action="{{ url_for('etl.confirm_upload') }}" class="flex-1">
-            <button type="submit" class="w-full gradient-bg text-white font-bold py-3 rounded-lg hover:opacity-90 transition cursor-pointer">
+            <div id="previewMensaje" class="hidden mb-3 rounded-lg border px-4 py-3 text-sm font-medium"></div>
+            <button type="submit" id="btn-guardar-bd" disabled class="w-full bg-gray-400 text-gray-700 font-bold py-3 rounded-lg cursor-not-allowed">
                 <i class="fas fa-save"></i> Guardar Datos en Base de Datos
             </button>
         </form>
@@ -51,4 +68,265 @@
         </p>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tableContainer = document.getElementById('previewTableContainer');
+    const paginationContainer = document.getElementById('previewPagination');
+    const messageBox = document.getElementById('previewMensaje');
+    const saveButton = document.getElementById('btn-guardar-bd');
+    const businessValidationButton = document.getElementById('btn-validar-negocio');
+
+    // Definir API de mensajes PRIMERO
+    window.showPreviewMessage = function(type, text) {
+        if (!messageBox) {
+            return;
+        }
+        const isSuccess = type === 'success';
+        messageBox.className = isSuccess
+            ? 'mb-3 rounded-lg border px-4 py-3 text-sm font-medium bg-green-50 border-green-200 text-green-800'
+            : 'mb-3 rounded-lg border px-4 py-3 text-sm font-medium bg-red-50 border-red-200 text-red-800';
+        messageBox.style.whiteSpace = 'pre-line';
+        messageBox.textContent = text;
+    };
+
+    window.hidePreviewMessage = function() {
+        if (!messageBox) {
+            return;
+        }
+        messageBox.className = 'hidden mb-3 rounded-lg border px-4 py-3 text-sm font-medium';
+        messageBox.textContent = '';
+    };
+
+    if (!tableContainer) {
+        return;
+    }
+
+    const table = tableContainer.querySelector('table');
+    if (!table) {
+        return;
+    }
+
+    // Estilos sincronizados con vistas de gestión (distribuidores/usuarios)
+    table.className = 'w-full min-w-max text-sm text-gray-700';
+
+    const thead = table.querySelector('thead');
+    if (thead) {
+        thead.className = 'gradient-bg text-white';
+        const ths = thead.querySelectorAll('th');
+        ths.forEach(function(th) {
+            th.className = 'px-6 py-4 text-left font-semibold';
+        });
+    }
+
+    const tbody = table.querySelector('tbody');
+    if (!tbody) {
+        paginationContainer.innerHTML = '';
+        return;
+    }
+
+    tbody.className = 'divide-y';
+
+    const originalRows = Array.from(tbody.querySelectorAll('tr')).map(function(row) {
+        return row.cloneNode(true);
+    });
+
+    function setSaveButtonState(enabled) {
+        if (!saveButton) {
+            return;
+        }
+        if (enabled) {
+            saveButton.disabled = false;
+            saveButton.className = 'w-full gradient-bg text-white font-bold py-3 rounded-lg hover:opacity-90 transition cursor-pointer';
+            return;
+        }
+        saveButton.disabled = true;
+        saveButton.className = 'w-full bg-gray-400 text-gray-700 font-bold py-3 rounded-lg cursor-not-allowed';
+    }
+
+    function setBusinessButtonState(loading) {
+        if (!businessValidationButton) {
+            return;
+        }
+        if (loading) {
+            businessValidationButton.disabled = true;
+            businessValidationButton.className = 'flex-1 bg-blue-400 text-white font-bold py-3 rounded-lg cursor-wait';
+            businessValidationButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Validando...';
+            return;
+        }
+        businessValidationButton.disabled = false;
+        businessValidationButton.className = 'flex-1 bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition cursor-pointer';
+        businessValidationButton.innerHTML = '<i class="fas fa-check-circle"></i> Validar Reglas de Negocio';
+    }
+
+    // En flujo de 3 etapas, guardar permanece bloqueado hasta validar negocio.
+    if (originalRows.length > 0) {
+        setSaveButtonState(false);
+        window.showPreviewMessage('error', 'Paso 2 pendiente: valide reglas de negocio para habilitar el guardado.');
+    } else {
+        setSaveButtonState(false);
+        window.showPreviewMessage('error', 'No hay filas válidas para guardar. Verifique el archivo cargado.');
+        if (businessValidationButton) {
+            businessValidationButton.disabled = true;
+            businessValidationButton.className = 'flex-1 bg-gray-400 text-gray-700 font-bold py-3 rounded-lg cursor-not-allowed';
+        }
+    }
+
+    const rowsPerPage = 10;
+    const totalPages = Math.max(1, Math.ceil(originalRows.length / rowsPerPage));
+    let currentPage = 1;
+
+    const nombreDistribuidorColIdx = (function() {
+        if (!thead) {
+            return -1;
+        }
+        const headers = Array.from(thead.querySelectorAll('th'));
+        return headers.findIndex(function(th) {
+            return th.textContent.trim().toLowerCase().includes('nombre distribuidor');
+        });
+    })();
+
+    function applyRowStyles(rows) {
+        rows.forEach(function(row, idx) {
+            row.className = idx % 2 === 0
+                ? 'bg-white hover:bg-gray-50 transition'
+                : 'bg-gray-50 hover:bg-gray-100 transition';
+            const tds = row.querySelectorAll('td');
+            tds.forEach(function(td, tdIdx) {
+                td.className = 'px-6 py-4';
+                if (tdIdx === nombreDistribuidorColIdx) {
+                    td.classList.add('whitespace-nowrap', 'max-w-[200px]', 'truncate');
+                    td.title = td.textContent.trim();
+                }
+            });
+        });
+    }
+
+    function renderPage(page) {
+        currentPage = page;
+        const start = (currentPage - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        const pageRows = originalRows.slice(start, end).map(function(row) {
+            return row.cloneNode(true);
+        });
+
+        tbody.innerHTML = '';
+        applyRowStyles(pageRows);
+        pageRows.forEach(function(row) {
+            tbody.appendChild(row);
+        });
+
+        renderPagination();
+    }
+
+    function renderPagination() {
+        const prevDisabled = currentPage === 1;
+        const nextDisabled = currentPage === totalPages;
+
+        const prevClass = prevDisabled 
+            ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+            : 'bg-purple-600 text-white hover:bg-purple-700';
+        const nextClass = nextDisabled 
+            ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+            : 'bg-purple-600 text-white hover:bg-purple-700';
+
+        paginationContainer.innerHTML = `
+            <span class="text-sm font-semibold text-gray-700">Página <strong>${currentPage}</strong> de <strong>${totalPages}</strong></span>
+            <div class="flex items-center gap-3">
+                <button id="prev-btn" type="button" class="px-6 py-2 rounded-lg font-medium transition ${prevClass}" ${prevDisabled ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-left"></i> Anterior
+                </button>
+                <button id="next-btn" type="button" class="px-6 py-2 rounded-lg font-medium transition ${nextClass}" ${nextDisabled ? 'disabled' : ''}>
+                    Siguiente <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        `;
+
+        const btnPrev = document.getElementById('prev-btn');
+        const btnNext = document.getElementById('next-btn');
+
+        if (btnPrev) {
+            btnPrev.addEventListener('click', function() {
+                if (currentPage > 1) {
+                    renderPage(currentPage - 1);
+                }
+            });
+        }
+
+        if (btnNext) {
+            btnNext.addEventListener('click', function() {
+                if (currentPage < totalPages) {
+                    renderPage(currentPage + 1);
+                }
+            });
+        }
+    }
+
+    // Renderizar la primera página
+    renderPage(1);
+
+    // Configurar validación de reglas de negocio
+    if (businessValidationButton && originalRows.length > 0) {
+        businessValidationButton.addEventListener('click', function() {
+            setBusinessButtonState(true);
+            fetch("{{ url_for('etl.validate_business') }}", {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+                .then(function(response) {
+                    return response.json().then(function(data) {
+                        return { ok: response.ok, data: data };
+                    });
+                })
+                .then(function(result) {
+                    setBusinessButtonState(false);
+                    if (!result.ok) {
+                        const mensajes = [];
+                        if (result.data.reglas_negocio && result.data.reglas_negocio.length > 0) {
+                            result.data.reglas_negocio.forEach(function(regla) {
+                                mensajes.push(regla);
+                            });
+                        }
+                        if (result.data.tiempo) {
+                            mensajes.push(result.data.tiempo);
+                        }
+                        if (result.data.sorteo) {
+                            mensajes.push(result.data.sorteo);
+                        }
+                        if (result.data.distribuidores_faltantes && result.data.distribuidores_faltantes.length > 0) {
+                            result.data.distribuidores_faltantes.forEach(function(codigo) {
+                                mensajes.push('Falta crear el distribuidor ' + codigo);
+                            });
+                        }
+                        if (mensajes.length === 0 && result.data.error) {
+                            mensajes.push(result.data.error);
+                        }
+                        const texto = mensajes.map(function(msg) { return '• ' + msg; }).join('\n');
+                        window.showPreviewMessage('error', texto || 'No fue posible validar reglas de negocio.');
+                        setSaveButtonState(false);
+                        return;
+                    }
+
+                    const avisos = Array.isArray(result.data.avisos) ? result.data.avisos : [];
+                    const mensajeExito = result.data.message || 'Validación de reglas de negocio aprobada. Ya puede guardar.';
+                    if (avisos.length > 0) {
+                        window.showPreviewMessage('success', mensajeExito + '\n• ' + avisos.join('\n• '));
+                    } else {
+                        window.showPreviewMessage('success', mensajeExito);
+                    }
+                    setSaveButtonState(true);
+                })
+                .catch(function() {
+                    setBusinessButtonState(false);
+                    window.showPreviewMessage('error', 'Error de comunicación al validar reglas de negocio.');
+                    setSaveButtonState(false);
+                });
+        });
+    }
+});
+</script>
 {% endblock %}

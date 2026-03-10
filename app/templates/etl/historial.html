@@ -1,88 +1,72 @@
 {% extends "base.html" %}
 
-{% block title %}Historial de Cargas - ETL Manager{% endblock %}
+{% block title %}Historial de Auditoria ETL - ETL Manager{% endblock %}
 
 {% block content %}
 <div class="max-w-7xl mx-auto">
     <!-- Header -->
-    <div class="mb-8 flex items-center justify-between">
+    <div class="mb-8">
         <div>
             <h1 class="text-4xl font-bold text-gray-800 mb-2">
-                <i class="fas fa-history"></i> Historial de Cargas
+                <i class="fas fa-history"></i> Historial de Auditoria ETL
             </h1>
-            <p class="text-gray-600">Registro de todos los archivos procesados</p>
+            <p class="text-gray-600">Bitacora inmutable de eventos de carga y eliminacion</p>
         </div>
-        <a href="{{ url_for('etl.upload') }}" class="gradient-bg text-white px-6 py-3 rounded-lg hover:opacity-90 transition">
-            <i class="fas fa-plus"></i> Nueva Carga
-        </a>
     </div>
 
-    {% if uploads %}
-    <!-- Tabla de Uploads -->
+    {% if logs %}
+    <!-- Tabla de Auditoria -->
     <div class="bg-white rounded-lg card-shadow overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead class="gradient-bg text-white">
                     <tr>
-                        <th class="px-6 py-4 text-left font-semibold">Archivo</th>
+                        <th class="px-6 py-4 text-left font-semibold">Fecha del Evento</th>
                         <th class="px-6 py-4 text-left font-semibold">Usuario</th>
-                        <th class="px-6 py-4 text-center font-semibold">Filas</th>
-                        <th class="px-6 py-4 text-center font-semibold">Columnas</th>
-                        <th class="px-6 py-4 text-center font-semibold">Estado</th>
-                        <th class="px-6 py-4 text-left font-semibold">Fecha</th>
+                        <th class="px-6 py-4 text-center font-semibold">Accion</th>
+                        <th class="px-6 py-4 text-left font-semibold">Archivo</th>
                         <th class="px-6 py-4 text-left font-semibold">Acciones</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y">
-                    {% for upload in uploads %}
+                    {% for log in logs %}
                     <tr class="hover:bg-gray-50 transition">
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-3">
-                                {% if upload.file_type == 'csv' %}
-                                    <i class="fas fa-file-csv text-orange-500 text-lg"></i>
-                                {% else %}
-                                    <i class="fas fa-file-excel text-green-500 text-lg"></i>
-                                {% endif %}
-                                <div>
-                                    <p class="font-semibold text-gray-800">{{ upload.original_filename }}</p>
-                                    <p class="text-xs text-gray-500">{{ upload.file_size | filesizeformat }}</p>
-                                </div>
-                            </div>
+                        <td class="px-6 py-4 text-sm text-gray-700">
+                            {{ log.upload_date.strftime('%Y-%m-%d %H:%M:%S') if log.upload_date else '-' }}
                         </td>
-                        <td class="px-6 py-4 text-gray-700">{{ upload.user.username }}</td>
-                        <td class="px-6 py-4 text-center text-gray-700 font-semibold">{{ upload.total_rows }}</td>
-                        <td class="px-6 py-4 text-center text-gray-700 font-semibold">{{ upload.total_columns }}</td>
+                        <td class="px-6 py-4 text-gray-700">{{ log.user.username if log.user else 'Sistema' }}</td>
                         <td class="px-6 py-4 text-center">
-                            {% if upload.status == 'processed' %}
+                            {% if log.action == 'CARGA' %}
                                 <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">
-                                    <i class="fas fa-check-circle"></i> Procesado
+                                    <i class="fas fa-upload"></i> CARGA
                                 </span>
-                            {% elif upload.status == 'pending' %}
-                                <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-semibold">
-                                    <i class="fas fa-hourglass-half"></i> Pendiente
+                            {% elif log.action == 'ELIMINACION' %}
+                                <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-semibold">
+                                    <i class="fas fa-trash-alt"></i> ELIMINACION
                                 </span>
                             {% else %}
-                                <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-semibold">
-                                    <i class="fas fa-exclamation-circle"></i> Error
+                                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold">
+                                    <i class="fas fa-info-circle"></i> {{ log.action }}
                                 </span>
                             {% endif %}
                         </td>
-                        <td class="px-6 py-4 text-sm text-gray-600">
-                            {{ upload.uploaded_at.strftime('%Y-%m-%d %H:%M') }}
+                        <td class="px-6 py-4 text-sm text-gray-700">
+                            <div class="font-semibold">{{ log.nombre_archivo }}</div>
+                            <div class="text-xs text-gray-500">Lote: {{ log.fecha_carga_archivo.strftime('%Y-%m-%d %H:%M:%S') if log.fecha_carga_archivo else '-' }}</div>
+                            <div class="text-xs text-gray-500">Registros: {{ log.registros_afectados }}</div>
                         </td>
                         <td class="px-6 py-4">
-                            <div class="flex gap-2">
-                                <a href="{{ url_for('etl.ver_upload', upload_id=upload.id) }}" 
-                                   class="bg-blue-500 text-white px-3 py-2 rounded-lg hover:bg-blue-600 transition text-sm">
-                                    <i class="fas fa-eye"></i> Ver
-                                </a>
-                                {% if upload.user_id == current_user.id or current_user.is_admin() %}
-                                <a href="#" onclick="alert('Descarga no disponible aún')" 
-                                   class="bg-gray-400 text-white px-3 py-2 rounded-lg hover:bg-gray-500 transition text-sm">
-                                    <i class="fas fa-download"></i> Descargar
-                                </a>
+                            {% if es_admin_auditoria and log.action == 'CARGA' %}
+                                <form method="POST" action="{{ url_for('etl.eliminar_carga') }}" onsubmit="return confirm('Esta accion eliminara el lote seleccionado. Desea continuar?');">
+                                    <input type="hidden" name="nombre_archivo" value="{{ log.nombre_archivo }}">
+                                    <input type="hidden" name="fecha_carga_archivo" value="{{ log.fecha_carga_archivo.isoformat() if log.fecha_carga_archivo else '' }}">
+                                    <button type="submit" class="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 transition text-sm">
+                                        <i class="fas fa-trash-alt"></i> Eliminar
+                                    </button>
+                                </form>
+                            {% else %}
+                                <span class="text-xs text-gray-400">Sin acciones</span>
                                 {% endif %}
-                            </div>
                         </td>
                     </tr>
                     {% endfor %}
@@ -91,10 +75,10 @@
         </div>
     </div>
 
-    <!-- Información de paginación/resumen -->
+    <!-- Resumen -->
     <div class="mt-6 p-4 bg-gray-50 rounded-lg text-center">
         <p class="text-gray-700">
-            <strong>Total de cargas:</strong> {{ uploads | length }}
+            <strong>Total de eventos:</strong> {{ logs | length }}
         </p>
     </div>
 
@@ -104,11 +88,8 @@
         <div class="mb-6">
             <i class="fas fa-inbox text-6xl text-gray-300"></i>
         </div>
-        <h2 class="text-2xl font-bold text-gray-800 mb-2">No hay cargas aún</h2>
-        <p class="text-gray-600 mb-6">Comience cargando su primer archivo CSV o Excel</p>
-        <a href="{{ url_for('etl.upload') }}" class="inline-block gradient-bg text-white px-6 py-3 rounded-lg hover:opacity-90 transition">
-            <i class="fas fa-cloud-upload-alt"></i> Cargar Archivo
-        </a>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">No hay eventos de auditoria</h2>
+        <p class="text-gray-600 mb-6">El historial se poblara automaticamente con cada carga o eliminacion</p>
     </div>
     {% endif %}
 </div>

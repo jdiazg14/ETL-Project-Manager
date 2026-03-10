@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Sincronizar municipios al cargar la página (estado inicial)
+        // Sincronizar municipios al cargar la página (estado inicial de edición)
         const deptoIdInicial = deptoSelect.value;
         if (deptoIdInicial) {
             cargarMunicipios(deptoIdInicial, municipioSeleccionado);
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         deptoSelect.addEventListener('change', function() {
             const deptoId = this.value;
-            cargarMunicipios(deptoId);
+            cargarMunicipios(deptoId, null);
         });
     }
 });
