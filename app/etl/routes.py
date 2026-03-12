@@ -81,30 +81,54 @@ def _validar_y_transformar_columnas_numericas(df, columnas_objetivo):
 
 
 def _mapear_columnas(df):
-    """Mapea columnas del archivo a nombres estandar del proceso ETL."""
+    """
+    Mapea columnas del archivo a nombres estandar del proceso ETL.
+
+    Retorna una tupla (columnas_mapeadas, normalizaciones) donde
+    'normalizaciones' es una lista de mensajes informativos sobre
+    columnas reconocidas por nombres alternativos (sinónimos históricos).
+    La comparación es insensible a mayúsculas/minúsculas y espacios
+    adicionales porque df.columns ya fue normalizado antes de esta llamada.
+    """
     columnas_esperadas = {
         'anio': ['anio', 'año', 'year'],
         'mes': ['mes', 'month'],
         'dia': ['dia', 'día', 'day'],
         'sorteo': ['sorteo', 'numero sorteo', 'num sorteo'],
         'distribuidor': ['distribuidor', 'codigo distribuidor', 'cod distribuidor', 'codigo_distribuidor'],
-        'despachada': ['despachada', 'cantidad despachada', 'cant despachada'],
-        'devuelta': ['devuelta', 'cantidad devuelta', 'cant devuelta'],
-        'vendida': ['vendida', 'cantidad vendida', 'cant vendida'],
+        'despachada': [
+            'despachada', 'cantidad despachada', 'cant despachada',
+            'fracciones despachadas', 'cant. despacho',
+        ],
+        'devuelta': [
+            'devuelta', 'cantidad devuelta', 'cant devuelta',
+            'fracciones devueltas', 'cant. devolución',
+        ],
+        'vendida': [
+            'vendida', 'cantidad vendida', 'cant vendida',
+            'fracciones vendidas', 'cant. venta',
+        ],
         'bruto_despacho': ['bruto despacho', 'bruto despachado', 'bruto_despacho'],
         'bruto_devuelto': ['bruto devuelto', 'bruto_devuelto'],
         'bruto_vendido': ['bruto vendido', 'brutovendido', 'bruto'],
         'neto_vendido': ['neto vendido', 'netovendido', 'neto'],
-        'porcentaje': ['porcentaje', 'porcentaje comision', 'porcentaje_comision', '% comision']
+        'porcentaje': ['porcentaje', 'porcentaje comision', 'porcentaje_comision', '% comision'],
     }
 
     columnas_mapeadas = {}
+    normalizaciones = []
     for col_estandar, variantes in columnas_esperadas.items():
         for variante in variantes:
             if variante in df.columns:
                 columnas_mapeadas[col_estandar] = variante
+                # Si el sinónimo encontrado difiere del nombre estándar,
+                # registrar la normalización para feedback al usuario.
+                if variante != col_estandar:
+                    normalizaciones.append(
+                        f"Columna '{variante}' reconocida y normalizada como '{col_estandar}'"
+                    )
                 break
-    return columnas_mapeadas
+    return columnas_mapeadas, normalizaciones
 
 
 def _validar_integridad_entrada(df, columnas_mapeadas):
@@ -342,17 +366,34 @@ def upload():
         df.columns = df.columns.str.strip().str.lower()
         
         # --- 1.2. Mapeo de columnas esperadas ---
-        columnas_mapeadas = _mapear_columnas(df)
-        
-        # Verificar que existan al menos las columnas críticas
+        # _mapear_columnas retorna (mapa, normalizaciones) donde 'normalizaciones'
+        # lista los sinónimos históricos que fueron detectados y normalizados.
+        columnas_mapeadas, normalizaciones_alias = _mapear_columnas(df)
+        if normalizaciones_alias:
+            reporte_avisos.extend(normalizaciones_alias)
+
+        # --- 1.2.1. Porcentaje ausente: auto-creación con valor por defecto ---
+        # Si el archivo no contiene la columna Porcentaje (ni ningún sinónimo),
+        # se crea con el valor operativo 25.0 para que la fórmula del Neto
+        # Vendido tenga un operando válido en la ETAPA 2 (Reglas de Negocio).
+        if 'porcentaje' not in columnas_mapeadas:
+            df['porcentaje'] = 25.0
+            columnas_mapeadas['porcentaje'] = 'porcentaje'
+            reporte_avisos.append(
+                'Columna "Porcentaje" no encontrada en el archivo; '
+                'se asignó automáticamente el valor 25.0 para todos los registros.'
+            )
+
+        # Verificar que existan al menos las columnas críticas.
+        # 'porcentaje' se excluye de esta lista porque se auto-completa arriba.
         columnas_criticas = [
             'anio', 'mes', 'dia', 'sorteo', 'distribuidor',
             'despachada', 'devuelta', 'vendida',
             'bruto_despacho', 'bruto_devuelto', 'bruto_vendido',
-            'neto_vendido', 'porcentaje'
+            'neto_vendido',
         ]
         columnas_faltantes = [col for col in columnas_criticas if col not in columnas_mapeadas]
-        
+
         if columnas_faltantes:
             reporte_errores['formato'] = f'Faltan columnas críticas en el archivo: {", ".join(columnas_faltantes)}'
             return jsonify(reporte_errores), 400
