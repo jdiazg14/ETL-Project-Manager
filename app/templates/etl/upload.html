@@ -3,7 +3,7 @@
 {% block title %}Cargar Archivo - ETL Manager{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto">
+<div class="max-w-6xl mx-auto">
     <!-- Header -->
     <div class="mb-8">
         <h1 class="text-4xl font-bold text-gray-800 mb-2">
@@ -14,16 +14,13 @@
 
     <!-- Card de Carga -->
     <div class="bg-white rounded-lg card-shadow p-8">
-        <!-- Contenedor de Mensajes de Validación -->
-        <div id="mensajesValidacion" class="hidden mb-6 rounded-lg border px-4 py-4 text-sm"></div>
-
         <form method="POST" enctype="multipart/form-data" class="space-y-6" id="formUpload">
             <!-- Área de Drop/Upload -->
-            <div class="border-3 border-dashed border-purple-300 rounded-lg p-12 text-center bg-purple-50 hover:bg-purple-100 transition cursor-pointer"
+            <div class="border-3 border-dashed border-purple-300 rounded-lg p-6 text-center bg-purple-50 hover:bg-purple-100 transition cursor-pointer"
                  id="dropZone">
-                <div class="py-8">
-                    <i class="fas fa-file-csv text-6xl text-purple-500 mb-4 block"></i>
-                    <h2 class="text-2xl font-semibold text-gray-800 mb-2">Arrastra tu archivo aquí</h2>
+                <div class="py-4">
+                    <i class="fas fa-file-csv text-5xl text-purple-500 mb-3 block"></i>
+                    <h2 class="text-xl font-semibold text-gray-800 mb-2">Arrastra tu archivo aquí</h2>
                     <p class="text-gray-600 mb-4">o haz clic para seleccionar</p>
                     <p class="text-sm text-gray-500">
                         <strong>Formatos soportados:</strong> CSV, XLSX, XLS<br>
@@ -42,62 +39,73 @@
                 </p>
             </div>
 
-            <!-- Información de tipos de archivo -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
-                    <h3 class="font-semibold text-blue-900 mb-2">
-                        <i class="fas fa-file-csv"></i> CSV
-                    </h3>
-                    <p class="text-sm text-blue-700">Valores separados por comas</p>
-                </div>
-                <div class="p-4 bg-green-50 border-l-4 border-green-500 rounded">
-                    <h3 class="font-semibold text-green-900 mb-2">
-                        <i class="fas fa-file-excel"></i> XLSX
-                    </h3>
-                    <p class="text-sm text-green-700">Hoja de cálculo de Excel (2007+)</p>
-                </div>
-                <div class="p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded">
-                    <h3 class="font-semibold text-yellow-900 mb-2">
-                        <i class="fas fa-file-excel"></i> XLS
-                    </h3>
-                    <p class="text-sm text-yellow-700">Hoja de cálculo de Excel antiguo</p>
+            <!-- Estado dinámico del flujo unificado -->
+            <div id="estadoProceso" class="hidden rounded-lg border border-blue-200 bg-blue-50 px-4 py-4 text-sm text-blue-900">
+                <div class="flex items-center gap-2 font-semibold">
+                    <i id="estadoIcono" class="fas fa-spinner fa-spin"></i>
+                    <span id="estadoTexto">Leyendo archivo...</span>
                 </div>
             </div>
 
             <!-- Botones -->
             <div>
-                <button type="submit" class="w-full gradient-bg text-white font-bold py-3 rounded-lg hover:opacity-90 transition cursor-pointer">
+                <button type="submit" id="btnProcesar" class="w-full gradient-bg text-white font-bold py-3 rounded-lg hover:opacity-90 transition cursor-pointer">
                     <i class="fas fa-upload"></i> Cargar y Procesar
                 </button>
             </div>
         </form>
     </div>
 
-    <!-- Información de ayuda -->
-    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-white rounded-lg card-shadow p-6">
-            <h3 class="text-xl font-semibold text-gray-800 mb-4">
-                <i class="fas fa-lightbulb"></i> Consejos
-            </h3>
-            <ul class="space-y-2 text-gray-700 text-sm">
-                <li><i class="fas fa-check text-green-500"></i> Asegúrese de que el archivo tenga encabezados de columna</li>
-                <li><i class="fas fa-check text-green-500"></i> Verifique que los datos estén limpios</li>
-                <li><i class="fas fa-check text-green-500"></i> No incluya filas de ejemplo</li>
-                <li><i class="fas fa-check text-green-500"></i> Límite el archivo a 16 MB</li>
-            </ul>
+    <!-- Pantalla de resultados unificada -->
+    <div id="panelResultados" class="hidden mt-8 space-y-6">
+        <div class="bg-white rounded-lg card-shadow p-6 border border-gray-200">
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">
+                <i class="fas fa-table"></i> Muestra de Datos
+            </h2>
+            <p id="metaPreview" class="text-sm text-gray-600 mb-4"></p>
+            <div class="overflow-x-auto border border-gray-200 rounded-lg" id="previewContainer"></div>
+            <div id="previewPagination" class="mt-4 flex items-center justify-between"></div>
         </div>
 
-        <div class="bg-white rounded-lg card-shadow p-6">
-            <h3 class="text-xl font-semibold text-gray-800 mb-4">
-                <i class="fas fa-cog"></i> Procesamiento
-            </h3>
-            <ul class="space-y-2 text-gray-700 text-sm">
-                <li><strong>1.</strong> Cargue su archivo CSV o Excel</li>
-                <li><strong>2.</strong> Se limpiarán los datos automáticamente</li>
-                <li><strong>3.</strong> Revisará una vista previa</li>
-                <li><strong>4.</strong> Confirme y guarde en la base de datos</li>
-            </ul>
+        <div class="bg-white rounded-lg card-shadow p-6 border border-gray-200">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">
+                <i class="fas fa-list-check"></i> Resultado de Validaciones
+            </h2>
+
+            <div id="seccionAdvertencias" class="hidden rounded-lg border border-yellow-300 bg-yellow-50 p-4 text-yellow-900 mb-4">
+                <h3 class="font-semibold mb-2"><i class="fas fa-exclamation-triangle"></i> Advertencias (No bloquean la carga en la Base de Datos)</h3>
+                <ul id="listaAdvertencias" class="list-disc list-inside text-sm space-y-1"></ul>
+            </div>
+
+            <div id="seccionErrores" class="hidden rounded-lg border border-red-300 bg-red-50 p-4 text-red-900">
+                <h3 class="font-semibold mb-2"><i class="fas fa-times-circle"></i> Errores Críticos (Bloquean la carga en la Base de Datos)</h3>
+                <ul id="listaErrores" class="list-disc list-inside text-sm space-y-1"></ul>
+            </div>
+
+            <div id="seccionExito" class="hidden rounded-lg border border-green-300 bg-green-50 p-4 text-green-900">
+                <h3 class="font-semibold mb-2"><i class="fas fa-check-circle"></i> Validaciones Exitosas</h3>
+                <p class="text-sm">Todas las validaciones se realizaron exitosamente. El archivo esta listo para ser guardado.</p>
+            </div>
         </div>
+
+        <form id="formGuardar" method="POST" action="{{ url_for('etl.confirm_upload') }}" class="hidden bg-white rounded-lg card-shadow p-6 border border-gray-200">
+            <button type="submit" id="btnGuardar" class="w-full bg-gray-400 text-gray-700 font-bold py-3 rounded-lg cursor-not-allowed" disabled>
+                <i class="fas fa-save"></i> Guardar Datos en Base de Datos
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal de éxito para confirmación de guardado -->
+<div id="modalExitoGuardado" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-xl p-8 max-w-md w-full mx-4 text-center">
+        <i class="fas fa-check-circle text-6xl text-green-500 mb-4 block"></i>
+        <h2 class="text-2xl font-bold text-gray-800 mb-3">¡Carga Exitosa!</h2>
+        <p id="modalExitoMensaje" class="text-gray-600 mb-6"></p>
+        <button id="btnModalExitoAceptar" type="button"
+                class="w-full gradient-bg text-white font-bold py-3 rounded-lg hover:opacity-90 transition cursor-pointer">
+            <i class="fas fa-check"></i> Aceptar
+        </button>
     </div>
 </div>
 
@@ -107,7 +115,28 @@
     const selectedFile = document.getElementById('selectedFile');
     const fileName = document.getElementById('fileName');
     const formUpload = document.getElementById('formUpload');
-    const mensajesValidacion = document.getElementById('mensajesValidacion');
+    const btnProcesar = document.getElementById('btnProcesar');
+    const estadoProceso = document.getElementById('estadoProceso');
+    const estadoTexto = document.getElementById('estadoTexto');
+    const estadoIcono = document.getElementById('estadoIcono');
+    const panelResultados = document.getElementById('panelResultados');
+    const previewContainer = document.getElementById('previewContainer');
+    const previewPagination = document.getElementById('previewPagination');
+    const metaPreview = document.getElementById('metaPreview');
+    const seccionAdvertencias = document.getElementById('seccionAdvertencias');
+    const seccionErrores = document.getElementById('seccionErrores');
+    const seccionExito = document.getElementById('seccionExito');
+    const listaAdvertencias = document.getElementById('listaAdvertencias');
+    const listaErrores = document.getElementById('listaErrores');
+    const formGuardar = document.getElementById('formGuardar');
+    const btnGuardar = document.getElementById('btnGuardar');
+    const modalExitoGuardado = document.getElementById('modalExitoGuardado');
+    const modalExitoMensaje = document.getElementById('modalExitoMensaje');
+    const btnModalExitoAceptar = document.getElementById('btnModalExitoAceptar');
+
+    let datosPreviewActual = null;
+    let paginaPreviewActual = 1;
+    const FILAS_POR_PAGINA = 10;
 
     // Click para seleccionar archivo
     dropZone.addEventListener('click', () => fileInput.click());
@@ -135,29 +164,22 @@
     // Cambio de archivo
     fileInput.addEventListener('change', updateFileDisplay);
 
-    /**
-     * Reset de interfaz al iniciar una nueva carga de archivo.
-     * - Limpia errores previos.
-     * - Cierra modales/alertas de exito de la sesion anterior.
-     * - Bloquea guardado hasta validar nuevamente.
-     */
+    // Reinicia toda la UI para un nuevo intento de carga.
     function resetEstadoCarga() {
-        ocultarMensajes();
-
-        if (typeof hideGlobalModal === 'function') {
-            hideGlobalModal();
-        } else {
-            const modal = document.getElementById('globalModal');
-            if (modal) {
-                modal.classList.add('hidden');
-            }
-        }
-
-        if (window.__flashMessages) {
-            window.__flashMessages = [];
-        }
-
-        bloquearGuardarSiExiste();
+        estadoProceso.classList.add('hidden');
+        panelResultados.classList.add('hidden');
+        previewContainer.innerHTML = '';
+        previewPagination.innerHTML = '';
+        metaPreview.textContent = '';
+        listaAdvertencias.innerHTML = '';
+        listaErrores.innerHTML = '';
+        seccionAdvertencias.classList.add('hidden');
+        seccionErrores.classList.add('hidden');
+        seccionExito.classList.add('hidden');
+        formGuardar.classList.add('hidden');
+        datosPreviewActual = null;
+        paginaPreviewActual = 1;
+        setGuardarEstado(false);
     }
 
     function updateFileDisplay() {
@@ -170,231 +192,275 @@
         }
     }
 
-    // ========================================================================
-    // SISTEMA DE VALIDACIÓN POR CAPAS - FRONTEND
-    // ========================================================================
-    
-    /**
-     * Interceptar el envío del formulario para validación asíncrona
-     * METODOLOGÍA: Permite mostrar errores detallados sin recargar la página
-     */
-    formUpload.addEventListener('submit', function(e) {
-        e.preventDefault();
+    // Muestra solo estados confirmados por backend (sin simulaciones artificiales).
+    function mostrarEstado(mensaje, esExito = null) {
+        estadoProceso.classList.remove('hidden');
+        estadoTexto.textContent = mensaje;
 
-        // Reset de estado visual para nuevo intento de carga.
-        resetEstadoCarga();
-        
-        // Crear FormData con el archivo
-        const formData = new FormData(formUpload);
-        
-        // Mostrar indicador de carga
-        mostrarCargando();
-        
-        // Enviar petición AJAX
-        fetch(formUpload.action || window.location.href, {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => {
-            // Si el servidor retorna HTML (200 OK con vista previa), redirigir
-            if (response.ok && response.headers.get('content-type').includes('text/html')) {
-                return response.text().then(html => {
-                    // Reemplazar el contenido de la página con la vista previa
-                    document.open();
-                    document.write(html);
-                    document.close();
-                });
-            }
-            
-            // Si no es HTML, debe ser JSON (errores de validación)
-            return response.json().then(data => {
-                if (!response.ok) {
-                    // Respuesta de error (400) con reporte de validación
-                    mostrarErroresValidacion(data);
-                }
-            });
-        })
-        .catch(error => {
-            ocultarCargando();
-            mostrarError('Error al procesar el archivo: ' + error.message);
-        });
-    });
-    
-    /**
-     * Mostrar indicador de carga durante el procesamiento
-     */
-    function mostrarCargando() {
-        mensajesValidacion.className = 'mb-6 rounded-lg border px-4 py-4 text-sm bg-blue-50 border-blue-200 text-blue-800';
-        mensajesValidacion.innerHTML = `
-            <div class="flex items-center">
-                <i class="fas fa-spinner fa-spin mr-2"></i>
-                <span>Procesando archivo y validando datos...</span>
-            </div>
-        `;
-        mensajesValidacion.classList.remove('hidden');
-    }
-    
-    /**
-     * Ocultar todos los mensajes
-     */
-    function ocultarMensajes() {
-        mensajesValidacion.classList.add('hidden');
-        mensajesValidacion.innerHTML = '';
-    }
-    
-    /**
-     * Ocultar indicador de carga
-     */
-    function ocultarCargando() {
-        ocultarMensajes();
-    }
-    
-    /**
-     * Mostrar mensaje de error genérico
-     */
-    function mostrarError(mensaje) {
-        mensajesValidacion.className = 'mb-6 rounded-lg border px-4 py-4 text-sm bg-red-50 border-red-200 text-red-800';
-        mensajesValidacion.innerHTML = `
-            <div class="flex items-start">
-                <i class="fas fa-exclamation-circle mt-0.5 mr-2"></i>
-                <span>${mensaje}</span>
-            </div>
-        `;
-        mensajesValidacion.classList.remove('hidden');
-        bloquearGuardarSiExiste();
+        if (esExito === true) {
+            estadoIcono.className = 'fas fa-check-circle';
+            return;
+        }
+
+        if (esExito === false) {
+            estadoIcono.className = 'fas fa-times-circle';
+            return;
+        }
+
+        estadoIcono.className = 'fas fa-spinner fa-spin';
     }
 
-    /**
-     * Bloquea el botón Guardar si está presente en la vista actual.
-     * Este guardarraíl evita persistencia cuando backend reporta formato inválido.
-     */
-    function bloquearGuardarSiExiste() {
-        const btnGuardar = document.getElementById('btn-guardar-bd');
-        if (!btnGuardar) {
+    function mensajeFinalDesdePayload(payload) {
+        const progreso = Array.isArray(payload.progreso) ? payload.progreso : [];
+        if (progreso.length > 0 && progreso[progreso.length - 1].mensaje) {
+            return progreso[progreso.length - 1].mensaje;
+        }
+        return payload.puede_cargar
+            ? 'Validacion finalizada sin errores criticos.'
+            : 'Validacion finalizada con errores criticos.';
+    }
+
+    function setGuardarEstado(habilitado) {
+        if (habilitado) {
+            btnGuardar.disabled = false;
+            btnGuardar.className = 'w-full gradient-bg text-white font-bold py-3 rounded-lg hover:opacity-90 transition cursor-pointer';
             return;
         }
         btnGuardar.disabled = true;
         btnGuardar.className = 'w-full bg-gray-400 text-gray-700 font-bold py-3 rounded-lg cursor-not-allowed';
     }
-    
-    /**
-     * Mostrar errores de validación detallados por capas
-     * METODOLOGÍA: Este sistema de reporte permite al usuario identificar
-     * exactamente qué datos deben corregirse antes de persistir en la BD.
-     * 
-     * @param {Object} reporte - Diccionario con errores categorizados
-     */
-    function mostrarErroresValidacion(reporte) {
-        ocultarCargando();
-        
-        let htmlErrores = '<div class="space-y-3">';
-        htmlErrores += '<div class="font-bold text-red-900 mb-2"><i class="fas fa-exclamation-triangle"></i> Errores de Validación</div>';
-        
-        // --- Error genérico ---
-        if (reporte.error) {
-            htmlErrores += `<div class="pl-4">${reporte.error}</div>`;
-        }
-        
-        // --- Errores de Formato: Columnas faltantes ---
-        if (reporte.formato) {
-            htmlErrores += `
-                <div class="border-l-4 border-orange-500 pl-3">
-                    <div class="font-semibold text-orange-900">Formato de Archivo:</div>
-                    <div class="text-orange-800">${reporte.formato}</div>
-                </div>
-            `;
-        }
 
-        // --- Errores de Formato: Fila exacta por columna numérica ---
-        if (reporte.formato_detalle && reporte.formato_detalle.length > 0) {
-            htmlErrores += `
-                <div class="border-l-4 border-orange-500 pl-3">
-                    <div class="font-semibold text-orange-900">Detalle de celdas con formato inválido:</div>
-                    <ul class="list-disc list-inside text-orange-800">
-            `;
-            reporte.formato_detalle.forEach(item => {
-                const filasTexto = (item.filas || []).join(', ');
-                htmlErrores += `<li>Columna <strong>${item.columna}</strong>: filas ${filasTexto}</li>`;
-            });
-            htmlErrores += '</ul></div>';
-        }
-        
-        // --- Errores de Formato: Valores nulos ---
-        if (reporte.valores_nulos) {
-            htmlErrores += `
-                <div class="border-l-4 border-yellow-500 pl-3">
-                    <div class="font-semibold text-yellow-900">Valores Nulos Detectados:</div>
-                    <ul class="list-disc list-inside text-yellow-800">
-            `;
-            reporte.valores_nulos.forEach(error => {
-                htmlErrores += `<li>${error}</li>`;
-            });
-            htmlErrores += '</ul></div>';
-        }
-        
-        // --- Errores de Formato Numérico ---
-        if (reporte.formato_numerico) {
-            htmlErrores += `
-                <div class="border-l-4 border-orange-500 pl-3">
-                    <div class="font-semibold text-orange-900">Errores de Tipo de Dato:</div>
-                    <ul class="list-disc list-inside text-orange-800">
-            `;
-            reporte.formato_numerico.forEach(error => {
-                htmlErrores += `<li>${error}</li>`;
-            });
-            htmlErrores += '</ul></div>';
-        }
-
-        // --- Avisos de Integridad: Porcentaje nulo completado ---
-        if (reporte.avisos && reporte.avisos.length > 0) {
-            htmlErrores += `
-                <div class="border-l-4 border-yellow-500 pl-3">
-                    <div class="font-semibold text-yellow-900">Avisos del Proceso ETL:</div>
-                    <ul class="list-disc list-inside text-yellow-800">
-            `;
-            reporte.avisos.forEach(aviso => {
-                htmlErrores += `<li>${aviso}</li>`;
-            });
-            htmlErrores += '</ul></div>';
-        }
-        
-        // --- Validación de Integridad: Sorteo duplicado ---
-        if (reporte.sorteo) {
-            htmlErrores += `
-                <div class="border-l-4 border-red-500 pl-3">
-                    <div class="font-semibold text-red-900">Sorteo Duplicado:</div>
-                    <div class="text-red-800">${reporte.sorteo}</div>
-                </div>
-            `;
-        }
-        
-        // --- Validación de Integridad: Distribuidores faltantes ---
-        if (reporte.distribuidores_faltantes && reporte.distribuidores_faltantes.length > 0) {
-            htmlErrores += `
-                <div class="border-l-4 border-purple-500 pl-3">
-                    <div class="font-semibold text-purple-900">Distribuidores No Registrados:</div>
-                    <div class="text-purple-800 mb-1">Los siguientes códigos de distribuidor no existen en la base de datos:</div>
-                    <ul class="list-disc list-inside text-purple-800">
-            `;
-            reporte.distribuidores_faltantes.forEach(codigo => {
-                htmlErrores += `<li>• Falta crear el distribuidor <strong>${codigo}</strong></li>`;
-            });
-            htmlErrores += '</ul></div>';
-        }
-        
-        htmlErrores += '</div>';
-        
-        // Renderizar en el contenedor
-        mensajesValidacion.className = 'mb-6 rounded-lg border px-4 py-4 text-sm bg-red-50 border-red-200 text-red-800';
-        mensajesValidacion.innerHTML = htmlErrores;
-        mensajesValidacion.classList.remove('hidden');
-
-        if (reporte.bloquear_guardado) {
-            bloquearGuardarSiExiste();
-        }
-        
-        // Hacer scroll al contenedor de errores
-        mensajesValidacion.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    function escapeHtml(valor) {
+        return String(valor)
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
     }
+
+    function renderPreview(datosPrevisualizados) {
+        const columnas = Array.isArray(datosPrevisualizados.columnas) ? datosPrevisualizados.columnas : [];
+        const filas = Array.isArray(datosPrevisualizados.filas) ? datosPrevisualizados.filas : [];
+        const totalFilas = Number(datosPrevisualizados.total_filas || 0);
+        const filasMostradas = Number(datosPrevisualizados.filas_mostradas || 0);
+
+        datosPreviewActual = { columnas, filas, totalFilas, filasMostradas };
+        paginaPreviewActual = 1;
+
+        metaPreview.textContent = `Mostrando ${filasMostradas} de ${totalFilas} filas del archivo procesado.`;
+
+        if (columnas.length === 0) {
+            previewContainer.innerHTML = '<div class="p-4 text-sm text-gray-600">No hay datos disponibles para previsualizar.</div>';
+            previewPagination.innerHTML = '';
+            return;
+        }
+
+        renderPaginaPreview(1);
+    }
+
+    function renderPaginaPreview(pagina) {
+        if (!datosPreviewActual) {
+            return;
+        }
+
+        const { columnas, filas } = datosPreviewActual;
+        const totalPaginas = Math.max(1, Math.ceil(filas.length / FILAS_POR_PAGINA));
+        paginaPreviewActual = Math.min(Math.max(1, pagina), totalPaginas);
+
+        const inicio = (paginaPreviewActual - 1) * FILAS_POR_PAGINA;
+        const fin = inicio + FILAS_POR_PAGINA;
+        const filasPagina = filas.slice(inicio, fin);
+
+        let html = '<table class="w-full min-w-max text-sm text-gray-700">';
+        html += '<thead class="gradient-bg text-white"><tr>';
+        columnas.forEach((columna) => {
+            html += `<th class="px-4 py-3 text-left font-semibold">${escapeHtml(columna)}</th>`;
+        });
+        html += '</tr></thead><tbody class="divide-y">';
+
+        filasPagina.forEach((fila, indiceFila) => {
+            const clasesFila = indiceFila % 2 === 0 ? 'bg-white' : 'bg-gray-50';
+            html += `<tr class="${clasesFila}">`;
+            columnas.forEach((columna) => {
+                const valor = fila[columna] === null || fila[columna] === undefined ? 'NULL' : fila[columna];
+                html += `<td class="px-4 py-3">${escapeHtml(valor)}</td>`;
+            });
+            html += '</tr>';
+        });
+
+        html += '</tbody></table>';
+        previewContainer.innerHTML = html;
+
+        if (filas.length <= FILAS_POR_PAGINA) {
+            previewPagination.innerHTML = '';
+            return;
+        }
+
+        const btnPrevClass = paginaPreviewActual === 1
+            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            : 'bg-purple-600 text-white hover:bg-purple-700';
+        const btnNextClass = paginaPreviewActual === totalPaginas
+            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            : 'bg-purple-600 text-white hover:bg-purple-700';
+
+        previewPagination.innerHTML = `
+            <span class="text-sm font-semibold text-gray-700">Página <strong>${paginaPreviewActual}</strong> de <strong>${totalPaginas}</strong></span>
+            <div class="flex items-center gap-3">
+                <button id="btnPreviewPrev" type="button" class="px-6 py-2 rounded-lg font-medium transition ${btnPrevClass}" ${paginaPreviewActual === 1 ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-left"></i> Anterior
+                </button>
+                <button id="btnPreviewNext" type="button" class="px-6 py-2 rounded-lg font-medium transition ${btnNextClass}" ${paginaPreviewActual === totalPaginas ? 'disabled' : ''}>
+                    Siguiente <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        `;
+
+        const btnPreviewPrev = document.getElementById('btnPreviewPrev');
+        const btnPreviewNext = document.getElementById('btnPreviewNext');
+
+        if (btnPreviewPrev) {
+            btnPreviewPrev.addEventListener('click', () => renderPaginaPreview(paginaPreviewActual - 1));
+        }
+
+        if (btnPreviewNext) {
+            btnPreviewNext.addEventListener('click', () => renderPaginaPreview(paginaPreviewActual + 1));
+        }
+    }
+
+    function renderListaMensajes(ul, mensajes) {
+        ul.innerHTML = '';
+        mensajes.forEach((mensaje) => {
+            const li = document.createElement('li');
+            li.textContent = mensaje;
+            ul.appendChild(li);
+        });
+    }
+
+    function renderResultados(payload) {
+        const advertencias = Array.isArray(payload.advertencias) ? payload.advertencias : [];
+        const erroresCriticos = Array.isArray(payload.errores_criticos) ? payload.errores_criticos : [];
+
+        renderPreview(payload.datos_previsualizados || {});
+
+        if (advertencias.length > 0) {
+            renderListaMensajes(listaAdvertencias, advertencias);
+            seccionAdvertencias.classList.remove('hidden');
+        } else {
+            seccionAdvertencias.classList.add('hidden');
+        }
+
+        if (erroresCriticos.length > 0) {
+            renderListaMensajes(listaErrores, erroresCriticos);
+            seccionErrores.classList.remove('hidden');
+        } else {
+            seccionErrores.classList.add('hidden');
+        }
+
+        if (advertencias.length === 0 && erroresCriticos.length === 0) {
+            seccionExito.classList.remove('hidden');
+        } else {
+            seccionExito.classList.add('hidden');
+        }
+
+        const puedeCargar = Boolean(payload.puede_cargar);
+        if (puedeCargar) {
+            formGuardar.classList.remove('hidden');
+            setGuardarEstado(true);
+        } else {
+            formGuardar.classList.add('hidden');
+            setGuardarEstado(false);
+        }
+
+        panelResultados.classList.remove('hidden');
+        panelResultados.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Envío asíncrono con flujo visual unificado.
+    formUpload.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (!fileInput.files.length) {
+            return;
+        }
+
+        resetEstadoCarga();
+        mostrarEstado('Archivo enviado al servidor. Esperando confirmacion del proceso...');
+
+        const formData = new FormData(formUpload);
+
+        btnProcesar.disabled = true;
+        btnProcesar.classList.add('opacity-75', 'cursor-wait');
+
+        fetch(formUpload.action || window.location.href, {
+            method: 'POST',
+            body: formData
+        })
+        .then((response) => response.json())
+        .then((payload) => {
+            mostrarEstado(mensajeFinalDesdePayload(payload), Boolean(payload.puede_cargar));
+            renderResultados(payload);
+        })
+        .catch((error) => {
+            mostrarEstado('Error de comunicacion con el servidor.', false);
+            renderResultados({
+                puede_cargar: false,
+                errores_criticos: ['Error de red: ' + error.message],
+                advertencias: [],
+                datos_previsualizados: { total_filas: 0, filas_mostradas: 0, columnas: [], filas: [] }
+            });
+        })
+        .finally(() => {
+            btnProcesar.disabled = false;
+            btnProcesar.classList.remove('opacity-75', 'cursor-wait');
+        });
+    });
+
+    // SEGURIDAD: El botón de guardado se bloquea en el primer clic para prevenir
+    // transacciones duplicadas durante cargas masivas de datos. Sin este bloqueo,
+    // múltiples clics rápidos podrían causar múltiples POSTs simultáneos y
+    // duplicar registros en la base de datos.
+    formGuardar.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Deshabilitar inmediatamente para prevenir doble clic accidental.
+        btnGuardar.disabled = true;
+        btnGuardar.className = 'w-full bg-gray-400 text-gray-700 font-bold py-3 rounded-lg cursor-not-allowed';
+        btnGuardar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando en la Base de Datos, por favor espere...';
+
+        fetch(formGuardar.action, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            body: new FormData(formGuardar)
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.ok) {
+                // Mostrar modal de éxito con el mensaje confirmado por el servidor.
+                modalExitoMensaje.textContent = data.mensaje || 'Los datos fueron guardados correctamente.';
+                modalExitoGuardado.classList.remove('hidden');
+            } else {
+                // Error: rehabilitar el botón y mostrar el detalle del fallo.
+                setGuardarEstado(true);
+                btnGuardar.innerHTML = '<i class="fas fa-save"></i> Guardar Datos en Base de Datos';
+                renderListaMensajes(listaErrores, [data.error || 'Error desconocido al guardar.']);
+                seccionErrores.classList.remove('hidden');
+                seccionErrores.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        })
+        .catch((error) => {
+            // Error de red: rehabilitar el botón e informar al usuario.
+            setGuardarEstado(true);
+            btnGuardar.innerHTML = '<i class="fas fa-save"></i> Guardar Datos en Base de Datos';
+            renderListaMensajes(listaErrores, ['Error de comunicación al guardar: ' + error.message]);
+            seccionErrores.classList.remove('hidden');
+            seccionErrores.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+
+    // Al aceptar el modal, redirigir a la página de carga para iniciar un nuevo proceso.
+    btnModalExitoAceptar.addEventListener('click', () => {
+        window.location.href = "{{ url_for('etl.upload') }}";
+    });
 </script>
 {% endblock %}

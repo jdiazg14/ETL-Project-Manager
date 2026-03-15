@@ -5,8 +5,17 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
+import pytz
 
 db = SQLAlchemy()
+
+
+def _ahora_bogota():
+    """Retorna la hora actual en la zona horaria de Bogotá, Colombia (America/Bogota)."""
+    tz = pytz.timezone('America/Bogota')
+    # Se elimina tzinfo para compatibilidad con columnas DATETIME de MySQL,
+    # pero el valor ya corresponde a la hora local colombiana.
+    return datetime.now(tz).replace(tzinfo=None)
 
 class Role(db.Model):
     __tablename__ = 'role'
@@ -24,7 +33,8 @@ class Users(UserMixin, db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    logs = db.relationship('ETLProjectLog', back_populates='user', lazy=True)
+    # foreign_keys requerido porque ETLProjectLog tiene dos FK apuntando a users.id.
+    logs = db.relationship('ETLProjectLog', foreign_keys='[ETLProjectLog.user_id]', back_populates='user', lazy=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -39,16 +49,29 @@ class Users(UserMixin, db.Model):
         return f'<Users {self.username}>'
 
 class ETLProjectLog(db.Model):
-    """Bitacora inmutable de eventos ETL para auditoria y cumplimiento."""
+    """
+    Registro del ciclo de vida completo de cada lote de carga ETL.
+
+    AUDITORÍA: Este diseño mejora la integridad referencial del historial al
+    representar cada lote de datos en una sola fila. Las eliminaciones no crean
+    filas adicionales; en su lugar actualizan la fila original (esta_activo=False,
+    eliminado_en, eliminado_por_id), permitiendo auditar el ciclo de vida completo
+    de un lote en una única entrada de la tabla.
+    """
     __tablename__ = 'etl_project_logs'
     id = db.Column(db.Integer, primary_key=True)
-    action = db.Column(db.String(50), nullable=False)
+    action = db.Column(db.String(50), nullable=False, default='CARGA')
     nombre_archivo = db.Column(db.String(255), nullable=False)
     fecha_carga_archivo = db.Column(db.DateTime, nullable=False)
     registros_afectados = db.Column(db.Integer, nullable=False, default=0)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    upload_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    user = db.relationship('Users', back_populates='logs')
+    upload_date = db.Column(db.DateTime, nullable=False, default=_ahora_bogota)
+    # Ciclo de vida del lote: permite marcar eliminaciones sin duplicar filas.
+    esta_activo = db.Column(db.Boolean, nullable=False, default=True)
+    eliminado_en = db.Column(db.DateTime, nullable=True)
+    eliminado_por_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    user = db.relationship('Users', foreign_keys=[user_id], back_populates='logs')
+    eliminado_por = db.relationship('Users', foreign_keys=[eliminado_por_id])
 
     def __repr__(self):
         return f'<ETLProjectLog {self.action} {self.nombre_archivo}>'

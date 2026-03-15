@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Historial de Auditoria ETL - ETL Manager{% endblock %}
+{% block title %}Historial de Cargas ETL - ETL Manager{% endblock %}
 
 {% block content %}
 <div class="max-w-7xl mx-auto">
@@ -8,65 +8,72 @@
     <div class="mb-8">
         <div>
             <h1 class="text-4xl font-bold text-gray-800 mb-2">
-                <i class="fas fa-history"></i> Historial de Auditoria ETL
+                <i class="fas fa-history"></i> Historial de Cargas ETL
             </h1>
-            <p class="text-gray-600">Bitacora inmutable de eventos de carga y eliminacion</p>
+            <p class="text-gray-600">Ciclo de vida completo de cada lote de datos cargado al sistema</p>
         </div>
     </div>
 
     {% if logs %}
-    <!-- Tabla de Auditoria -->
+    <!-- Tabla de Auditoría consolidada por lote -->
     <div class="bg-white rounded-lg card-shadow overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead class="gradient-bg text-white">
                     <tr>
-                        <th class="px-6 py-4 text-left font-semibold">Fecha del Evento</th>
+                        <th class="px-6 py-4 text-left font-semibold">Fecha de Carga</th>
                         <th class="px-6 py-4 text-left font-semibold">Usuario</th>
-                        <th class="px-6 py-4 text-center font-semibold">Accion</th>
-                        <th class="px-6 py-4 text-left font-semibold">Archivo</th>
-                        <th class="px-6 py-4 text-left font-semibold">Acciones</th>
+                        <th class="px-6 py-4 text-left font-semibold">Archivo / Lote</th>
+                        <th class="px-6 py-4 text-center font-semibold">Registros</th>
+                        <th class="px-6 py-4 text-left font-semibold">Estado / Acciones</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y">
                     {% for log in logs %}
-                    <tr class="hover:bg-gray-50 transition">
+                    <tr class="hover:bg-gray-50 transition {% if not log.esta_activo %}opacity-60{% endif %}">
                         <td class="px-6 py-4 text-sm text-gray-700">
                             {{ log.upload_date.strftime('%Y-%m-%d %H:%M:%S') if log.upload_date else '-' }}
                         </td>
                         <td class="px-6 py-4 text-gray-700">{{ log.user.username if log.user else 'Sistema' }}</td>
-                        <td class="px-6 py-4 text-center">
-                            {% if log.action == 'CARGA' %}
-                                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">
-                                    <i class="fas fa-upload"></i> CARGA
-                                </span>
-                            {% elif log.action == 'ELIMINACION' %}
-                                <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-semibold">
-                                    <i class="fas fa-trash-alt"></i> ELIMINACION
-                                </span>
-                            {% else %}
-                                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold">
-                                    <i class="fas fa-info-circle"></i> {{ log.action }}
-                                </span>
-                            {% endif %}
-                        </td>
                         <td class="px-6 py-4 text-sm text-gray-700">
                             <div class="font-semibold">{{ log.nombre_archivo }}</div>
                             <div class="text-xs text-gray-500">Lote: {{ log.fecha_carga_archivo.strftime('%Y-%m-%d %H:%M:%S') if log.fecha_carga_archivo else '-' }}</div>
-                            <div class="text-xs text-gray-500">Registros: {{ log.registros_afectados }}</div>
+                        </td>
+                        <td class="px-6 py-4 text-center text-sm text-gray-700">
+                            {{ log.registros_afectados }}
                         </td>
                         <td class="px-6 py-4">
-                            {% if es_admin_auditoria and log.action == 'CARGA' %}
-                                <form method="POST" action="{{ url_for('etl.eliminar_carga') }}" onsubmit="return confirm('Esta accion eliminara el lote seleccionado. Desea continuar?');">
-                                    <input type="hidden" name="nombre_archivo" value="{{ log.nombre_archivo }}">
-                                    <input type="hidden" name="fecha_carga_archivo" value="{{ log.fecha_carga_archivo.isoformat() if log.fecha_carga_archivo else '' }}">
+                            {% if log.esta_activo %}
+                                {% if es_admin_auditoria %}
+                                {# Botón de eliminar: solo visible para lotes activos y usuarios con permisos. #}
+                                <form method="POST" action="{{ url_for('etl.eliminar_carga') }}"
+                                      onsubmit="return confirm('Esta accion eliminara el lote seleccionado de la Base de Datos. ¿Desea continuar?');">
+                                    <input type="hidden" name="log_id" value="{{ log.id }}">
                                     <button type="submit" class="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 transition text-sm">
                                         <i class="fas fa-trash-alt"></i> Eliminar
                                     </button>
                                 </form>
-                            {% else %}
-                                <span class="text-xs text-gray-400">Sin acciones</span>
+                                {% else %}
+                                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">
+                                    <i class="fas fa-check-circle"></i> Activo
+                                </span>
                                 {% endif %}
+                            {% else %}
+                            {#
+                                Lote eliminado: se muestra la auditoría de eliminación inline en lugar
+                                del botón. Esto refleja el ciclo de vida completo del lote en una
+                                sola fila, sin crear registros adicionales en la tabla.
+                            #}
+                            <div class="flex flex-col gap-1">
+                                <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-semibold inline-block w-fit">
+                                    <i class="fas fa-ban"></i> Eliminado
+                                </span>
+                                <span class="text-xs text-gray-500">
+                                    por <strong>{{ log.eliminado_por.username if log.eliminado_por else 'desconocido' }}</strong>
+                                    el {{ log.eliminado_en.strftime('%Y-%m-%d %H:%M:%S') if log.eliminado_en else '-' }}
+                                </span>
+                            </div>
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
@@ -78,7 +85,11 @@
     <!-- Resumen -->
     <div class="mt-6 p-4 bg-gray-50 rounded-lg text-center">
         <p class="text-gray-700">
-            <strong>Total de eventos:</strong> {{ logs | length }}
+            <strong>Total de lotes:</strong> {{ logs | length }}
+            &nbsp;|&nbsp;
+            <strong>Activos:</strong> {{ logs | selectattr('esta_activo', 'equalto', True) | list | length }}
+            &nbsp;|&nbsp;
+            <strong>Eliminados:</strong> {{ logs | selectattr('esta_activo', 'equalto', False) | list | length }}
         </p>
     </div>
 
@@ -88,8 +99,8 @@
         <div class="mb-6">
             <i class="fas fa-inbox text-6xl text-gray-300"></i>
         </div>
-        <h2 class="text-2xl font-bold text-gray-800 mb-2">No hay eventos de auditoria</h2>
-        <p class="text-gray-600 mb-6">El historial se poblara automaticamente con cada carga o eliminacion</p>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">No hay lotes de carga registrados</h2>
+        <p class="text-gray-600 mb-6">El historial se poblará automáticamente con cada carga de datos</p>
     </div>
     {% endif %}
 </div>

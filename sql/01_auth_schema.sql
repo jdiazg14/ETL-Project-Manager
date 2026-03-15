@@ -23,15 +23,23 @@ CREATE TABLE users (
 );
 
 -- 4. Tabla de Logs de Proyectos ETL
+-- Registra el ciclo de vida completo de cada lote de carga ETL en una sola fila.
+-- Las eliminaciones actualizan la fila original (esta_activo, eliminado_en, eliminado_por_id)
+-- en lugar de insertar filas adicionales, garantizando integridad referencial del historial.
 CREATE TABLE etl_project_logs (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    action VARCHAR(50) NOT NULL,
+    action VARCHAR(50) NOT NULL DEFAULT 'CARGA',
     nombre_archivo VARCHAR(255) NOT NULL,
     fecha_carga_archivo DATETIME NOT NULL,
     registros_afectados INT NOT NULL DEFAULT 0,
-    user_id INT,
-    upload_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id)
+    user_id INT NOT NULL,
+    upload_date DATETIME NOT NULL,
+    -- Ciclo de vida del lote
+    esta_activo BOOLEAN NOT NULL DEFAULT TRUE,
+    eliminado_en DATETIME NULL,
+    eliminado_por_id INT NULL,
+    CONSTRAINT fk_epl_user FOREIGN KEY (user_id) REFERENCES users(id),
+    CONSTRAINT fk_epl_eliminado_por FOREIGN KEY (eliminado_por_id) REFERENCES users(id)
 );
 
 -- 5. INSERTAR ROLES INICIALES

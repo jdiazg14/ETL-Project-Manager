@@ -128,11 +128,10 @@ def dashboard():
     admin_role = Role.query.filter_by(name='admin').first()
     analista_role = Role.query.filter_by(name='analista').first()
     total_admins = Users.query.filter_by(role_id=admin_role.id if admin_role else None).count()
-    total_analistas = Users.query.filter_by(role_id=analista_role.id if analista_role else None).count()
-    total_logs = ETLProjectLog.query.count()
-    logs_procesados = ETLProjectLog.query.filter_by(action='CARGA').count()
-    logs_error = ETLProjectLog.query.filter_by(action='ERROR').count()
-    latest_logs = ETLProjectLog.query.order_by(ETLProjectLog.upload_date.desc()).limit(10).all()
+    total_operadores = Users.query.filter_by(role_id=analista_role.id if analista_role else None).count()
+    total_uploads = ETLProjectLog.query.filter_by(action='CARGA').count()
+    uploads_procesados = ETLProjectLog.query.filter_by(action='CARGA').count()
+    uploads_pendientes = ETLProjectLog.query.filter_by(action='PENDIENTE').count()
     try:
         db.session.execute(text('SELECT 1'))
         db_connected = True
@@ -143,12 +142,10 @@ def dashboard():
     contexto = {
         'total_usuarios': total_usuarios,
         'total_admins': total_admins,
-        'total_analistas': total_analistas,
-        'total_logs': total_logs,
-        'logs_procesados': logs_procesados,
-        'logs_error': logs_error,
-        'uploads_error': logs_error,
-        'latest_logs': latest_logs,
+        'total_operadores': total_operadores,
+        'total_uploads': total_uploads,
+        'uploads_procesados': uploads_procesados,
+        'uploads_pendientes': uploads_pendientes,
         'db_connected': db_connected,
         'db_status': db_status,
     }

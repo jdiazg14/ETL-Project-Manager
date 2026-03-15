@@ -8,9 +8,29 @@ from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 import json
 from sqlalchemy import text
-from app.models import db, ETLProjectLog, Users
+from app.models import db, ETLProjectLog, Users, _ahora_bogota
 from app.etl.processors import DataProcessor
 from . import etl_bp
+
+
+def _registrar_progreso(payload, etapa, estado, mensaje):
+    """
+    Registra hitos confirmados por backend para que frontend no simule etapas.
+
+    Nota: Flask en este flujo responde de forma sincrona al final de la
+    peticion. Por ello, el frontend solo muestra etapas que el servidor reporta
+    como iniciadas/finalizadas en el payload final.
+    """
+    payload.setdefault('progreso', []).append({
+        'etapa': etapa,
+        'estado': estado,
+        'mensaje': mensaje,
+    })
+    payload['estado_validacion'] = {
+        'etapa': etapa,
+        'estado': estado,
+        'mensaje': mensaje,
+    }
 
 
 def _normalizar_serie_numerica(serie):
@@ -85,8 +105,7 @@ def _mapear_columnas(df):
     Mapea columnas del archivo a nombres estandar del proceso ETL.
 
     Retorna una tupla (columnas_mapeadas, normalizaciones) donde
-    'normalizaciones' es una lista de mensajes informativos sobre
-    columnas reconocidas por nombres alternativos (sinónimos históricos).
+    'normalizaciones' es una lista técnica de normalizaciones aplicadas.
     La comparación es insensible a mayúsculas/minúsculas y espacios
     adicionales porque df.columns ya fue normalizado antes de esta llamada.
     """
@@ -122,7 +141,7 @@ def _mapear_columnas(df):
             if variante in df.columns:
                 columnas_mapeadas[col_estandar] = variante
                 # Si el sinónimo encontrado difiere del nombre estándar,
-                # registrar la normalización para feedback al usuario.
+                # registrar normalización solo para trazabilidad técnica interna.
                 if variante != col_estandar:
                     normalizaciones.append(
                         f"Columna '{variante}' reconocida y normalizada como '{col_estandar}'"
@@ -131,16 +150,116 @@ def _mapear_columnas(df):
     return columnas_mapeadas, normalizaciones
 
 
-def _validar_integridad_entrada(df, columnas_mapeadas):
+def validar_formato(df):
     """
-    ETAPA 1: INTEGRIDAD DE ENTRADA.
+    ETAPA 1: VALIDACION DE FORMATO.
 
-    Controles aplicados:
-    - Control de duplicidad de sorteos.
-    - Verificación contra maestro de distribuidores.
-    - Validación de fechas Año/Mes/Día parseables.
+    Esta etapa valida estructura del archivo (columnas requeridas) y tipos
+    de dato numéricos. Si no se supera, el registro se considera bloqueante
+    porque no existe base confiable para persistir en BD.
     """
-    reporte_errores = {}
+    errores_criticos = []
+    advertencias = []
+
+    # Normalizar encabezados para permitir matching robusto.
+    df.columns = df.columns.str.strip().str.lower()
+    columnas_mapeadas, _normalizaciones_alias = _mapear_columnas(df)
+
+    # Si porcentaje no viene en archivo, se completa por regla operativa.
+    if 'porcentaje' not in columnas_mapeadas:
+        df['porcentaje'] = 25.0
+        columnas_mapeadas['porcentaje'] = 'porcentaje'
+        advertencias.append(
+            'Columna "Porcentaje" no encontrada; se asigno 25.0 por defecto a todos los registros.'
+        )
+
+    columnas_criticas = [
+        'anio', 'mes', 'dia', 'sorteo', 'distribuidor',
+        'despachada', 'devuelta', 'vendida',
+        'bruto_despacho', 'bruto_devuelto', 'bruto_vendido',
+        'neto_vendido',
+    ]
+
+    columnas_faltantes = [col for col in columnas_criticas if col not in columnas_mapeadas]
+    if columnas_faltantes:
+        errores_criticos.append(
+            'Faltan columnas criticas en el archivo: ' + ', '.join(columnas_faltantes)
+        )
+        return {
+            'df': df,
+            'columnas_mapeadas': columnas_mapeadas,
+            'errores_criticos': errores_criticos,
+            'advertencias': advertencias
+        }
+
+    # Avisar nulos en columnas clave para que el usuario revise origen.
+    for col_estandar in columnas_criticas:
+        col_real = columnas_mapeadas[col_estandar]
+        nulos_count = int(df[col_real].isna().sum())
+        if nulos_count > 0:
+            advertencias.append(f'{col_estandar.capitalize()}: {nulos_count} valores nulos detectados')
+
+    # Endurecer tipos numéricos para detectar basura por celda/fila.
+    columnas_numericas_objetivo = {
+        'anio': columnas_mapeadas.get('anio'),
+        'mes': columnas_mapeadas.get('mes'),
+        'dia': columnas_mapeadas.get('dia'),
+        'sorteo': columnas_mapeadas.get('sorteo'),
+        'despachada': columnas_mapeadas.get('despachada'),
+        'devuelta': columnas_mapeadas.get('devuelta'),
+        'vendida': columnas_mapeadas.get('vendida'),
+        'bruto_despacho': columnas_mapeadas.get('bruto_despacho'),
+        'bruto_devuelto': columnas_mapeadas.get('bruto_devuelto'),
+        'bruto_vendido': columnas_mapeadas.get('bruto_vendido'),
+        'neto_vendido': columnas_mapeadas.get('neto_vendido'),
+        'porcentaje': columnas_mapeadas.get('porcentaje')
+    }
+
+    errores_formato_numerico = _validar_y_transformar_columnas_numericas(
+        df,
+        columnas_numericas_objetivo
+    )
+
+    if errores_formato_numerico:
+        errores_criticos.append(
+            'Se encontraron valores no numericos en columnas requeridas para carga.'
+        )
+        for detalle in errores_formato_numerico:
+            filas = ', '.join(str(f) for f in detalle.get('filas', [])[:20])
+            errores_criticos.append(
+                f"Columna {detalle.get('columna')}: filas con formato invalido -> {filas}"
+            )
+
+    # Porcentaje nulo se completa para permitir auditoría contable.
+    col_porcentaje = columnas_mapeadas.get('porcentaje')
+    if col_porcentaje:
+        filas_porcentaje_nulo = (df.index[df[col_porcentaje].isna()] + 2).tolist()
+        if filas_porcentaje_nulo:
+            df[col_porcentaje] = df[col_porcentaje].fillna(25.0)
+            advertencias.append(
+                'Se asigno Porcentaje = 25.0 en filas con nulo: '
+                + ', '.join(str(f) for f in filas_porcentaje_nulo[:20])
+            )
+
+    return {
+        'df': df,
+        'columnas_mapeadas': columnas_mapeadas,
+        'errores_criticos': errores_criticos,
+        'advertencias': advertencias
+    }
+
+
+def validar_integridad(df, columnas_mapeadas):
+    """
+    ETAPA 2: VALIDACION DE INTEGRIDAD.
+
+    Errores criticos bloqueantes definidos para este flujo:
+    - Sorteo repetido
+    - Codigos de distribuidor no registrados
+
+    Tambien se valida fecha parseable como guardarraíl de consistencia.
+    """
+    errores_criticos = []
 
     # Control de duplicidad de sorteos (integridad por lote).
     col_sorteo = columnas_mapeadas['sorteo']
@@ -149,7 +268,7 @@ def _validar_integridad_entrada(df, columnas_mapeadas):
         from app.models import FactVentas
         sorteo_existente = FactVentas.query.filter(FactVentas.sorteo.in_(sorteos_archivo)).first()
         if sorteo_existente:
-            reporte_errores['sorteo'] = f'El sorteo {sorteo_existente.sorteo} ya ha sido cargado'
+            errores_criticos.append(f'El sorteo {sorteo_existente.sorteo} ya ha sido cargado previamente.')
 
     # Control de maestro de distribuidores.
     from app.models import DimDistribuidor
@@ -161,7 +280,9 @@ def _validar_integridad_entrada(df, columnas_mapeadas):
     codigos_bd = {dist.codigo_distribuidor for dist in distribuidores_bd}
     codigos_faltantes = [cod for cod in codigos_archivo if cod not in codigos_bd]
     if codigos_faltantes:
-        reporte_errores['distribuidores_faltantes'] = codigos_faltantes
+        errores_criticos.append(
+            'Codigos de distribuidor no existentes: ' + ', '.join(codigos_faltantes)
+        )
 
     # Control de integridad temporal de entrada.
     col_anio = columnas_mapeadas['anio']
@@ -174,28 +295,33 @@ def _validar_integridad_entrada(df, columnas_mapeadas):
         except Exception:
             errores_tiempo.append(idx + 2)
     if errores_tiempo:
-        reporte_errores['tiempo'] = (
-            'Hay fechas inválidas en columnas Año/Mes/Día. '
-            f'Filas: {", ".join(str(f) for f in errores_tiempo[:20])}'
+        errores_criticos.append(
+            'Hay fechas invalidas en columnas Anio/Mes/Dia. '
+            + f'Filas: {", ".join(str(f) for f in errores_tiempo[:20])}'
         )
 
-    return reporte_errores
+    return errores_criticos
 
 
-def _auditar_integridad_aritmetica(df, columnas_mapeadas):
+def validar_reglas_negocio(df, columnas_mapeadas):
     """
-    ETAPA 2: REGLAS DE NEGOCIO (auditoría de integridad aritmética).
+    ETAPA 3: REGLAS DE NEGOCIO CONTABLES.
 
     Fórmulas auditadas por fila:
     1) Despachada - Devuelta == Vendida
     2) Bruto despacho - Bruto devuelto == Bruto vendido
     3) Neto vendido == (Bruto vendido * (100 - Porcentaje) / 100)
+
+    Estas inconsistencias se reportan como advertencias (no bloqueantes)
+    para mantener trazabilidad de calidad de dato sin frenar la carga.
     """
-    errores = []
+    advertencias = []
     tolerancia = 0.01
 
     for idx, row in df.iterrows():
-        fila_excel = idx + 2
+        # UX: el usuario final cuenta datos desde la primera fila de contenido,
+        # no incluye la fila de encabezado del archivo.
+        fila_usuario = idx + 1
 
         despachada = float(row[columnas_mapeadas['despachada']])
         devuelta = float(row[columnas_mapeadas['devuelta']])
@@ -207,22 +333,40 @@ def _auditar_integridad_aritmetica(df, columnas_mapeadas):
         porcentaje = float(row[columnas_mapeadas['porcentaje']])
 
         if abs((despachada - devuelta) - vendida) > tolerancia:
-            errores.append(
-                f'Fila {fila_excel}: Inconsistencia en Cantidades (Despachada - Devuelta != Vendida)'
+            advertencias.append(
+                f'Fila {fila_usuario}: Inconsistencia en Cantidades (Despachada - Devuelta != Vendida)'
             )
 
         if abs((bruto_despacho - bruto_devuelto) - bruto_vendido) > tolerancia:
-            errores.append(
-                f'Fila {fila_excel}: Inconsistencia en Brutos (Bruto despacho - Bruto devuelto != Bruto vendido)'
+            advertencias.append(
+                f'Fila {fila_usuario}: Inconsistencia en Brutos (Bruto despacho - Bruto devuelto != Bruto vendido)'
             )
 
         neto_calculado = bruto_vendido * (100 - porcentaje) / 100
         if abs(neto_vendido - neto_calculado) > tolerancia:
-            errores.append(
-                f'Fila {fila_excel}: Inconsistencia en Neto Vendido (Neto vendido != Bruto vendido * (100 - Porcentaje) / 100)'
+            advertencias.append(
+                f'Fila {fila_usuario}: Inconsistencia en Neto Vendido (Neto vendido != Bruto vendido * (100 - Porcentaje) / 100)'
             )
 
-    return errores
+    return advertencias
+
+
+def _construir_datos_previsualizados(df):
+    """
+    Convierte el DataFrame en JSON estructurado para pintar preview.
+
+    Se serializa el DataFrame completo para que el frontend gestione
+    la paginacion visual en bloques de 10 filas.
+    """
+    muestra = df.copy()
+    muestra = muestra.where(pd.notna(muestra), None)
+
+    return {
+        'total_filas': int(len(df)),
+        'filas_mostradas': int(len(muestra)),
+        'columnas': [str(c) for c in muestra.columns.tolist()],
+        'filas': json.loads(muestra.to_json(orient='records', date_format='iso'))
+    }
 
 
 def _int_or_default(value, default=0):
@@ -326,179 +470,113 @@ def upload():
     """
     if request.method == 'GET':
         return render_template('etl/upload.html')
-    
-    # ========================================================================
-    # PROCESAMIENTO POST: VALIDACIÓN POR CAPAS
-    # ========================================================================
-    
-    # --- Validación Inicial: Archivo recibido ---
+
+    payload = {
+        'puede_cargar': False,
+        'errores_criticos': [],
+        'advertencias': [],
+        'progreso': [],
+        'estado_validacion': {
+            'etapa': 'inicio',
+            'estado': 'iniciado',
+            'mensaje': 'Solicitud recibida por el servidor.'
+        },
+        'datos_previsualizados': {
+            'total_filas': 0,
+            'filas_mostradas': 0,
+            'columnas': [],
+            'filas': []
+        }
+    }
+
+    _registrar_progreso(payload, 'recepcion_archivo', 'iniciado', 'Solicitud recibida por el servidor.')
+
     if 'file' not in request.files:
-        return jsonify({'error': 'No se seleccionó ningún archivo.'}), 400
-    
+        payload['errores_criticos'].append('No se selecciono ningun archivo.')
+        _registrar_progreso(payload, 'recepcion_archivo', 'error', 'No se selecciono ningun archivo.')
+        return jsonify(payload), 200
+
     file = request.files['file']
-    
     if file.filename == '':
-        return jsonify({'error': 'No se seleccionó ningún archivo.'}), 400
-    
+        payload['errores_criticos'].append('No se selecciono ningun archivo.')
+        _registrar_progreso(payload, 'recepcion_archivo', 'error', 'No se selecciono ningun archivo.')
+        return jsonify(payload), 200
+
     if not DataProcessor.allowed_file(file.filename):
-        return jsonify({'error': 'Formato de archivo no permitido. Use CSV o Excel.'}), 400
-    
+        payload['errores_criticos'].append('Formato de archivo no permitido. Use CSV o Excel.')
+        _registrar_progreso(payload, 'recepcion_archivo', 'error', 'Formato de archivo no permitido.')
+        return jsonify(payload), 200
+
     try:
-        # --- Lectura del archivo ---
         from io import BytesIO
+
         file_bytes = file.read()
         file_stream = BytesIO(file_bytes)
+
+        _registrar_progreso(payload, 'lectura_archivo', 'iniciado', 'Leyendo archivo en servidor...')
         df, error = DataProcessor.read_file(file_stream, filename=file.filename)
-        
         if error:
-            return jsonify({'error': f'Error al leer el archivo: {error}'}), 400
+            payload['errores_criticos'].append(f'Error al leer el archivo: {error}')
+            _registrar_progreso(payload, 'lectura_archivo', 'error', 'No fue posible leer el archivo.')
+            return jsonify(payload), 200
+        _registrar_progreso(payload, 'lectura_archivo', 'finalizado', 'Archivo leido correctamente.')
 
-        # ====================================================================
-        # CAPA 1: VALIDACIONES PREVIAS (PANDAS)
-        # Objetivo: Verificar integridad estructural antes de consultar BD
-        # ====================================================================
-        
-        reporte_errores = {}
-        reporte_avisos = []
-        
-        # --- 1.1. Normalizar nombres de columnas ---
-        # Eliminar espacios y convertir a minúsculas para comparación robusta
-        df.columns = df.columns.str.strip().str.lower()
-        
-        # --- 1.2. Mapeo de columnas esperadas ---
-        # _mapear_columnas retorna (mapa, normalizaciones) donde 'normalizaciones'
-        # lista los sinónimos históricos que fueron detectados y normalizados.
-        columnas_mapeadas, normalizaciones_alias = _mapear_columnas(df)
-        if normalizaciones_alias:
-            reporte_avisos.extend(normalizaciones_alias)
+        # Flujo unificado por etapas: formato -> integridad -> reglas negocio.
+        _registrar_progreso(payload, 'validar_formato', 'iniciado', 'Validando formato y tipos de datos...')
+        resultado_formato = validar_formato(df)
+        df_validado = resultado_formato['df']
+        columnas_mapeadas = resultado_formato['columnas_mapeadas']
 
-        # --- 1.2.1. Porcentaje ausente: auto-creación con valor por defecto ---
-        # Si el archivo no contiene la columna Porcentaje (ni ningún sinónimo),
-        # se crea con el valor operativo 25.0 para que la fórmula del Neto
-        # Vendido tenga un operando válido en la ETAPA 2 (Reglas de Negocio).
-        if 'porcentaje' not in columnas_mapeadas:
-            df['porcentaje'] = 25.0
-            columnas_mapeadas['porcentaje'] = 'porcentaje'
-            reporte_avisos.append(
-                'Columna "Porcentaje" no encontrada en el archivo; '
-                'se asignó automáticamente el valor 25.0 para todos los registros.'
-            )
+        payload['errores_criticos'].extend(resultado_formato['errores_criticos'])
+        payload['advertencias'].extend(resultado_formato['advertencias'])
+        _registrar_progreso(payload, 'validar_formato', 'finalizado', 'Validacion de formato finalizada.')
 
-        # Verificar que existan al menos las columnas críticas.
-        # 'porcentaje' se excluye de esta lista porque se auto-completa arriba.
-        columnas_criticas = [
-            'anio', 'mes', 'dia', 'sorteo', 'distribuidor',
-            'despachada', 'devuelta', 'vendida',
-            'bruto_despacho', 'bruto_devuelto', 'bruto_vendido',
-            'neto_vendido',
-        ]
-        columnas_faltantes = [col for col in columnas_criticas if col not in columnas_mapeadas]
+        if columnas_mapeadas:
+            _registrar_progreso(payload, 'validar_integridad', 'iniciado', 'Validando integridad de sorteo y distribuidores...')
+            payload['errores_criticos'].extend(validar_integridad(df_validado, columnas_mapeadas))
+            _registrar_progreso(payload, 'validar_integridad', 'finalizado', 'Validacion de integridad finalizada.')
 
-        if columnas_faltantes:
-            reporte_errores['formato'] = f'Faltan columnas críticas en el archivo: {", ".join(columnas_faltantes)}'
-            return jsonify(reporte_errores), 400
-        
-        # --- 1.3. Validación de valores nulos en columnas críticas ---
-        # METODOLOGÍA: Esta validación previene inconsistencias antes de la persistencia
-        errores_nulos = []
-        for col_estandar in columnas_criticas:
-            col_real = columnas_mapeadas[col_estandar]
-            nulos_count = df[col_real].isna().sum()
-            if nulos_count > 0:
-                errores_nulos.append(f'{col_estandar.capitalize()}: {nulos_count} valores nulos')
-        
-        if errores_nulos:
-            reporte_errores['valores_nulos'] = errores_nulos
-        
-        # --- 1.4. Validación estricta y transformación numérica ---
-        # METODOLOGÍA: Endurece la fase de Transformación para bloquear datos corruptos.
-        columnas_numericas_objetivo = {
-            'anio': columnas_mapeadas.get('anio'),
-            'mes': columnas_mapeadas.get('mes'),
-            'dia': columnas_mapeadas.get('dia'),
-            'sorteo': columnas_mapeadas.get('sorteo'),
-            'despachada': columnas_mapeadas.get('despachada'),
-            'devuelta': columnas_mapeadas.get('devuelta'),
-            'vendida': columnas_mapeadas.get('vendida'),
-            'bruto_despacho': columnas_mapeadas.get('bruto_despacho'),
-            'bruto_devuelto': columnas_mapeadas.get('bruto_devuelto'),
-            'bruto_vendido': columnas_mapeadas.get('bruto_vendido'),
-            'neto_vendido': columnas_mapeadas.get('neto_vendido'),
-            'porcentaje': columnas_mapeadas.get('porcentaje')
-        }
+            # Las reglas contables son advertencias no bloqueantes.
+            _registrar_progreso(payload, 'validar_reglas_negocio', 'iniciado', 'Validando reglas de negocio contables...')
+            payload['advertencias'].extend(validar_reglas_negocio(df_validado, columnas_mapeadas))
+            _registrar_progreso(payload, 'validar_reglas_negocio', 'finalizado', 'Validacion de reglas de negocio finalizada.')
 
-        errores_formato_numerico = _validar_y_transformar_columnas_numericas(
-            df,
-            columnas_numericas_objetivo
-        )
+        payload['datos_previsualizados'] = _construir_datos_previsualizados(df_validado)
 
-        if errores_formato_numerico:
-            reporte_errores['formato'] = (
-                'Error de Formato: Se encontraron valores no numéricos en las '
-                'columnas de montos. Por favor revisa el archivo.'
-            )
-            reporte_errores['formato_detalle'] = errores_formato_numerico
+        # Persistir solo cuando no existen errores críticos.
+        puede_cargar = len(payload['errores_criticos']) == 0
+        payload['puede_cargar'] = puede_cargar
+        if puede_cargar:
+            _registrar_progreso(payload, 'resultado_final', 'finalizado', 'Validacion finalizada sin errores criticos.')
+        else:
+            _registrar_progreso(payload, 'resultado_final', 'finalizado', 'Validacion finalizada con errores criticos.')
 
-        # --- 1.5. Control de nulos en porcentaje (default operativo) ---
-        # Si porcentaje viene nulo, se rellena con 25.0 y se reporta aviso.
-        if 'porcentaje' in columnas_mapeadas:
-            col_porcentaje = columnas_mapeadas['porcentaje']
-            filas_porcentaje_nulo = (df.index[df[col_porcentaje].isna()] + 2).tolist()
-            if filas_porcentaje_nulo:
-                df[col_porcentaje] = df[col_porcentaje].fillna(25.0)
-                reporte_avisos.append(
-                    'Se asigno Porcentaje = 25.0 en filas con nulo: '
-                    f'{", ".join(str(f) for f in filas_porcentaje_nulo[:20])}'
-                )
-
-        # --- 1.6. Control de duplicidad y maestro de distribuidores ---
-        errores_integridad_entrada = _validar_integridad_entrada(df, columnas_mapeadas)
-        if errores_integridad_entrada:
-            reporte_errores.update(errores_integridad_entrada)
-        
-        # ====================================================================
-        # DECISIÓN CAPA 1: RETORNAR ERRORES O MOSTRAR PREVIEW
-        # ====================================================================
-        
-        if reporte_errores:
-            # Hay errores de formato: bloquear flujo antes de negocio.
-            reporte_errores['bloquear_guardado'] = True
-            if reporte_avisos:
-                reporte_errores['avisos'] = reporte_avisos
-            return jsonify(reporte_errores), 400
-        
-        # CAPA 1 aprobada: guardar dataset para fase 2 (negocio).
-        temp_data_path = _guardar_df_temporal(df)
+        temp_data_path = _guardar_df_temporal(df_validado)
         session['upload_data'] = {
             'filename': file.filename,
             'data_path': temp_data_path,
             'columnas_mapeadas': columnas_mapeadas,
-            'avisos': reporte_avisos,
-            'formato_validado': True,
-            'negocio_validado': False
+            'advertencias': payload['advertencias'],
+            'validacion_unificada': True,
+            'negocio_validado': True,
+            'puede_cargar': puede_cargar
         }
-        
-        # Generar tabla HTML para vista previa
-        tabla = df.to_html(classes='table table-striped', index=False)
-        return render_template(
-            'etl/preview.html',
-            filename=file.filename,
-            tabla=tabla,
-            avisos_integridad=reporte_avisos
-        )
-        
+
+        return jsonify(payload), 200
     except Exception as e:
-        return jsonify({'error': f'Error al procesar el archivo: {str(e)}'}), 400
+        payload['errores_criticos'].append(f'Error al procesar el archivo: {str(e)}')
+        _registrar_progreso(payload, 'resultado_final', 'error', 'Ocurrio un error inesperado durante la validacion.')
+        return jsonify(payload), 200
 
 
 @etl_bp.route('/validate-business', methods=['POST'])
 @login_required
 def validate_business():
-    """ETAPA 2 del ETL: reglas de negocio (integridad aritmética)."""
+    """Ruta de compatibilidad: reglas de negocio ya incluidas en upload unificado."""
     upload_data = session.get('upload_data')
-    if not upload_data or not upload_data.get('formato_validado'):
+    if not upload_data or not upload_data.get('validacion_unificada'):
         return jsonify({
-            'error': 'No hay datos válidos de formato en sesión. Cargue y valide el archivo nuevamente.',
+            'error': 'No hay una carga validada en sesion. Cargue y valide el archivo nuevamente.',
             'bloquear_guardado': True
         }), 400
 
@@ -506,26 +584,19 @@ def validate_business():
         df = _cargar_df_temporal(upload_data.get('data_path'))
         columnas_mapeadas = upload_data.get('columnas_mapeadas', {})
 
-        # Auditoría de integridad aritmética fila por fila.
-        errores_aritmetica = _auditar_integridad_aritmetica(df, columnas_mapeadas)
-        if errores_aritmetica:
-            errores_negocio = {
-                'reglas_negocio': errores_aritmetica,
-                'bloquear_guardado': True
-            }
-            upload_data['negocio_validado'] = False
-            session['upload_data'] = upload_data
-            return jsonify(errores_negocio), 400
-
+        advertencias = validar_reglas_negocio(df, columnas_mapeadas)
+        upload_data['advertencias'] = advertencias
         upload_data['negocio_validado'] = True
         session['upload_data'] = upload_data
-        payload_ok = {'message': 'Validación de reglas de negocio aprobada.'}
-        if upload_data.get('avisos'):
-            payload_ok['avisos'] = upload_data.get('avisos')
+        payload_ok = {
+            'message': 'Las reglas de negocio ya se validan en la carga inicial.',
+            'advertencias': advertencias,
+            'puede_cargar': bool(upload_data.get('puede_cargar'))
+        }
         return jsonify(payload_ok), 200
     except Exception as e:
         return jsonify({
-            'error': f'Error al validar reglas de negocio: {str(e)}',
+            'error': f'Error al consultar reglas de negocio: {str(e)}',
             'bloquear_guardado': True
         }), 400
 
@@ -545,12 +616,14 @@ def confirm_upload():
     sobrescribir eventos anteriores, cumpliendo trazabilidad normativa.
     """
     if 'upload_data' not in session:
-        flash('Sesión expirada. Intente nuevamente.', 'danger')
-        return redirect(url_for('etl.upload'))
+        return jsonify({'ok': False, 'error': 'Sesión expirada. Intente nuevamente.'}), 400
 
-    if not session['upload_data'].get('negocio_validado'):
-        flash('Debe ejecutar la validación de reglas de negocio antes de guardar.', 'danger')
-        return redirect(url_for('etl.upload'))
+    # En el flujo unificado, solo se permite persistir si no hubo errores críticos.
+    if not session['upload_data'].get('validacion_unificada'):
+        return jsonify({'ok': False, 'error': 'Debe ejecutar la validación unificada antes de guardar.'}), 400
+
+    if not session['upload_data'].get('puede_cargar'):
+        return jsonify({'ok': False, 'error': 'No se puede guardar: existen errores críticos de validación.'}), 400
     
     try:
         from app.models import DimDistribuidor, FactVentas
@@ -573,7 +646,7 @@ def confirm_upload():
         # Cada registro queda etiquetado por lote (nombre_archivo + fecha_carga)
         # para habilitar rollback/eliminación futura por lote de carga.
         registros_a_insertar = []
-        fecha_carga_lote = datetime.utcnow()
+        fecha_carga_lote = _ahora_bogota()
         nombre_archivo_lote = upload_data.get('filename', 'archivo_sin_nombre')
         for _, row in df.iterrows():
             codigo = str(row[col_distribuidor]).strip()
@@ -608,8 +681,10 @@ def confirm_upload():
             ))
 
         if not registros_a_insertar:
-            flash('No se generaron registros válidos para guardar. Verifique distribuidores y municipios asociados.', 'danger')
-            return redirect(url_for('etl.upload'))
+            return jsonify({
+                'ok': False,
+                'error': 'No se generaron registros válidos para guardar. Verifique distribuidores y municipios asociados.'
+            }), 400
 
         db.session.add_all(registros_a_insertar)
 
@@ -628,22 +703,27 @@ def confirm_upload():
         if temp_path and os.path.exists(temp_path):
             os.remove(temp_path)
 
+        nombre_archivo = upload_data.get('filename', '')
         session.pop('upload_data', None)
 
-        flash(f'¡Archivo "{upload_data.get("filename", "")}" cargado exitosamente! Registros insertados: {len(registros_a_insertar)}', 'success')
-        return redirect(url_for('etl.upload'))
+        return jsonify({
+            'ok': True,
+            'mensaje': f'¡Archivo "{nombre_archivo}" cargado exitosamente! Registros insertados: {len(registros_a_insertar)}',
+            'registros': len(registros_a_insertar)
+        })
 
     except Exception as e:
         db.session.rollback()
-        flash(f'Error al confirmar la carga: {str(e)}', 'danger')
-        return redirect(url_for('etl.upload'))
+        return jsonify({'ok': False, 'error': f'Error al confirmar la carga: {str(e)}'}), 500
 
 
 @etl_bp.route('/historial')
 @login_required
 def historial():
-    """Historial de auditoria ETL con log inmutable por evento."""
-    logs = ETLProjectLog.query.join(
+    """Historial consolidado por lote de carga ETL."""
+    # Filtra solo filas de CARGA para el nuevo modelo de historial por lote.
+    # Los registros de ELIMINACION (modelo anterior) quedan ocultos en la UI.
+    logs = ETLProjectLog.query.filter_by(action='CARGA').join(
         Users, ETLProjectLog.user_id == Users.id
     ).order_by(ETLProjectLog.upload_date.desc()).all()
 
@@ -658,45 +738,39 @@ def historial():
 @login_required
 def eliminar_carga():
     """
-    Reversion administrativa por lote de archivo.
+    Reversion administrativa de un lote de carga.
 
-    Diseno de Log Inmutable:
-    - No se actualizan ni eliminan logs historicos.
-    - Cada reversion inserta un nuevo evento ELIMINACION para trazabilidad.
+    AUDITORÍA: En lugar de insertar una fila nueva de ELIMINACION, se actualiza
+    la fila original del lote (esta_activo=False, eliminado_en, eliminado_por_id),
+    mejorando la integridad referencial al mantener el ciclo de vida completo
+    del lote en una sola linea de la tabla de auditoria.
     """
     if not _es_admin_auditoria(current_user):
         flash('No tiene permisos para eliminar cargas.', 'danger')
         return redirect(url_for('etl.historial'))
 
-    nombre_archivo = request.form.get('nombre_archivo', '').strip()
-    fecha_carga_raw = request.form.get('fecha_carga_archivo', '').strip()
-
-    if not nombre_archivo or not fecha_carga_raw:
-        flash('Solicitud incompleta: faltan datos del lote a eliminar.', 'danger')
+    log_id = request.form.get('log_id', '').strip()
+    if not log_id:
+        flash('Solicitud incompleta: falta el identificador del lote.', 'danger')
         return redirect(url_for('etl.historial'))
 
-    try:
-        fecha_carga_archivo = datetime.fromisoformat(fecha_carga_raw)
-    except ValueError:
-        flash('Formato de fecha de carga invalido para eliminacion.', 'danger')
+    log = db.session.get(ETLProjectLog, int(log_id))
+    if not log or log.action != 'CARGA' or not log.esta_activo:
+        flash('El lote no existe o ya fue eliminado.', 'danger')
         return redirect(url_for('etl.historial'))
 
     try:
         from app.models import FactVentas
 
         registros_eliminados = FactVentas.query.filter_by(
-            nombre_archivo=nombre_archivo,
-            fecha_carga=fecha_carga_archivo
+            nombre_archivo=log.nombre_archivo,
+            fecha_carga=log.fecha_carga_archivo
         ).delete(synchronize_session=False)
 
-        # Registro inmutable del evento de eliminacion (auditoria obligatoria).
-        db.session.add(ETLProjectLog(
-            action='ELIMINACION',
-            nombre_archivo=nombre_archivo,
-            fecha_carga_archivo=fecha_carga_archivo,
-            registros_afectados=registros_eliminados,
-            user_id=current_user.id
-        ))
+        # Actualiza la fila original del lote en lugar de crear una fila nueva.
+        log.esta_activo = False
+        log.eliminado_en = _ahora_bogota()
+        log.eliminado_por_id = current_user.id
 
         db.session.commit()
         flash(f'Eliminacion ejecutada. Registros afectados: {registros_eliminados}', 'success')
@@ -707,26 +781,3 @@ def eliminar_carga():
     return redirect(url_for('etl.historial'))
 
 
-@etl_bp.route('/ver/<int:upload_id>')
-@login_required
-def ver_upload(upload_id):
-    """
-    Ver detalles de una carga específica.
-    """
-    upload = DataUpload.query.get_or_404(upload_id)
-    
-    # Verificar permisos
-    if upload.user_id != current_user.id and not current_user.is_admin():
-        flash('No tiene permisos para ver este archivo.', 'danger')
-        return redirect(url_for('etl.historial'))
-    
-    # Leer archivo nuevamente para mostrar datos
-    df, error = DataProcessor.read_file(upload.file_path)
-    
-    if error:
-        flash(f'Error al leer el archivo: {error}', 'danger')
-        return redirect(url_for('etl.historial'))
-    
-    # Generar tabla HTML para las primeras 10 filas
-    tabla = df.head(10).to_html(classes='table table-striped', index=False)
-    return render_template('ver_upload.html', upload=upload, preview=preview_info, tabla=tabla)
