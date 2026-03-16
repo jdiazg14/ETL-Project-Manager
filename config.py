@@ -13,7 +13,7 @@ class Config:
     """Configuración base para todos los ambientes."""
     
     # Flask
-    SECRET_KEY = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
+    SECRET_KEY = os.getenv('SECRET_KEY')
     
     # Base de datos: solo por DATABASE_URL
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -29,12 +29,15 @@ class Config:
     SESSION_COOKIE_SECURE = os.getenv('SESSION_COOKIE_SECURE', 'False') == 'True'
     SESSION_COOKIE_HTTPONLY = os.getenv('SESSION_COOKIE_HTTPONLY', 'True') == 'True'
     SESSION_COOKIE_SAMESITE = os.getenv('SESSION_COOKIE_SAMESITE', 'Lax')
+    REMEMBER_COOKIE_HTTPONLY = True
+    REMEMBER_COOKIE_SAMESITE = 'Lax'
 
 
 class DevelopmentConfig(Config):
     """Configuración para desarrollo."""
     DEBUG = True
     TESTING = False
+    SECRET_KEY = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
 
 
 class ProductionConfig(Config):
@@ -42,6 +45,7 @@ class ProductionConfig(Config):
     DEBUG = False
     TESTING = False
     SESSION_COOKIE_SECURE = True
+    REMEMBER_COOKIE_SECURE = True
 
 
 class TestingConfig(Config):

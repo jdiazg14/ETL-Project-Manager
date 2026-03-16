@@ -20,6 +20,8 @@ CREATE TABLE Dim_Municipio (
         ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
+    CREATE INDEX idx_dim_municipio_depto ON Dim_Municipio (id_departamento);
+
 CREATE TABLE Dim_Tiempo (
     id_tiempo INT AUTO_INCREMENT PRIMARY KEY,
     fecha DATE UNIQUE NOT NULL,
@@ -29,7 +31,10 @@ CREATE TABLE Dim_Tiempo (
     dia_semana_nombre VARCHAR(20), -- Lunes, Martes...
     dia_semana_num INT,            -- 1 (Lunes) a 7 (Domingo)
     es_fin_semana BOOLEAN,
-    trimestre INT
+    trimestre INT,
+    CONSTRAINT chk_dim_tiempo_mes CHECK (mes BETWEEN 1 AND 12),
+    CONSTRAINT chk_dim_tiempo_dia CHECK (dia BETWEEN 1 AND 31),
+    CONSTRAINT chk_dim_tiempo_trimestre CHECK (trimestre BETWEEN 1 AND 4)
 ) ENGINE=InnoDB;
 
 
@@ -55,6 +60,10 @@ CREATE TABLE Dim_Distribuidor (
     CONSTRAINT fk_dist_grupo FOREIGN KEY (id_grupo) REFERENCES Dim_GrupoDistribuidor(id_grupo)
 ) ENGINE=InnoDB;
 
+CREATE INDEX idx_dim_distribuidor_municipio ON Dim_Distribuidor (id_municipio);
+CREATE INDEX idx_dim_distribuidor_grupo ON Dim_Distribuidor (id_grupo);
+CREATE INDEX idx_dim_distribuidor_activo ON Dim_Distribuidor (activo);
+
 CREATE TABLE Fact_Ventas (
     id_venta INT AUTO_INCREMENT PRIMARY KEY,
     id_tiempo INT NOT NULL,
@@ -74,6 +83,22 @@ CREATE TABLE Fact_Ventas (
     
     CONSTRAINT fk_fac_tiempo FOREIGN KEY (id_tiempo) REFERENCES Dim_Tiempo(id_tiempo),
     CONSTRAINT fk_fac_dist FOREIGN KEY (id_distribuidor) REFERENCES Dim_Distribuidor(id_distribuidor),
-    CONSTRAINT fk_fac_muni FOREIGN KEY (id_municipio) REFERENCES Dim_Municipio(id_municipio)
+    CONSTRAINT fk_fac_muni FOREIGN KEY (id_municipio) REFERENCES Dim_Municipio(id_municipio),
+    CONSTRAINT chk_fac_cantidades_nonnegative CHECK (
+        cantidad_despachada >= 0 AND cantidad_devuelta >= 0 AND cantidad_vendida >= 0
+    ),
+    CONSTRAINT chk_fac_montos_nonnegative CHECK (
+        bruto_despacho >= 0 AND bruto_devuelto >= 0 AND bruto_vendido >= 0 AND neto_vendido >= 0
+    ),
+    CONSTRAINT chk_fac_porcentaje_rango CHECK (
+        porcentaje_comision IS NULL OR (porcentaje_comision BETWEEN 0 AND 100)
+    )
 ) ENGINE=InnoDB;
+
+CREATE INDEX idx_fact_ventas_tiempo ON Fact_Ventas (id_tiempo);
+CREATE INDEX idx_fact_ventas_distribuidor ON Fact_Ventas (id_distribuidor);
+CREATE INDEX idx_fact_ventas_municipio ON Fact_Ventas (id_municipio);
+CREATE INDEX idx_fact_ventas_sorteo ON Fact_Ventas (sorteo);
+CREATE INDEX idx_fact_ventas_fecha_carga ON Fact_Ventas (fecha_carga);
+CREATE INDEX idx_fact_ventas_lote ON Fact_Ventas (nombre_archivo, fecha_carga);
 

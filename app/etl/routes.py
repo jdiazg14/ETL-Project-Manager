@@ -1,11 +1,10 @@
 """Rutas del blueprint ETL"""
 import os
 import pandas as pd
-from datetime import date, datetime
+from datetime import date
 from uuid import uuid4
 from flask import render_template, request, redirect, url_for, flash, jsonify, session
 from flask_login import login_required, current_user
-from werkzeug.utils import secure_filename
 import json
 from sqlalchemy import text
 from app.models import db, ETLProjectLog, Users, _ahora_bogota
@@ -63,11 +62,9 @@ def _normalizar_serie_numerica(serie):
 
 def _validar_y_transformar_columnas_numericas(df, columnas_objetivo):
     """
-    Valida columnas numéricas con coerción estricta y retorna filas corruptas.
+    Valida columnas numéricas con coerción estricta.
 
-    METODOLOGÍA (TESIS):
-    Este bloque garantiza calidad del dato en fase de Transformación antes de
-    persistencia, detectando "basura" (texto/celdas corruptas) por fila exacta.
+    Retorna una lista con detalle de filas corruptas por columna.
     """
     errores_detalle = []
 
@@ -418,11 +415,14 @@ def _obtener_o_crear_id_tiempo(fecha):
             'trimestre': trimestre,
         }
     )
+    db.session.flush()
 
     row_new = db.session.execute(
         text('SELECT id_tiempo FROM Dim_Tiempo WHERE fecha = :fecha LIMIT 1'),
         {'fecha': fecha}
     ).first()
+    if not row_new:
+        raise ValueError('No fue posible obtener id_tiempo para la fecha procesada.')
     return int(row_new[0])
 
 
@@ -458,15 +458,14 @@ def _es_admin_auditoria(user):
 def upload():
     """
     Página principal de carga de archivos con validación por capas.
-    
+
     GET: Mostrar formulario
     POST: Procesar y validar archivo cargado
-    
-    METODOLOGÍA (TESIS):
-    Este endpoint implementa un sistema de validación por capas que garantiza
-    la calidad del dato antes de la persistencia. Las capas son:
-    1. Validación de Formato (Pandas): Integridad estructural del archivo
-    2. Validación de Integridad (SQLAlchemy): Consistencia con datos maestros
+
+    Capas de validación:
+    1. Formato
+    2. Integridad
+    3. Reglas de negocio
     """
     if request.method == 'GET':
         return render_template('etl/upload.html')
@@ -605,15 +604,10 @@ def validate_business():
 @login_required
 def confirm_upload():
     """
-    Fase 3 del ETL: persistencia en Fact_Ventas.
+    Persistencia final del lote validado en Fact_Ventas.
 
-    METODOLOGÍA (TESIS):
-    Solo persiste si las capas previas fueron aprobadas (formato y negocio),
-    ejecutando inserción transaccional para mantener consistencia.
-
-    Diseno de Log Inmutable:
-    Cada carga confirmada registra un evento CARGA en etl_project_logs sin
-    sobrescribir eventos anteriores, cumpliendo trazabilidad normativa.
+    Solo persiste si la validación unificada terminó sin errores críticos.
+    También registra auditoría de la carga en etl_project_logs.
     """
     if 'upload_data' not in session:
         return jsonify({'ok': False, 'error': 'Sesión expirada. Intente nuevamente.'}), 400

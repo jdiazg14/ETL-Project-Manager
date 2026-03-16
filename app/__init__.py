@@ -27,6 +27,13 @@ def create_app(config_class=None):
         app.config.from_object(config)
     else:
         app.config.from_object(config_class)
+
+    # Hardening: evita iniciar sin variables críticas en ambientes reales.
+    if not app.config.get('TESTING'):
+        if not app.config.get('SECRET_KEY'):
+            raise RuntimeError('SECRET_KEY no configurada. Defina la variable de entorno SECRET_KEY.')
+        if not app.config.get('SQLALCHEMY_DATABASE_URI'):
+            raise RuntimeError('DATABASE_URL no configurada. Defina la variable de entorno DATABASE_URL.')
     
     # Crear carpeta de uploads si no existe
     if not os.path.exists(app.config['UPLOAD_FOLDER']):

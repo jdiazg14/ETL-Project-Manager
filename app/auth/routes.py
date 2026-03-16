@@ -1,10 +1,21 @@
 """Rutas del blueprint de autenticación"""
+from urllib.parse import urlparse, urljoin
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
-from datetime import datetime
 from app.auth.forms import RegistroForm, LoginForm
 from app.models import db, Users
 from . import auth_bp
+
+
+def _is_safe_redirect_target(target):
+    """Permite redirigir solo a rutas locales del mismo host."""
+    if not target:
+        return False
+
+    host_url = request.host_url
+    test_url = urlparse(urljoin(host_url, target))
+    ref_url = urlparse(host_url)
+    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
 
 
 @auth_bp.route('/registro', methods=['GET', 'POST'])
@@ -54,15 +65,11 @@ def login():
             flash('Esta cuenta está desactivada.', 'danger')
             return redirect(url_for('auth.login'))
         
-        # Actualizar último login
-        user.last_login = datetime.utcnow()
-        db.session.commit()
-        
         login_user(user, remember=form.remember_me.data)
         
         # Redirigir a la siguiente página o a la página principal
         next_page = request.args.get('next')
-        if next_page:
+        if next_page and _is_safe_redirect_target(next_page):
             return redirect(next_page)
         
         return redirect(url_for('etl.upload'))

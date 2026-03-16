@@ -1,15 +1,13 @@
 
-from flask import Blueprint, render_template, redirect, url_for, flash, current_app, jsonify, request
+from flask import render_template, redirect, url_for, flash, jsonify, request
 from flask_login import login_required, current_user
 from app.config.decorators import admin_required
-from sqlalchemy import func, desc, text, or_
+from sqlalchemy import func, text, or_
 from app.models import db, Users, Role, ETLProjectLog
 from app.models import DimDepartamento, DimMunicipio, DimDistribuidor, DimGrupoDistribuidor
 from app.config.forms import UsuarioForm, DepartamentoForm, MunicipioForm, DistribuidorForm, GrupoForm
 from app.config.role_forms import RoleForm
-
-# DEFINICIÓN DEL BLUEPRINT
-config_bp = Blueprint('config', __name__, url_prefix='/config', template_folder='../templates/config')
+from . import config_bp
 
 
 @config_bp.route('/grupos/inactivar/<int:id_grupo>', methods=['POST'])
@@ -71,14 +69,18 @@ def grupos_index():
     query = DimGrupoDistribuidor.query
     if search:
         search_lower = search.lower()
+        # Agrega condición booleana solo cuando el texto busca explícitamente estado activo/inactivo.
+        condiciones = [
+            DimGrupoDistribuidor.nombre_grupo.ilike(f'%{search}%'),
+            DimGrupoDistribuidor.nit.ilike(f'%{search}%'),
+            DimGrupoDistribuidor.plan.ilike(f'%{search}%'),
+        ]
+        if search_lower in ['si', 'sí', 'activo', 'true', '1']:
+            condiciones.append(DimGrupoDistribuidor.activo == True)
+        elif search_lower in ['no', 'inactivo', 'false', '0']:
+            condiciones.append(DimGrupoDistribuidor.activo == False)
         query = query.filter(
-            or_(
-                DimGrupoDistribuidor.nombre_grupo.ilike(f'%{search}%'),
-                DimGrupoDistribuidor.nit.ilike(f'%{search}%'),
-                DimGrupoDistribuidor.plan.ilike(f'%{search}%'),
-                (DimGrupoDistribuidor.activo == True if search_lower in ['si', 'sí', 'activo', 'true', '1'] else False),
-                (DimGrupoDistribuidor.activo == False if search_lower in ['no', 'inactivo', 'false', '0'] else False)
-            )
+            or_(*condiciones)
         )
     if direction == 'desc':
         sort_col = sort_col.desc()
@@ -114,6 +116,8 @@ def inactivar_distribuidor(id_distribuidor):
 
 # Ruta para obtener municipios por departamento (AJAX)
 @config_bp.route('/get_municipios/<int:depto_id>')
+@login_required
+@admin_required
 def get_municipios(depto_id):
     municipios = DimMunicipio.query.filter_by(id_departamento=depto_id).all()
     municipio_list = [{'id': m.id_municipio, 'nombre': m.nombre_municipio} for m in municipios]
@@ -127,8 +131,8 @@ def dashboard():
     total_usuarios = Users.query.count()
     admin_role = Role.query.filter_by(name='admin').first()
     analista_role = Role.query.filter_by(name='analista').first()
-    total_admins = Users.query.filter_by(role_id=admin_role.id if admin_role else None).count()
-    total_operadores = Users.query.filter_by(role_id=analista_role.id if analista_role else None).count()
+    total_admins = Users.query.filter_by(role_id=admin_role.id).count() if admin_role else 0
+    total_operadores = Users.query.filter_by(role_id=analista_role.id).count() if analista_role else 0
     total_uploads = ETLProjectLog.query.filter_by(action='CARGA').count()
     uploads_procesados = ETLProjectLog.query.filter_by(action='CARGA').count()
     uploads_pendientes = ETLProjectLog.query.filter_by(action='PENDIENTE').count()
@@ -175,6 +179,9 @@ def toggle_usuario(user_id):
 def crear_usuario():
     form = UsuarioForm()
     if form.validate_on_submit():
+        if not form.password.data:
+            flash('La contraseña es obligatoria para crear usuarios.', 'danger')
+            return render_template('usuario_form.html', form=form, crear=True)
         # Pre-commit validation: check for duplicate username/email
         existing_user = Users.query.filter((Users.username == form.username.data) | (Users.email == form.email.data)).first()
         if existing_user:
@@ -467,16 +474,20 @@ def lista_distribuidores():
     if search:
         search_lower = search.lower()
         query = query.join(DimDistribuidor.grupo, isouter=True).join(DimDistribuidor.municipio, isouter=True)
+        # Evita mezclar literales False dentro de OR para no distorsionar el filtro.
+        condiciones = [
+            DimDistribuidor.codigo_distribuidor.ilike(f'%{search}%'),
+            DimDistribuidor.nombre_distribuidor.ilike(f'%{search}%'),
+            DimDistribuidor.cupo_asignado.cast(db.String).ilike(f'%{search}%'),
+            DimGrupoDistribuidor.nombre_grupo.ilike(f'%{search}%'),
+            DimMunicipio.nombre_municipio.ilike(f'%{search}%'),
+        ]
+        if search_lower in ['si', 'sí', 'activo', 'true', '1']:
+            condiciones.append(DimDistribuidor.activo == True)
+        elif search_lower in ['no', 'inactivo', 'false', '0']:
+            condiciones.append(DimDistribuidor.activo == False)
         query = query.filter(
-            or_(
-                DimDistribuidor.codigo_distribuidor.ilike(f'%{search}%'),
-                DimDistribuidor.nombre_distribuidor.ilike(f'%{search}%'),
-                DimDistribuidor.cupo_asignado.cast(db.String).ilike(f'%{search}%'),
-                DimGrupoDistribuidor.nombre_grupo.ilike(f'%{search}%'),
-                DimMunicipio.nombre_municipio.ilike(f'%{search}%'),
-                (DimDistribuidor.activo == True if search_lower in ['si', 'sí', 'activo', 'true', '1'] else False),
-                (DimDistribuidor.activo == False if search_lower in ['no', 'inactivo', 'false', '0'] else False)
-            )
+            or_(*condiciones)
         )
     # Aplica dirección asc/desc
     if direction == 'desc':

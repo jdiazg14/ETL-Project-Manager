@@ -42,6 +42,10 @@ CREATE TABLE etl_project_logs (
     CONSTRAINT fk_epl_eliminado_por FOREIGN KEY (eliminado_por_id) REFERENCES users(id)
 );
 
+CREATE INDEX idx_epl_action_upload_date ON etl_project_logs (action, upload_date);
+CREATE INDEX idx_epl_user_id ON etl_project_logs (user_id);
+CREATE INDEX idx_epl_lote ON etl_project_logs (nombre_archivo, fecha_carga_archivo, esta_activo);
+
 -- 5. INSERTAR ROLES INICIALES
 INSERT INTO role (name, description) VALUES 
 ('admin', 'Acceso total y configuración'),

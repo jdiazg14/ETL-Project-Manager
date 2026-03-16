@@ -4,7 +4,6 @@ Ejecutar con: python run.py
 """
 import os
 from dotenv import load_dotenv
-from flask import redirect, url_for, render_template
 
 # Cargar variables de entorno
 load_dotenv()
@@ -19,13 +18,15 @@ app = create_app()
 
 # Crear usuario admin automáticamente si la tabla Users está vacía (ejecutar al iniciar la app)
 def create_initial_admin():
-    from app.models import Users, Role, db
     if Users.query.count() == 0:
         admin_role = Role.query.filter_by(name='admin').first()
         if not admin_role:
             print('No existe el rol "admin" en la tabla role. Inserte el rol primero.')
             return
-        admin_password = os.environ.get('INITIAL_ADMIN_PASSWORD', 'ClaveTemporal123')
+        admin_password = os.environ.get('INITIAL_ADMIN_PASSWORD')
+        if not admin_password:
+            print('No se creó el usuario admin inicial: defina INITIAL_ADMIN_PASSWORD en el archivo .env.')
+            return
         admin = Users(
             username='admin',
             email='admin@empresa.com',
@@ -40,15 +41,6 @@ def create_initial_admin():
 # Ejecutar la función justo después de crear la app
 with app.app_context():
     create_initial_admin()
-
-
-@app.route('/')
-def main_index():
-    """Redirigir a la página principal."""
-    from flask_login import current_user
-    if current_user.is_authenticated:
-        return redirect(url_for('etl.upload'))
-    return redirect(url_for('auth.login'))
 
 
 @app.shell_context_processor

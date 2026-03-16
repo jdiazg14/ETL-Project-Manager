@@ -1,46 +1,54 @@
-
 # ETL-Project-Manager
 
-## Resumen
-Este proyecto es un gestor ETL para cargas de archivos y registro de logs, con autenticación y control de roles. El esquema de base de datos está gestionado externamente en MySQL.
+Aplicación Flask para carga ETL de ventas, validación por capas y persistencia transaccional en MySQL.
 
-## Arquitectura
-- **Backend:** Flask + SQLAlchemy
-- **Autenticación:** Flask-Login
-- **Gestión de variables:** `.env` (requiere `DATABASE_URL` y `SECRET_KEY`)
-Ejemplo de DATABASE_URL para MySQL:
-```
-DATABASE_URL=mysql+pymysql://usuario:password@localhost/nombre_db
-```
-- **Modelos:**
-	- `role`: roles de usuario (admin, analista, etc.)
-	- `user`: usuarios autenticados, vinculados a un rol
-	- `etl_project_logs`: logs de cargas de archivos
-- **Carga de archivos:** Los archivos se procesan en memoria (pandas DataFrame), no se almacenan en la base de datos.
+## Documentación principal
 
-## Configuración rápida
-1. Crea y configura tu base de datos MySQL según `schema.sql`.
-2. Crea un archivo `.env` con la variable `DATABASE_URL` y tu `SECRET_KEY`.
-3. Instala dependencias:
-	 ```bash
-	 pip install -r requirements.txt
-	 ```
-4. Ejecuta la app:
-	 ```bash
-	 python run.py
-	 ```
+- Validaciones del proceso ETL: [docs/VALIDACION.md](docs/VALIDACION.md)
+- Prerrequisitos e instalación: [docs/INSTALACION.md](docs/INSTALACION.md)
 
-## Acceso Inicial y Seguridad
+## Qué hace el sistema
 
-Al iniciar la aplicación por primera vez, se crea automáticamente un usuario administrador si la tabla de usuarios está vacía.
+- Gestiona autenticación y sesión de usuarios con roles.
+- Permite cargar archivos CSV/XLS/XLSX para procesamiento ETL.
+- Ejecuta validación por capas antes de guardar.
+- Persiste registros en tablas dimensionales y de hechos.
+- Genera trazabilidad de cargas en auditoría ETL.
 
-**Credenciales por defecto:**
-- Usuario: `admin`
-- Contraseña: `Loteria123`
+## Stack tecnológico
 
-> ⚠️ **Nota de seguridad:** Se recomienda cambiar la contraseña inmediatamente después del primer inicio de sesión desde el panel de administración.
+- Backend: Flask
+- ORM: Flask-SQLAlchemy / SQLAlchemy
+- Autenticación: Flask-Login
+- Formularios: Flask-WTF
+- Procesamiento de datos: pandas
+- Base de datos: MySQL (driver `pymysql`)
 
-## Notas
-- El proyecto no crea ni modifica el esquema de la base de datos automáticamente.
-- Solo se gestionan usuarios, roles y logs de carga.
-- Para agregar roles iniciales, usa el script SQL proporcionado.
+## Estructura funcional
+
+- Aplicación y factory: `app/__init__.py`
+- Modelos: `app/models.py`
+- ETL (rutas/flujo): `app/etl/routes.py`
+- ETL (lectura/limpieza): `app/etl/processors.py`
+- Configuración por entorno: `config.py`
+- Punto de entrada: `run.py`
+- Scripts SQL: `sql/01_auth_schema.sql`, `sql/02_business_schema.sql`, `sql/03_load_clients.sql`, `sql/03_load_geography.sql`
+
+## Variables de entorno
+
+Usa `/.env.example` como plantilla para crear `/.env`.
+
+Variables del proyecto:
+
+- `DATABASE_URL`
+- `SECRET_KEY`
+- `FLASK_ENV`
+- `FLASK_DEBUG`
+- `INITIAL_ADMIN_PASSWORD`
+
+## Notas operativas
+
+- El proyecto no ejecuta migraciones automáticas.
+- El esquema y los datos base se cargan con scripts SQL.
+- Al iniciar, se crea usuario `admin` solo si no hay usuarios y existe el rol `admin` en base de datos.
+- El archivo temporal del upload se guarda en `uploads/tmp` durante el flujo de validación/confirmación.

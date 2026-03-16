@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, SelectField, SubmitField, PasswordField
 from wtforms.validators import DataRequired, Email, EqualTo, Optional
-from app.models import Users, Role
+from sqlalchemy import func
+from app.models import Role
 
 class UsuarioForm(FlaskForm):
     username = StringField('Usuario', validators=[DataRequired()])
@@ -15,7 +16,7 @@ class UsuarioForm(FlaskForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.role_id.choices = [(r.id, r.name) for r in Role.query.all()]
-        analista_role = Role.query.filter((Role.name == 'analista') | (Role.name == 'Analista')).first()
+        analista_role = Role.query.filter(func.lower(Role.name) == 'analista').first()
         if analista_role and not self.role_id.data:
             self.role_id.data = analista_role.id
         if self.is_active.data is None:
@@ -50,7 +51,7 @@ class DistribuidorForm(FlaskForm):
     codigo_distribuidor = StringField('Código Distribuidor', validators=[DataRequired()])
     nombre_distribuidor = StringField('Nombre Distribuidor', validators=[DataRequired()])
     cupo_asignado = StringField('Cupo Asignado')
-    id_grupo = SelectField('Grupo', coerce=lambda x: int(x) if x not in (None, '', 0) and (isinstance(x, int) or (isinstance(x, str) and x.isdigit())) else None, validators=[Optional()])
+    id_grupo = SelectField('Grupo', coerce=lambda x: int(x) if x not in (None, '') and (isinstance(x, int) or (isinstance(x, str) and x.isdigit())) else None, validators=[Optional()])
     id_departamento = SelectField('Departamento', coerce=str, validators=[DataRequired()])
     id_municipio = SelectField('Municipio', coerce=str, validators=[DataRequired()])
     activo = BooleanField('Activo', default=True)
