@@ -4,8 +4,9 @@ Aplicación Flask para carga ETL de ventas, validación por capas y persistencia
 
 ## Documentación principal
 
-- Validaciones del proceso ETL: [docs/VALIDACION.md](docs/VALIDACION.md)
-- Prerrequisitos e instalación: [docs/INSTALACION.md](docs/INSTALACION.md)
+- **Instalación Local (Windows):** [docs/INSTALACION_LOCAL_WINDOWS.md](docs/INSTALACION_LOCAL_WINDOWS.md)
+- **Instalación en Servidor Remoto (Ubuntu):** [docs/INSTALACION_SERVIDOR.md](docs/INSTALACION_SERVIDOR.md)
+- **Validaciones del proceso ETL:** [docs/VALIDACION.md](docs/VALIDACION.md)
 
 ## Qué hace el sistema
 

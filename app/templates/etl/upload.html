@@ -440,8 +440,8 @@
                 modalExitoMensaje.textContent = data.mensaje || 'Los datos fueron guardados correctamente.';
                 modalExitoGuardado.classList.remove('hidden');
             } else {
-                // Error: rehabilitar el botón y mostrar el detalle del fallo.
-                setGuardarEstado(true);
+                // Error: mantener el botón deshabilitado (el error requiere corregir y volver a cargar el archivo).
+                setGuardarEstado(false);
                 btnGuardar.innerHTML = '<i class="fas fa-save"></i> Guardar Datos en Base de Datos';
                 renderListaMensajes(listaErrores, [data.error || 'Error desconocido al guardar.']);
                 seccionErrores.classList.remove('hidden');

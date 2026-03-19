@@ -7,6 +7,7 @@ from flask import render_template, request, redirect, url_for, flash, jsonify, s
 from flask_login import login_required, current_user
 import json
 from sqlalchemy import text
+from sqlalchemy.exc import IntegrityError
 from app.models import db, ETLProjectLog, Users, _ahora_bogota
 from app.etl.processors import DataProcessor
 from . import etl_bp
@@ -237,6 +238,27 @@ def validar_formato(df):
                 'Se asigno Porcentaje = 25.0 en filas con nulo: '
                 + ', '.join(str(f) for f in filas_porcentaje_nulo[:20])
             )
+
+    # Validar que cantidades y montos no sean negativos (restriccion BD chk_fac_cantidades_nonnegative).
+    columnas_no_negativas = {
+        'despachada': columnas_mapeadas.get('despachada'),
+        'devuelta': columnas_mapeadas.get('devuelta'),
+        'vendida': columnas_mapeadas.get('vendida'),
+        'bruto_despacho': columnas_mapeadas.get('bruto_despacho'),
+        'bruto_devuelto': columnas_mapeadas.get('bruto_devuelto'),
+        'bruto_vendido': columnas_mapeadas.get('bruto_vendido'),
+        'neto_vendido': columnas_mapeadas.get('neto_vendido'),
+    }
+    for col_estandar, col_real in columnas_no_negativas.items():
+        if col_real and col_real in df.columns:
+            valores_numericos = pd.to_numeric(df[col_real], errors='coerce')
+            filas_negativas = (df.index[valores_numericos < 0] + 2).tolist()
+            if filas_negativas:
+                filas_str = ', '.join(str(f) for f in filas_negativas[:20])
+                errores_criticos.append(
+                    f'Columna "{col_estandar}": valores negativos en filas {filas_str}. '
+                    'La base de datos no permite cantidades negativas.'
+                )
 
     return {
         'df': df,
@@ -706,6 +728,12 @@ def confirm_upload():
             'registros': len(registros_a_insertar)
         })
 
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({
+            'ok': False,
+            'error': 'Error de Integridad: Se detectaron cantidades negativas que no cumplen con las reglas de negocio. Revise el archivo y vuelva a cargarlo.'
+        }), 500
     except Exception as e:
         db.session.rollback()
         return jsonify({'ok': False, 'error': f'Error al confirmar la carga: {str(e)}'}), 500
