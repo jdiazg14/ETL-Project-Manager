@@ -1,0 +1,10 @@
+# Abrir R.exe o RStudio y ejecutar:
+install.packages("dplyr")
+install.packages("forecast")
+install.packages("lubridate")
+install.packages("tidyr")
+install.packages("ggplot2")
+install.packages("broom")
+install.packages("ggrepel")
+install.packages("scales")
+install.packages("gridExtra")
