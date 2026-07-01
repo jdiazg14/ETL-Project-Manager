@@ -1,262 +1,273 @@
-# Instalación en Servidor Remoto (Ubuntu Linux)
+# Instalación en Servidor Remoto — Guía Completa
 
-Este documento describe los pasos para desplegar **ETL Project Manager** en un servidor remoto Ubuntu 24.04 LTS, permitiendo que la aplicación sea accesible de forma remota y que herramientas como Power BI se conecten a la base de datos.
+## En qué se diferencia un servidor de una instalación local
 
-## Visión General
+Un servidor es un equipo que corre Linux (Ubuntu) sin interfaz gráfica, accesible a través de la red. Las diferencias clave respecto a instalar en Windows local son:
 
-El proceso prepara tu servidor para:
-1. Ejecutar la aplicación Python 3.12 de ETL
-2. Almacenar datos en MySQL con acceso remoto
-3. Permitir conexiones externas desde aplicaciones como Power BI
+| Aspecto | Windows local | Servidor Ubuntu |
+|---|---|---|
+| Acceso al equipo | Directamente en el equipo | Por SSH desde otra máquina |
+| Instalar MySQL | Instalador gráfico (.msi) | Comando `apt install` en terminal |
+| MySQL remoto | No necesario | Requiere configuración adicional |
+| Transferir archivos | No aplica | WinSCP o SCP desde tu máquina |
+| Instalar Python | Instalador .exe | Comando `apt install` |
+| Comandos Python | `python`, `pip` | `python3.11`, `pip` |
+| Activar entorno virtual | `.venv\Scripts\activate` | `source .venv/bin/activate` |
+| Ejecutar scripts SQL | `mysql -u root -p` | `sudo mysql` |
+| Ejecutar la app | Doble clic en `.bat` | `nohup python run.py &` |
 
-## Paso 1: Actualizar el Sistema
+La ventaja del servidor es que la aplicación queda disponible para todos los usuarios de la red, y herramientas como Power BI pueden conectarse directamente a la base de datos.
 
-Antes de instalar cualquier software, asegurate de que Ubuntu tenga los últimos parches de seguridad:
+---
+
+## FASE 1 — Preparar el servidor Ubuntu
+
+Conéctate al servidor por SSH desde tu equipo:
+
+```bash
+ssh usuario@<IP_DEL_SERVIDOR>
+```
+
+Antes de instalar cualquier software, actualiza el sistema para tener los últimos parches de seguridad:
 
 ```bash
 sudo apt update && sudo apt upgrade -y
 ```
 
-**Qué hace:**
-- `update` descarga la lista de software disponible
-- `upgrade` instala las actualizaciones de seguridad
+- `update` descarga la lista de paquetes disponibles
+- `upgrade` instala las actualizaciones disponibles
 - `-y` evita preguntas de confirmación
 
 ---
 
-## Paso 2: Instalar MySQL Server
+## FASE 2 — Instalar y configurar MySQL
 
-Descarga e instala el motor de base de datos:
+En Ubuntu, MySQL no viene preinstalado — debes descargarlo con el gestor de paquetes.
+
+### Instalar MySQL Server
 
 ```bash
 sudo apt install -y mysql-server
 ```
 
-Verifica que MySQL esté funcionando:
+Verifica que el servicio quedó activo:
 
 ```bash
 sudo systemctl status mysql
 ```
 
-Deberías ver: `active (running)`
-
----
-
-## Paso 3: Abrir Firewall para MySQL
-
-Por seguridad, los servidores vienen con todas las "puertas" cerradas. Para permitir conexiones externas a MySQL:
+Debes ver `active (running)`. Si no está corriendo:
 
 ```bash
-sudo ufw allow 3306/tcp
+sudo systemctl start mysql
+sudo systemctl enable mysql
 ```
 
-Permite tráfico hacia el puerto 3306 (puerto de MySQL).
+### Crear el usuario de la aplicación
 
----
-
-## Paso 4: Crear Base de Datos y Usuario Admin
-
-Accede a MySQL como root:
+A diferencia de Windows, en Ubuntu el usuario `root` de MySQL no tiene contraseña por defecto y solo se puede acceder con `sudo mysql`. Crea un usuario dedicado para la aplicación:
 
 ```bash
 sudo mysql
 ```
 
-Ejecuta estos comandos uno por uno dentro de MySQL:
+Dentro del prompt de MySQL, ejecuta:
 
 ```sql
-CREATE DATABASE etl_ventas_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
 CREATE USER 'admin_etl'@'%' IDENTIFIED BY 'Admin_Etl_2026';
-
 GRANT ALL PRIVILEGES ON etl_ventas_db.* TO 'admin_etl'@'%';
-
 FLUSH PRIVILEGES;
-
 EXIT;
 ```
 
-**Notas importantes:**
-- `'%'` permite conexiones desde cualquier IP (incluyendo tu máquina local para Power BI)
-- La contraseña debe ser segura en producción
-- Las comillas simples son obligatorias en SQL
+**Qué significa cada parte:**
+- `'admin_etl'@'%'` — el usuario `admin_etl` puede conectarse desde cualquier IP (`%`)
+- `GRANT ALL PRIVILEGES ON etl_ventas_db.*` — tiene acceso total solo a la base de datos del proyecto
+- La base de datos `etl_ventas_db` aún no existe — se crea en la Fase 4 al ejecutar los scripts SQL
 
-Verifica que el usuario fue creado correctamente:
+> En un entorno de producción real, usa una contraseña más segura que el ejemplo y restringe el acceso por IP si es posible.
+
+Verifica que el usuario fue creado:
 
 ```bash
 mysql -u admin_etl -p
 ```
 
-Cuando te pida contraseña, digita `Admin_Etl_2026` y presiona Enter.
+Cuando pida contraseña, ingresa `Admin_Etl_2026`. Si ves el prompt `mysql>`, el usuario existe. Escribe `EXIT` para salir.
 
----
+### Permitir conexiones remotas a MySQL
 
-## Paso 5: Permitir Conexiones Externas en MySQL
+Por defecto, MySQL en Ubuntu solo acepta conexiones locales. Para que Power BI u otras herramientas externas puedan conectarse, debes cambiar esta configuración.
 
-Por defecto, MySQL solo escucha peticiones locales. Necesitamos cambiar su configuración para escuchar desde cualquier IP:
+**Paso 1 — Modificar la dirección de escucha de MySQL:**
 
 ```bash
-sudo sed -i 's/127.0.0.1/0.0.0.0/' /etc/mysql/mysql.conf.d/mysqld.cnf
+sudo sed -i 's/bind-address.*=.*127\.0\.0\.1/bind-address = 0.0.0.0/' /etc/mysql/mysql.conf.d/mysqld.cnf
 ```
 
-Reinicia MySQL para aplicar el cambio:
+Esto cambia la dirección de escucha de `127.0.0.1` (solo local) a `0.0.0.0` (todas las interfaces).
+
+Verifica el cambio:
+
+```bash
+grep bind-address /etc/mysql/mysql.conf.d/mysqld.cnf
+```
+
+Debes ver `bind-address = 0.0.0.0`.
+
+**Paso 2 — Abrir el puerto en el firewall:**
+
+```bash
+sudo ufw allow 3306/tcp
+sudo ufw status
+```
+
+**Paso 3 — Reiniciar MySQL para aplicar los cambios:**
 
 ```bash
 sudo systemctl restart mysql
 ```
 
-**Qué hace:** Cambia la dirección de escucha de `127.0.0.1` (solo local) a `0.0.0.0` (todos).
+---
+
+## FASE 3 — Instalar Python 3.11
+
+La versión recomendada es **3.11**. Las dependencias del proyecto están probadas con 3.11 y 3.12. Versiones superiores pueden tener incompatibilidades.
+
+```bash
+sudo apt update
+sudo apt install -y software-properties-common
+sudo add-apt-repository ppa:deadsnakes/ppa -y
+sudo apt update
+sudo apt install -y python3.11 python3.11-venv python3-pip build-essential python3-dev
+```
+
+> El repositorio `deadsnakes/ppa` es necesario en Ubuntu 22.04+ para instalar versiones específicas de Python que no están en los repositorios oficiales por defecto.
+
+Verifica la instalación:
+
+```bash
+python3.11 --version
+```
+
+Debes ver `Python 3.11.x`.
 
 ---
 
-## Paso 6: Subir el Proyecto al Servidor
+## FASE 4 — Transferir y configurar el proyecto
 
-### 6a) Preparar carpeta en el servidor
-
-En tu servidor, crea la carpeta donde vivirá el proyecto:
+### Crear la carpeta en el servidor
 
 ```bash
 sudo mkdir -p /var/www/ETL-Project-Manager
 sudo chown -R $USER:$USER /var/www/ETL-Project-Manager
-cd /var/www/ETL-Project-Manager
 ```
 
-### 6b) Transferir archivos
+### Transferir los archivos desde Windows
 
-Usa **WinSCP** (Windows) o **SCP** (Terminal):
+Usa **WinSCP** (recomendado por su interfaz gráfica):
 
-**Con WinSCP:**
-1. Nueva sesión con protocolo **SFTP**
-2. Host: Dirección IP de tu servidor (ej: `45.55.41.26`)
-3. Puerto: `22`
-4. Usuario: `root` o el usuario que configuraste
-5. Contraseña: La contraseña del servidor
+1. Abre WinSCP y crea una nueva sesión:
+   - Protocolo: **SFTP**
+   - Host: la IP de tu servidor (ej: `45.55.41.26`)
+   - Puerto: `22`
+   - Usuario y contraseña: los del servidor
+2. En el panel derecho navega a `/var/www/ETL-Project-Manager/`
+3. Copia todos los archivos del proyecto **excepto**:
+   - `.venv/` — se creará en el servidor
+   - `__pycache__/` — se regenera automáticamente
+   - `.git/` — opcional, puede omitirse
 
-En el panel derecho, navega a `/var/www/ETL-Project-Manager/`
+Alternativamente, desde una terminal en Windows con SCP:
 
-**⚠️ NO copiar:**
-- `.venv/` → Se instalará en el servidor
-- `__pycache__/` → Se regenerará automáticamente
-- `.git/` → Opcional, puede omitirse
-
-Arrastra toda tu carpeta del proyecto (código, SQL, .env, requirements.txt, etc.) al servidor.
-
----
-
-## Paso 7: Configurar Python 3 en el Servidor
-
-### 7a) Instalar dependencias del sistema
-
-```bash
-sudo apt update
-sudo apt install -y python3-venv python3-pip build-essential python3-dev
+```powershell
+scp -r C:\ruta\ETL-Project-Manager usuario@<IP>:/var/www/ETL-Project-Manager
 ```
 
-Estas herramientas son necesarias para compilar algunas librerías de Python.
+### Crear el entorno virtual e instalar dependencias
 
-### 7b) Crear entorno virtual
-
-En tu servidor, dentro de `/var/www/ETL-Project-Manager/`:
+En el servidor, dentro de la carpeta del proyecto:
 
 ```bash
 cd /var/www/ETL-Project-Manager
-python3 -m venv .venv
-```
-
-### 7c) Activar el entorno virtual
-
-```bash
+python3.11 -m venv .venv
 source .venv/bin/activate
-```
-
-Deberias ver `(.venv)` al inicio del prompt del terminal, confirmando que está activo.
-
-### 7d) Instalar dependencias del proyecto
-
-```bash
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
----
+Deberías ver `(.venv)` al inicio del prompt, confirmando que el entorno está activo.
 
-## Paso 8: Configurar Variables de Entorno
+### Inicializar la base de datos
+
+Ejecuta los cuatro scripts SQL en orden usando `sudo mysql` (que tiene privilegios de root para crear la base de datos):
+
+```bash
+cd /var/www/ETL-Project-Manager
+
+sudo mysql < sql/01_auth_schema.sql
+sudo mysql < sql/02_business_schema.sql
+sudo mysql < sql/03_load_geography.sql
+sudo mysql < sql/04_load_clients.sql
+```
+
+**Qué crea cada script:**
+
+| Script | Contenido |
+|---|---|
+| `01_auth_schema.sql` | La base de datos `etl_ventas_db`, tablas de usuarios y roles, y los roles iniciales (`admin`, `analista`) |
+| `02_business_schema.sql` | Tablas de negocio: dimensiones de geografía, tiempo y distribuidores, y la tabla de hechos de ventas |
+| `03_load_geography.sql` | Departamentos y municipios de Colombia según el catálogo DANE |
+| `04_load_clients.sql` | Grupos de distribuidores y distribuidores iniciales |
+
+Verifica que el usuario `admin_etl` puede acceder a la base de datos ya creada:
+
+```bash
+mysql -u admin_etl -p etl_ventas_db
+```
+
+Si ves el prompt `mysql>`, todo está correcto. Escribe `EXIT` para salir.
+
+### Configurar las variables de entorno
 
 Edita el archivo `.env` en el servidor:
 
 ```bash
-nano .env
+nano /var/www/ETL-Project-Manager/.env
 ```
 
-Debe contener (reemplaza con tus valores reales):
+Ajusta los valores:
 
 ```
 DATABASE_URL=mysql+pymysql://admin_etl:Admin_Etl_2026@localhost/etl_ventas_db
 SECRET_KEY=genera-una-clave-aleatoria-y-segura-aqui
 FLASK_ENV=production
 FLASK_DEBUG=False
-INITIAL_ADMIN_PASSWORD=tu_password_admin_muy_seguro
+INITIAL_ADMIN_PASSWORD=tu_password_admin_seguro
 ```
 
-**Componentes de DATABASE_URL:**
-- `mysql+pymysql://` → Controlador Python para MySQL
-- `admin_etl:Admin_Etl_2026` → Usuario y contraseña de MySQL
-- `localhost` → Servidor (mismo servidor físico)
-- `etl_ventas_db` → Nombre de la base de datos
-
-**Seguridad:** Presiona `Ctrl+O` para guardar, `Enter`, y `Ctrl+X` para salir de nano.
-
-Asegurate que solo el dueño pueda leer `.env` (contiene contraseña):
+Para generar una `SECRET_KEY` segura:
 
 ```bash
-chmod 600 .env
+python3.11 -c "import secrets; print(secrets.token_hex(32))"
+```
+
+Guarda con `Ctrl+O`, Enter, y cierra con `Ctrl+X`.
+
+Protege el archivo (contiene contraseñas):
+
+```bash
+chmod 600 /var/www/ETL-Project-Manager/.env
 ```
 
 ---
 
-## Paso 9: Cargar Scripts SQL
+## FASE 5 — Ejecutar la aplicación
 
-Desde la carpeta del proyecto, ejecuta los scripts en orden:
-
-```bash
-cd /var/www/ETL-Project-Manager/sql
-```
-
-Crear tablas de autenticación (usuario, roles):
+### Opción A — En primer plano (para verificar que funciona)
 
 ```bash
-mysql -u admin_etl -p etl_ventas_db < 01_auth_schema.sql
-```
-
-Crear tablas de negocio (ventas, dimensiones):
-
-```bash
-mysql -u admin_etl -p etl_ventas_db < 02_business_schema.sql
-```
-
-Cargar datos geográficos:
-
-```bash
-mysql -u admin_etl -p etl_ventas_db < 03_load_geography.sql
-```
-
-Cargar datos de clientes:
-
-```bash
-mysql -u admin_etl -p etl_ventas_db < 04_load_clients.sql
-```
-
-Cada comando te pedirá la contraseña: `Admin_Etl_2026`
-
----
-
-## Paso 10: Ejecutar la Aplicación
-
-Desde `/var/www/ETL-Project-Manager/`:
-
-### Opción A: Ejecución en Primer Plano (para pruebas)
-
-```bash
+cd /var/www/ETL-Project-Manager
 source .venv/bin/activate
 python run.py
 ```
@@ -264,126 +275,120 @@ python run.py
 Deberías ver:
 
 ```
-* Serving Flask app 'run'
+* Serving Flask app
 * Debug mode: off
 * Running on http://0.0.0.0:5000
 ```
 
+Abre en tu navegador: `http://<IP_DEL_SERVIDOR>:5000`
+
 Presiona `Ctrl+C` para detener.
 
-### Opción B: Ejecución en Segundo Plano (Producción)
+### Opción B — En segundo plano (uso normal en producción)
 
-Para que la app siga ejecutándose aunque cierres la conexión SSH:
+Para que la app siga corriendo aunque cierres la conexión SSH:
 
 ```bash
+cd /var/www/ETL-Project-Manager
+source .venv/bin/activate
 nohup python run.py > out.log 2>&1 &
 ```
 
-**Ver logs en tiempo real:**
+Ver los logs en tiempo real:
 
 ```bash
-tail -f out.log
+tail -f /var/www/ETL-Project-Manager/out.log
 ```
 
-### Detener la Aplicación
+Detener la aplicación:
 
 ```bash
 pkill -f run.py
 ```
 
----
-
-## Paso 11: Verificar Conectividad
-
-### Desde tu máquina local (Windows/Mac)
-
-Abre PowerShell y prueba la conexión a MySQL:
-
-```powershell
-mysql -h <IP_DEL_SERVIDOR> -u admin_etl -p -D etl_ventas_db
-```
-
-Sustituye `<IP_DEL_SERVIDOR>` con la IP de tu server (ej: `45.55.41.26`).
-
-Si logras conectar, verás el prompt `mysql>`. Digita `EXIT` para salir.
-
-### Probar la Aplicación Web
-
-Abre tu navegador en:
-
-```
-http://<IP_DEL_SERVIDOR>:5000
-```
-
-Deberías ver la pantalla de login.
-
----
-
-## Credenciales de Conexión para Power BI (o similar)
-
-Una vez completados todos los pasos, usa estos datos en Power BI:
-
-| Parámetro | Valor |
-|-----------|-------|
-| **Servidor** | `<IP_DEL_SERVIDOR>` (ej: 45.55.41.26) |
-| **Puerto** | `3306` |
-| **Base de datos** | `etl_ventas_db` |
-| **Usuario** | `admin_etl` |
-| **Contraseña** | `Admin_Etl_2026` |
-
----
-
-## Mantenimiento
-
-### Ver procesos del servidor
+Verificar que está corriendo:
 
 ```bash
 ps aux | grep python
 ```
 
-### Revisar uso de disco
+---
+
+## Credenciales para conectar Power BI (u otras herramientas)
+
+Una vez completados todos los pasos, usa estos datos para conectar Power BI u otras herramientas de análisis:
+
+| Parámetro | Valor |
+|---|---|
+| **Servidor** | IP del servidor (ej: `45.55.41.26`) |
+| **Puerto** | `3306` |
+| **Base de datos** | `etl_ventas_db` |
+| **Usuario** | `admin_etl` |
+| **Contraseña** | La que definiste en el Paso de creación de usuario |
+
+---
+
+## Mantenimiento
+
+Ver procesos Python activos:
 
 ```bash
-df -h
+ps aux | grep python
 ```
 
-### Revisar uso de memoria
+Revisar logs de la aplicación:
 
 ```bash
-free -h
+tail -f /var/www/ETL-Project-Manager/out.log
 ```
 
-### Reiniciar MySQL
-
-```bash
-sudo systemctl restart mysql
-```
-
-### Ver logs de MySQL
+Revisar logs de MySQL:
 
 ```bash
 sudo tail -f /var/log/mysql/error.log
 ```
 
+Reiniciar MySQL:
+
+```bash
+sudo systemctl restart mysql
+```
+
+Revisar uso de disco y memoria:
+
+```bash
+df -h
+free -h
+```
+
 ---
 
-## Solución de Problemas
+## Solución de problemas
 
-### Error: "Connection refused" desde Power BI
+### "Connection refused" desde Power BI
 
-- Verifica que el firewall abrió el puerto 3306: `sudo ufw status`
-- Verifica que MySQL se reinició: `sudo systemctl restart mysql`
-- Verifica la configuración de `mysqld.cnf`: `grep bind-address /etc/mysql/mysql.conf.d/mysqld.cnf`
+Verifica paso a paso:
 
-### Error: "Access denied for user 'admin_etl'"
+```bash
+sudo ufw status                                          # Puerto 3306 abierto?
+sudo systemctl status mysql                              # MySQL corriendo?
+grep bind-address /etc/mysql/mysql.conf.d/mysqld.cnf    # bind-address = 0.0.0.0?
+```
 
-- Verifica la contraseña en `.env`
-- Verifica que el usuario fue creado: `sudo mysql -e "SELECT User, Host FROM mysql.user;"`
+### "Access denied for user 'admin_etl'"
+
+```bash
+sudo mysql -e "SELECT User, Host FROM mysql.user;"    # Verificar que el usuario existe
+```
+
+Si no existe, vuelve a la sección "Crear el usuario de la aplicación" en la Fase 2.
 
 ### La aplicación se detiene inesperadamente
 
-- Revisa los logs: `tail -f out.log`
-- Verifica conectividad a base de datos con: `mysql -u admin_etl -p`
+```bash
+tail -f /var/www/ETL-Project-Manager/out.log    # Ver el error exacto
+mysql -u admin_etl -p etl_ventas_db             # Verificar conexión a BD
+```
 
 ### Puerto 3306 ya está en uso
 
@@ -392,11 +397,20 @@ sudo lsof -i :3306
 sudo kill -9 <PID>
 ```
 
+### "No module named 'flask'" en el servidor
+
+El entorno virtual no está activado:
+
+```bash
+source /var/www/ETL-Project-Manager/.venv/bin/activate
+pip install -r requirements.txt
+```
+
 ---
 
-## Próximos Pasos
+## Próximos pasos recomendados
 
-- Configurar un **reverse proxy** (Nginx/Apache) para mayor seguridad
-- Implementar **certificados SSL** para HTTPS
-- Configurar **backups automáticos** de la base de datos
-- Revisar [docs/VALIDACION.md](VALIDACION.md) para entender el flujo ETL
+- Configurar un **reverse proxy con Nginx** para servir la app en el puerto 80/443
+- Implementar **certificados SSL** (Let's Encrypt) para HTTPS
+- Configurar **backups automáticos** de la base de datos con `mysqldump`
+- Revisar [VALIDACION.md](VALIDACION.md) para entender el flujo ETL

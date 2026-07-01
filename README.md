@@ -2,11 +2,20 @@
 
 Aplicación Flask para carga ETL de ventas, validación por capas y persistencia transaccional en MySQL.
 
-## Documentación principal
+## Por dónde empezar
 
-- **Instalación Local (Windows):** [docs/INSTALACION_LOCAL_WINDOWS.md](docs/INSTALACION_LOCAL_WINDOWS.md)
-- **Instalación en Servidor Remoto (Ubuntu):** [docs/INSTALACION_SERVIDOR.md](docs/INSTALACION_SERVIDOR.md)
-- **Validaciones del proceso ETL:** [docs/VALIDACION.md](docs/VALIDACION.md)
+Los archivos en la raíz del proyecto están numerados en el orden en que debes usarlos:
+
+| Archivo | Qué es |
+|---|---|
+| `1_INSTALACION_WINDOWS.md` | Guía completa de instalación en Windows (leer primero) |
+| `2_cargar_base_de_datos.bat` | Inicializa la base de datos MySQL |
+| `3_instalar_entorno.bat` | Instala el entorno Python del proyecto |
+| `4_abrir_app.bat` | Abre la aplicación (uso diario) |
+
+Para instalar en un servidor remoto Ubuntu, consulta [docs/INSTALACION_SERVIDOR.md](docs/INSTALACION_SERVIDOR.md).
+
+---
 
 ## Qué hace el sistema
 
@@ -16,40 +25,68 @@ Aplicación Flask para carga ETL de ventas, validación por capas y persistencia
 - Persiste registros en tablas dimensionales y de hechos.
 - Genera trazabilidad de cargas en auditoría ETL.
 
+## Documentación
+
+| Documento | Descripción |
+|---|---|
+| [1_INSTALACION_WINDOWS.md](1_INSTALACION_WINDOWS.md) | Instalación completa en Windows con fases detalladas |
+| [docs/INSTALACION_SERVIDOR.md](docs/INSTALACION_SERVIDOR.md) | Despliegue en servidor remoto Ubuntu |
+| [docs/VALIDACION.md](docs/VALIDACION.md) | Flujo de validación del proceso ETL |
+
 ## Stack tecnológico
 
 - Backend: Flask
 - ORM: Flask-SQLAlchemy / SQLAlchemy
 - Autenticación: Flask-Login
 - Formularios: Flask-WTF
-- Procesamiento de datos: pandas
+- Procesamiento de datos: pandas / numpy
 - Base de datos: MySQL (driver `pymysql`)
 
-## Estructura funcional
+## Estructura del proyecto
 
-- Aplicación y factory: `app/__init__.py`
-- Modelos: `app/models.py`
-- ETL (rutas/flujo): `app/etl/routes.py`
-- ETL (lectura/limpieza): `app/etl/processors.py`
-- Configuración por entorno: `config.py`
-- Punto de entrada: `run.py`
-- Scripts SQL: `sql/01_auth_schema.sql`, `sql/02_business_schema.sql`, `sql/03_load_clients.sql`, `sql/03_load_geography.sql`
+```
+ETL-Project-Manager/
+├── 1_INSTALACION_WINDOWS.md          # Leer antes de instalar
+├── 2_cargar_base_de_datos.bat         # Inicializa MySQL
+├── 3_instalar_entorno.bat             # Instala entorno Python
+├── 4_abrir_app.bat                    # Abre la aplicación
+├── run.py                             # Punto de entrada
+├── config.py                          # Configuración por entorno
+├── requirements.txt                   # Dependencias Python
+├── .env.example                       # Plantilla de variables de entorno
+├── .flaskenv                          # Configuración Flask (FLASK_APP)
+├── app/
+│   ├── __init__.py                    # Factory de la aplicación
+│   ├── models.py                      # Modelos de base de datos
+│   ├── auth/                          # Autenticación (login, registro)
+│   ├── config/                        # Configuración (usuarios, roles, distribuidores)
+│   ├── etl/                           # Carga ETL (rutas, procesadores)
+│   └── templates/                     # Plantillas HTML
+├── sql/
+│   ├── 01_auth_schema.sql             # Crea BD, tablas de auth y roles iniciales
+│   ├── 02_business_schema.sql         # Tablas de negocio y tabla de hechos
+│   ├── 03_load_geography.sql          # Departamentos y municipios (DANE)
+│   └── 04_load_clients.sql            # Grupos de distribuidores y distribuidores
+└── docs/
+    ├── INSTALACION_SERVIDOR.md        # Guía de despliegue en Ubuntu
+    └── VALIDACION.md                  # Flujo de validación ETL
+```
 
 ## Variables de entorno
 
-Usa `/.env.example` como plantilla para crear `/.env`.
+Copia `.env.example` como `.env` y ajusta los valores:
 
-Variables del proyecto:
-
-- `DATABASE_URL`
-- `SECRET_KEY`
-- `FLASK_ENV`
-- `FLASK_DEBUG`
-- `INITIAL_ADMIN_PASSWORD`
+| Variable | Descripción |
+|---|---|
+| `DATABASE_URL` | Cadena de conexión MySQL: `mysql+pymysql://usuario:password@host/etl_ventas_db` |
+| `SECRET_KEY` | Clave aleatoria para firmar sesiones Flask |
+| `FLASK_ENV` | `development` o `production` |
+| `FLASK_DEBUG` | `True` o `False` |
+| `INITIAL_ADMIN_PASSWORD` | Contraseña del usuario `admin` creado al iniciar por primera vez |
 
 ## Notas operativas
 
-- El proyecto no ejecuta migraciones automáticas.
-- El esquema y los datos base se cargan con scripts SQL.
-- Al iniciar, se crea usuario `admin` solo si no hay usuarios y existe el rol `admin` en base de datos.
-- El archivo temporal del upload se guarda en `uploads/tmp` durante el flujo de validación/confirmación.
+- El esquema de base de datos se carga con los scripts SQL en orden — el proyecto no ejecuta migraciones automáticas.
+- Al iniciar, se crea el usuario `admin` solo si la tabla de usuarios está vacía y el rol `admin` existe en la base de datos.
+- Python requerido: **3.11** (compatible con 3.12; versiones superiores no garantizadas con las dependencias actuales).
+- El archivo `.flaskenv` configura `FLASK_APP=run.py` y es detectado automáticamente por Flask — no requiere edición.
